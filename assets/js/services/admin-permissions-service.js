@@ -16,7 +16,9 @@ export async function getPrimaryAdminDoc() {
 }
 
 export const DEFAULT_PERMISSIONS = {
+  musicasPublicas: { create: false, edit: false, delete: false },
   musicas: { create: false, edit: false, delete: false },
+  vocalistas: { view: false, edit: false },
   cifras: { create: false, edit: false, delete: false, capo: false, bpm: false, compasso: false, inst_violao: false, inst_guitarra: false, inst_baixo: false, inst_teclado: false },
   programacoes: { create: false, edit: false, delete: false },
   fotos: { create: false, edit: false, delete: false },
@@ -112,8 +114,16 @@ export function canAccessAdminPage(admin, pageKey = "") {
     case "links":
     case "backup":
       return false;
+    case "musicasPublicas":
+      return hasAnyModulePermission(admin, "musicasPublicas");
     case "musicas":
       return hasAnyModulePermission(admin, "musicas");
+    case "vocalistas":
+      return isPrimaryAdmin(admin) || hasAnyModulePermission(admin, "vocalistas");
+    case "editor-musica-publica-create":
+      return hasPermission(admin, "musicasPublicas", "create");
+    case "editor-musica-publica-edit":
+      return hasPermission(admin, "musicasPublicas", "edit");
     case "editor-musica-create":
       return hasPermission(admin, "musicas", "create");
     case "editor-musica-edit":

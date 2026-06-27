@@ -1,5 +1,8 @@
-import { listMusicas } from "../services/musicas-publicas-service.js";
+import { listMusicas } from "../services/musicas-service.js";
 import { createPersonalButtons, refreshPersonalActionButtons } from "../modules/personal-actions.js";
+import { whenPublicAuthReady, openPublicAuthModal } from "../public-auth.js";
+import { getAdminProfileByEmail } from "../auth.js";
+import { isVocalista } from "../services/vocalistas-service.js";
 
 function normalizeInitialLetter(value = "") {
   const raw = String(value || "").trim();
@@ -30,7 +33,7 @@ function renderList(containerId, items = [], emptyMessage = "Nenhuma música enc
         <div class="music-list-item">
           <a class="music-list-link" href="${item.href}">${item.titulo}</a>
           <span class="personal-action-group">${createPersonalButtons({
-            type:"musica",
+            type:"musica-vocal",
             title:item.titulo,
             href:item.href,
             slug:item.slug || ""
@@ -42,7 +45,32 @@ function renderList(containerId, items = [], emptyMessage = "Nenhuma música enc
   refreshPersonalActionButtons(container);
 }
 
+
+async function userCanAccessVocalList() {
+  const profile = await whenPublicAuthReady();
+  const firebaseUser = profile?.firebaseUser;
+  if (!firebaseUser?.uid) {
+    openPublicAuthModal();
+    return false;
+  }
+  try {
+    const [admin, vocalista] = await Promise.all([
+      getAdminProfileByEmail(firebaseUser.email || ""),
+      isVocalista(firebaseUser.uid)
+    ]);
+    return !!admin || !!vocalista;
+  } catch (error) {
+    console.error("Erro ao verificar acesso vocal:", error);
+    return false;
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
+  const allowed = await userCanAccessVocalList();
+  if (!allowed) {
+    renderList("musicas-lista-alfabetica", [], "Área exclusiva para vocalistas autorizados. Faça login com Google ou solicite liberação ao administrador.");
+    return;
+  }
   const input = document.getElementById("musicas-filter-input");
   const containerId = "musicas-lista-alfabetica";
   renderList(containerId, [], "Carregando músicas...");
@@ -51,7 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const all = (await listMusicas(true)).map((item) => ({
       titulo: item.title,
       slug: item.slug,
-      href: `./musica.html?slug=${item.slug}`
+      href: `./musica-vocal.html?slug=${item.slug}`
     }));
 
     const render = (term = "") => {

@@ -6,8 +6,11 @@ function resolveAdminPageKey() {
   const params = new URLSearchParams(window.location.search);
   if (path.endsWith("/admin/index.html")) return "dashboard";
   if (path.endsWith("/admin/admins.html")) return "admins";
+  if (path.endsWith("/admin/musicas-publicas.html")) return "musicasPublicas";
+  if (path.endsWith("/admin/editor-musica-publica.html")) return params.get("id") ? "editor-musica-publica-edit" : "editor-musica-publica-create";
   if (path.endsWith("/admin/musicas.html")) return "musicas";
   if (path.endsWith("/admin/editor-musica.html")) return params.get("id") ? "editor-musica-edit" : "editor-musica-create";
+  if (path.endsWith("/admin/vocalistas.html")) return "vocalistas";
   if (path.endsWith("/admin/cifras.html")) return "cifras";
   if (path.endsWith("/admin/editor-cifra.html")) return params.get("id") ? "editor-cifra-edit" : "editor-cifra-create";
   if (path.endsWith("/admin/programacoes.html")) return "programacoes";

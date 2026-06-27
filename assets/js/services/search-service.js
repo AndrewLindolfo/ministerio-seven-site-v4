@@ -1,4 +1,4 @@
-import { listMusicas } from "./musicas-service.js";
+import { listMusicas } from "./musicas-publicas-service.js";
 import { listCifras } from "./cifras-service.js";
 import { listDownloads } from "./downloads-service.js";
 import { listAlbuns } from "./albuns-service.js";

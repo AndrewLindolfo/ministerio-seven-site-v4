@@ -6,6 +6,7 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getPublicUserProfile, savePublicUserProfile } from "./services/public-user-service.js";
+import { isVocalista } from "./services/vocalistas-service.js";
 
 let currentUser = null;
 let currentMenu = null;
@@ -13,6 +14,122 @@ let authReadyResolver = null;
 const authReadyPromise = new Promise((resolve) => {
   authReadyResolver = resolve;
 });
+
+const VOCAL_NAV_CACHE_KEY = "seven_vocal_nav_permission";
+const VOCAL_NAV_CACHE_TTL = 1000 * 60 * 60 * 24 * 7;
+const PUBLIC_HEADER_CACHE_KEY = "seven_public_header_profile";
+const PUBLIC_HEADER_CACHE_TTL = 1000 * 60 * 60 * 24 * 7;
+
+function getCachedVocalNavPermission() {
+  try {
+    const raw = localStorage.getItem(VOCAL_NAV_CACHE_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    const expiresAt = Number(data.expiresAt || 0);
+    if (!expiresAt || expiresAt < Date.now()) {
+      localStorage.removeItem(VOCAL_NAV_CACHE_KEY);
+      return null;
+    }
+    return data;
+  } catch (error) {
+    console.warn("Não foi possível ler o cache de permissão vocal:", error);
+    return null;
+  }
+}
+
+function cacheVocalNavPermission(profile = null) {
+  try {
+    if (!profile?.uid) {
+      localStorage.removeItem(VOCAL_NAV_CACHE_KEY);
+      return;
+    }
+    localStorage.setItem(VOCAL_NAV_CACHE_KEY, JSON.stringify({
+      uid: String(profile.uid || "").trim(),
+      email: normalize(profile.email || ""),
+      canSeeVocal: !!(profile.isAdmin || profile.isVocalista),
+      isAdmin: !!profile.isAdmin,
+      isVocalista: !!profile.isVocalista,
+      updatedAt: Date.now(),
+      expiresAt: Date.now() + VOCAL_NAV_CACHE_TTL
+    }));
+  } catch (error) {
+    console.warn("Não foi possível salvar o cache de permissão vocal:", error);
+  }
+}
+
+function clearVocalNavPermissionCache() {
+  try {
+    localStorage.removeItem(VOCAL_NAV_CACHE_KEY);
+  } catch (error) {
+    console.warn("Não foi possível limpar o cache de permissão vocal:", error);
+  }
+}
+
+function getCachedPublicHeaderProfile() {
+  try {
+    const raw = localStorage.getItem(PUBLIC_HEADER_CACHE_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    const expiresAt = Number(data.expiresAt || 0);
+    if (!expiresAt || expiresAt < Date.now()) {
+      localStorage.removeItem(PUBLIC_HEADER_CACHE_KEY);
+      return null;
+    }
+    return data;
+  } catch (error) {
+    console.warn("Não foi possível ler o cache do usuário do cabeçalho:", error);
+    return null;
+  }
+}
+
+function cachePublicHeaderProfile(profile = null) {
+  try {
+    if (!profile?.uid) {
+      localStorage.removeItem(PUBLIC_HEADER_CACHE_KEY);
+      return;
+    }
+
+    localStorage.setItem(PUBLIC_HEADER_CACHE_KEY, JSON.stringify({
+      uid: String(profile.uid || "").trim(),
+      email: normalize(profile.email || ""),
+      photoURL: profile.photoURL || "assets/img/v7/icon_120.png",
+      firstName: profile.firstName || "",
+      lastName: profile.lastName || "",
+      displayName: profile.displayName || profile.email || "Minha conta",
+      phone: profile.phone || "",
+      isAdmin: !!profile.isAdmin,
+      isVocalista: !!profile.isVocalista,
+      updatedAt: Date.now(),
+      expiresAt: Date.now() + PUBLIC_HEADER_CACHE_TTL
+    }));
+  } catch (error) {
+    console.warn("Não foi possível salvar o cache do usuário do cabeçalho:", error);
+  }
+}
+
+function clearPublicHeaderProfileCache() {
+  try {
+    localStorage.removeItem(PUBLIC_HEADER_CACHE_KEY);
+  } catch (error) {
+    console.warn("Não foi possível limpar o cache do usuário do cabeçalho:", error);
+  }
+}
+
+function getCachedPublicHeaderForUser(user = null) {
+  const cached = getCachedPublicHeaderProfile();
+  if (!cached || !user) return null;
+  const sameUid = String(cached.uid || "").trim() === String(user.uid || "").trim();
+  const sameEmail = normalize(cached.email || "") === normalize(user.email || "");
+  return sameUid || sameEmail ? cached : null;
+}
+
+function getCachedVocalPermissionForUser(user = null) {
+  const cached = getCachedVocalNavPermission();
+  if (!cached || !user) return null;
+  const sameUid = String(cached.uid || "").trim() === String(user.uid || "").trim();
+  const sameEmail = normalize(cached.email || "") === normalize(user.email || "");
+  return sameUid || sameEmail ? cached : null;
+}
 
 function normalize(email = "") {
   return String(email || "").trim().toLowerCase();
@@ -90,6 +207,41 @@ function closeUserMenu() {
   currentMenu?.classList.add("hidden");
 }
 
+function removeVocalNavLinks() {
+  document.querySelectorAll('[data-vocal-link="1"]').forEach((node) => node.remove());
+}
+
+function syncVocalNavLink(canSeeVocal = false) {
+  removeVocalNavLinks();
+  if (!canSeeVocal) return;
+
+  document.querySelectorAll(".main-nav, .mobile-menu-panel").forEach((nav) => {
+    if (!nav || nav.querySelector('[data-vocal-link="1"]')) return;
+    const link = document.createElement("a");
+    link.href = "./musicas-vocal.html";
+    link.textContent = "Músicas Vocal";
+    link.setAttribute("data-vocal-link", "1");
+    if (nav.classList.contains("mobile-menu-panel")) {
+      link.className = "mobile-nav-link";
+    }
+
+    const musicasLink = Array.from(nav.querySelectorAll("a")).find((item) => String(item.textContent || "").trim().toLowerCase() === "músicas");
+    if (musicasLink) {
+      musicasLink.insertAdjacentElement("afterend", link);
+    } else {
+      nav.appendChild(link);
+    }
+  });
+}
+
+function restoreCachedVocalNavLink() {
+  const cached = getCachedVocalNavPermission();
+  if (cached?.canSeeVocal) {
+    syncVocalNavLink(true);
+  }
+}
+
+
 async function buildProfileData(user) {
   const email = normalize(user?.email || "");
   const profile = await getPublicUserProfile(user?.uid || "");
@@ -104,11 +256,13 @@ async function buildProfileData(user) {
     lastName,
     displayName: profile?.displayName || user?.displayName || [firstName, lastName].filter(Boolean).join(" "),
     phone: profile?.phone || "",
-    isAdmin: !!(await getAdminProfileByEmail(email))
+    isAdmin: !!(await getAdminProfileByEmail(email)),
+    isVocalista: !!(await isVocalista(user?.uid || ""))
   };
 }
 
 async function renderLoggedOut(slot) {
+  syncVocalNavLink(false);
   slot.innerHTML = `
     <button type="button" id="public-login-button" class="public-login-button public-login-button--image-only" aria-label="Entrar">
       <img src="./assets/img/ui/login-user-preto.png" alt="Entrar" class="public-login-button__image public-login-button__image--light" />
@@ -144,6 +298,9 @@ async function renderLoggedIn(slot, profile) {
   });
 
   $("#public-logout-button")?.addEventListener("click", async () => {
+    clearVocalNavPermissionCache();
+    clearPublicHeaderProfileCache();
+    syncVocalNavLink(false);
     await signOut(auth);
     closeUserMenu();
     if (window.location.pathname.includes("/conta.html")) {
@@ -158,12 +315,28 @@ async function renderHeaderAuth(user) {
 
   if (!user) {
     currentUser = null;
+    clearVocalNavPermissionCache();
+    clearPublicHeaderProfileCache();
     await renderLoggedOut(slot);
     return;
   }
 
+  const cachedHeader = getCachedPublicHeaderForUser(user);
+  if (cachedHeader?.uid) {
+    currentUser = { ...cachedHeader, firebaseUser: user };
+    await renderLoggedIn(slot, cachedHeader);
+  }
+
+  const cachedPermission = getCachedVocalPermissionForUser(user);
+  if (cachedPermission?.canSeeVocal) {
+    syncVocalNavLink(true);
+  }
+
   const profile = await buildProfileData(user);
   currentUser = { ...profile, firebaseUser: user };
+  cachePublicHeaderProfile(profile);
+  cacheVocalNavPermission(profile);
+  syncVocalNavLink(profile.isAdmin || profile.isVocalista);
   await savePublicUserProfile(profile.uid, {
     firstName: profile.firstName,
     lastName: profile.lastName,
@@ -181,6 +354,9 @@ export async function loginPublicUser() {
 }
 
 export async function logoutPublicUser() {
+  clearVocalNavPermissionCache();
+  clearPublicHeaderProfileCache();
+  syncVocalNavLink(false);
   await signOut(auth);
 }
 
@@ -212,8 +388,24 @@ export function requirePublicLogin(onReady) {
   return false;
 }
 
+function restoreCachedHeaderAuthUi() {
+  const slot = ensureHeaderSlot();
+  if (!slot) return;
+
+  const cachedHeader = getCachedPublicHeaderProfile();
+  if (cachedHeader?.uid) {
+    currentUser = { ...cachedHeader, firebaseUser: null };
+    renderLoggedIn(slot, cachedHeader);
+    return;
+  }
+
+  renderLoggedOut(slot);
+}
+
 export function initPublicAuth() {
   ensureAuthModal();
+  restoreCachedVocalNavLink();
+  restoreCachedHeaderAuthUi();
   watchPublicAuth();
 
   document.addEventListener("click", (event) => {

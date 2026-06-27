@@ -1,8 +1,12 @@
-import { getMusicaBySlug, listMusicas } from "../services/musicas-publicas-service.js";
+import { getMusicaBySlug, listMusicas } from "../services/musicas-service.js";
 import { listCifrasByMusica, getInstrumentLabel, normalizeInstrument } from "../services/cifras-service.js";
 import { getQueryParam } from "../utils.js";
+import { initMusicaControls } from "../modules/musica-controls.js";
 import { createPersonalButtons, refreshPersonalActionButtons } from "../modules/personal-actions.js";
 import { watchDocument } from "../db.js";
+import { whenPublicAuthReady, openPublicAuthModal } from "../public-auth.js";
+import { getAdminProfileByEmail } from "../auth.js";
+import { isVocalista } from "../services/vocalistas-service.js";
 
 let currentPublicMusicaLiveUnsubscribe = null;
 let currentPublicMusicaLiveSignature = "";
@@ -16,6 +20,7 @@ function buildPublicMusicaSignature(musica = {}) {
     author: String(musica.author || ""),
     originalKey: String(musica.originalKey || ""),
     category: String(musica.category || ""),
+    youtubeUrl: String(musica.youtubeUrl || ""),
     lyricHtml: String(musica.lyricHtml || ""),
     active: musica.active !== false
   });
@@ -50,7 +55,7 @@ function startPublicMusicaLiveWatch(musica = {}) {
   hideMusicaUpdateBanner();
   if (!musica?.id) return;
   currentPublicMusicaLiveSignature = buildPublicMusicaSignature(musica);
-  currentPublicMusicaLiveUnsubscribe = watchDocument("musicasPublicas", musica.id, (nextDoc) => {
+  currentPublicMusicaLiveUnsubscribe = watchDocument("musicas", musica.id, (nextDoc) => {
     if (!nextDoc) return;
     const nextSignature = buildPublicMusicaSignature(nextDoc);
     if (nextSignature !== currentPublicMusicaLiveSignature) {
@@ -83,9 +88,9 @@ function renderPrevNext(currentSlug = "", items = []) {
   const previous = currentIndex > 0 ? items[currentIndex - 1] : null;
   const next = currentIndex < items.length - 1 ? items[currentIndex + 1] : null;
   nav.innerHTML = `
-    ${previous ? `<a href="./musica.html?slug=${encodeURIComponent(previous.slug)}" class="prev-link">← Anterior</a>` : `<span class="prev-link is-disabled">← Anterior</span>`}
+    ${previous ? `<a href="./musica-vocal.html?slug=${encodeURIComponent(previous.slug)}" class="prev-link">← Anterior</a>` : `<span class="prev-link is-disabled">← Anterior</span>`}
     <span class="nav-divider"> | </span>
-    ${next ? `<a href="./musica.html?slug=${encodeURIComponent(next.slug)}" class="next-link">Próxima →</a>` : `<span class="next-link is-disabled">Próxima →</span>`}
+    ${next ? `<a href="./musica-vocal.html?slug=${encodeURIComponent(next.slug)}" class="next-link">Próxima →</a>` : `<span class="next-link is-disabled">Próxima →</span>`}
   `;
 }
 
@@ -121,9 +126,9 @@ function renderPersonalActions(musica) {
   }
 
   wrap.innerHTML = createPersonalButtons({
-    type: "musica",
+    type: "musica-vocal",
     title: musica.title || "",
-    href: `./musica.html?slug=${encodeURIComponent(musica.slug)}`,
+    href: `./musica-vocal.html?slug=${encodeURIComponent(musica.slug)}`,
     slug: musica.slug || ""
   });
   refreshPersonalActionButtons(titleEl.closest(".container") || document);
@@ -242,8 +247,70 @@ function renderVerCifraLink(musica, cifras = []) {
   }
 }
 
+
+async function userCanAccessVocalPage() {
+  const profile = await whenPublicAuthReady();
+  const firebaseUser = profile?.firebaseUser;
+  if (!firebaseUser?.uid) {
+    openPublicAuthModal();
+    return false;
+  }
+
+  try {
+    const [admin, vocalista] = await Promise.all([
+      getAdminProfileByEmail(firebaseUser.email || ""),
+      isVocalista(firebaseUser.uid)
+    ]);
+    return !!admin || !!vocalista;
+  } catch (error) {
+    console.error("Erro ao verificar acesso vocal:", error);
+    return false;
+  }
+}
+
+function renderAccessDenied() {
+  const titleEl = document.getElementById("musica-titulo");
+  const subtitleEl = document.getElementById("musica-subtitulo");
+  const letraEl = document.getElementById("musica-letra");
+  const meta = document.getElementById("musica-meta");
+  const video = document.getElementById("musica-video-wrapper");
+  const cross = document.querySelector(".page-cross-link");
+  if (titleEl) titleEl.textContent = "Acesso restrito";
+  if (subtitleEl) {
+    subtitleEl.textContent = "Esta área é exclusiva para vocalistas autorizados.";
+    subtitleEl.hidden = false;
+  }
+  if (meta) meta.innerHTML = "";
+  if (cross) cross.classList.add("hidden");
+  if (video) {
+    video.innerHTML = "";
+    video.hidden = true;
+  }
+  if (letraEl) letraEl.innerHTML = `<p>Faça login com sua conta Google e peça ao administrador para marcar seu usuário como vocalista.</p>`;
+}
+
+function renderInternalNotes(musica = {}) {
+  const letraEl = document.getElementById("musica-letra");
+  if (!letraEl) return;
+  const notes = String(musica.internalNotes || musica.observacao || "").trim();
+  const existing = document.getElementById("musica-vocal-observacoes");
+  if (existing) existing.remove();
+  if (!notes) return;
+
+  const box = document.createElement("section");
+  box.id = "musica-vocal-observacoes";
+  box.className = "musica-vocal-observacoes";
+  box.innerHTML = `<h2>Observações do vocal</h2><div>${escapeHtml(notes).replace(/\n/g, "<br>")}</div>`;
+  letraEl.insertAdjacentElement("beforebegin", box);
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   try {
+    const allowed = await userCanAccessVocalPage();
+    if (!allowed) {
+      renderAccessDenied();
+      return;
+    }
     const slug = getQueryParam("slug");
     const musica = await getMusicaBySlug(slug);
     const titleEl = document.getElementById("musica-titulo");
@@ -262,8 +329,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     renderMeta(musica);
     renderPersonalActions(musica);
+    renderInternalNotes(musica);
     if (letraEl) letraEl.innerHTML = musica.lyricHtml || "<p>Letra indisponível.</p>";
-    renderYoutube("");
+    renderYoutube(musica.youtubeUrl || "");
 
     const cifras = await listCifrasByMusica(musica.id, true);
     renderVerCifraLink(musica, cifras);
@@ -272,6 +340,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderPrevNext(musica.slug, all);
     startPublicMusicaLiveWatch(musica);
 
+    initMusicaControls();
   } catch (error) {
     console.error("Erro ao carregar música pública:", error);
     const titleEl = document.getElementById("musica-titulo");

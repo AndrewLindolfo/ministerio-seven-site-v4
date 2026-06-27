@@ -1,5 +1,5 @@
 import { $ } from "./utils.js";
-import { listMusicas } from "./services/musicas-service.js";
+import { listMusicas } from "./services/musicas-publicas-service.js";
 import { listCifras } from "./services/cifras-service.js";
 import { listDownloads } from "./services/downloads-service.js";
 import { listAlbuns } from "./services/albuns-service.js";

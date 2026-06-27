@@ -18,11 +18,13 @@ function groupItems(items = []) {
       grouped.set(key, {
         title: item.title || "",
         musica: null,
-        cifra: null
+        cifra: null,
+        musicaVocal: null
       });
     }
     const row = grouped.get(key);
     if (item.type === "musica" && !row.musica) row.musica = item;
+    if (item.type === "musica-vocal" && !row.musicaVocal) row.musicaVocal = item;
     if (item.type === "cifra" && !row.cifra) row.cifra = item;
   });
   return Array.from(grouped.values()).sort((a, b) => String(a.title || "").localeCompare(String(b.title || ""), "pt-BR"));
@@ -43,6 +45,7 @@ function renderRows(items = []) {
       <div class="personal-library-title">${escapeHtml(row.title)}</div>
       <div class="personal-library-actions">
         ${row.musica ? `<a class="personal-library-chip" href="${row.musica.href}">Música</a>` : ""}
+        ${row.musicaVocal ? `<a class="personal-library-chip" href="${row.musicaVocal.href}">Música Vocal</a>` : ""}
         ${row.cifra ? `<a class="personal-library-chip" href="${row.cifra.href}">Cifra</a>` : ""}
       </div>
     </div>

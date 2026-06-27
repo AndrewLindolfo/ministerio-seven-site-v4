@@ -350,9 +350,8 @@ export function toggleMusicaFullscreen() {
 }
 
 export function initMusicaControls() {
-  if (localStorage.getItem(MUSIC_SCROLL_VISIBLE_KEY) === null) {
-    localStorage.setItem(MUSIC_SCROLL_VISIBLE_KEY, "0");
-  }
+  // A janela de auto-rolagem sempre deve iniciar fechada ao abrir a música.
+  localStorage.setItem(MUSIC_SCROLL_VISIBLE_KEY, "0");
   ensureMusicaControls();
   ensureMusicaScrollPanel();
   applySavedFont();
@@ -366,5 +365,5 @@ export function initMusicaControls() {
   $("#musica-fullscreen-toggle")?.addEventListener("click", toggleMusicaFullscreen);
   $("#musica-pdf-toggle")?.addEventListener("click", exportMusicaPdf);
 
-  setScrollPanelVisible(window.innerWidth > 1024 && isScrollPanelVisible());
+  setScrollPanelVisible(false);
 }

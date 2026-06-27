@@ -9,6 +9,8 @@ import {
 const ADMIN_COLLECTION = "admins";
 const PRIMARY_ADMIN_DOC_ID = "master";
 const CACHE_KEY = "seven_admin_identity";
+const VOCAL_NAV_CACHE_KEY = "seven_vocal_nav_permission";
+const PUBLIC_HEADER_CACHE_KEY = "seven_public_header_profile";
 
 function normalize(email = "") {
   return String(email).trim().toLowerCase();
@@ -52,6 +54,22 @@ function persistAdminIdentity(admin = null, user = null) {
     }));
   } catch (error) {
     console.warn("Não foi possível persistir identidade do admin:", error);
+  }
+}
+
+function clearVocalNavPermissionCache() {
+  try {
+    localStorage.removeItem(VOCAL_NAV_CACHE_KEY);
+  } catch (error) {
+    console.warn("Não foi possível limpar o cache de permissão vocal:", error);
+  }
+}
+
+function clearPublicHeaderProfileCache() {
+  try {
+    localStorage.removeItem(PUBLIC_HEADER_CACHE_KEY);
+  } catch (error) {
+    console.warn("Não foi possível limpar o cache do usuário do cabeçalho:", error);
   }
 }
 
@@ -132,6 +150,8 @@ export async function loginWithGoogle() {
 
     if (!validation.ok) {
       persistAdminIdentity(null, null);
+      clearVocalNavPermissionCache();
+      clearPublicHeaderProfileCache();
     await signOut(auth);
       if (validation.reason === "uid-mismatch") {
         alert("Este administrador já está vinculado a outro UID de acesso administrativo.\n\nUse a mesma conta Google já vinculada ou atualize o UID desse ADM no painel principal.");
@@ -152,6 +172,8 @@ export async function loginWithGoogle() {
 
 export async function logout() {
   persistAdminIdentity(null, null);
+  clearVocalNavPermissionCache();
+  clearPublicHeaderProfileCache();
   await signOut(auth);
   window.location.href = "/login.html";
 }

@@ -7,7 +7,9 @@ function normalize(email = "") {
 
 function resolveCardVisibility(admin, key = "") {
   switch (key) {
+    case "musicasPublicas": return canAccessAdminPage(admin, "musicasPublicas");
     case "musicas": return canAccessAdminPage(admin, "musicas");
+    case "vocalistas": return canAccessAdminPage(admin, "vocalistas");
     case "cifras": return canAccessAdminPage(admin, "cifras");
     case "programacoes": return canAccessAdminPage(admin, "programacoes");
     case "fotos": return canAccessAdminPage(admin, "fotos");
