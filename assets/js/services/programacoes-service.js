@@ -21,18 +21,27 @@ function toLocalDateTime(dateStr = "", timeStr = "") {
 }
 
 function parseHideAfterDurationMs(item = {}, startDate = null) {
+  const rawMinutes = item?.hideAfterMinutes;
+  const normalizedMinutes = normalizeHideAfterMinutes(rawMinutes);
+
+  // Padrão V4: duração em minutos, podendo vir de um campo HH:mm no cadastro.
+  // Ex.: "00:30" = 30 minutos, "01:00" = 1 hora.
+  if (normalizedMinutes !== "") {
+    return Math.round(Number(normalizedMinutes)) * 60 * 1000;
+  }
+
   const raw = item?.hideAfterHours ?? item?.hideAfter ?? "";
   const value = String(raw ?? "").trim().replace(",", ".");
 
   if (!value) return 0;
 
-  // Novo padrão V4: número de horas. Ex.: "3" = 3 horas, "1.5" = 1h30.
+  // Compatibilidade com a etapa anterior da V4: número de horas.
+  // Ex.: "3" = 3 horas, "0.5" = 30 minutos.
   if (/^\d+(?:\.\d+)?$/.test(value)) {
     return Number(value) * 60 * 60 * 1000;
   }
 
   // Compatibilidade: se algum cadastro antigo estiver como HH:mm, tratar como duração.
-  // Ex.: "04:00" = 4 horas depois do início, não 04:00 da manhã.
   if (/^\d{1,2}:\d{2}$/.test(value)) {
     const [hours, minutes] = value.split(":").map(Number);
     return ((hours || 0) * 60 + (minutes || 0)) * 60 * 1000;
@@ -74,19 +83,25 @@ function sortByDateTimeAsc(list = []) {
   });
 }
 
-function normalizeHideAfterHours(value = "") {
+function normalizeHideAfterMinutes(value = "") {
   const raw = String(value ?? "").trim().replace(",", ".");
   if (!raw) return "";
 
-  if (/^\d+(?:\.\d+)?$/.test(raw)) {
+  if (/^\d+$/.test(raw)) {
     const num = Number(raw);
+    return Number.isFinite(num) && num >= 0 ? num : "";
+  }
+
+  if (/^\d+(?:\.\d+)?$/.test(raw)) {
+    const num = Math.round(Number(raw));
     return Number.isFinite(num) && num >= 0 ? num : "";
   }
 
   if (/^\d{1,2}:\d{2}$/.test(raw)) {
     const [hours, minutes] = raw.split(":").map(Number);
-    const num = (hours || 0) + ((minutes || 0) / 60);
-    return Number.isFinite(num) && num >= 0 ? num : "";
+    if (!Number.isFinite(hours) || !Number.isFinite(minutes) || hours < 0 || minutes < 0 || minutes > 59) return "";
+    const total = (hours * 60) + minutes;
+    return Number.isFinite(total) && total >= 0 ? total : "";
   }
 
   return "";
@@ -109,7 +124,8 @@ export async function getProgramacao(id) {
 }
 
 export async function saveProgramacao(payload, id = "") {
-  const hideAfterHours = normalizeHideAfterHours(payload.hideAfterHours ?? payload.hideAfter ?? "");
+  const hideAfterMinutes = normalizeHideAfterMinutes(payload.hideAfterMinutes ?? payload.hideAfterMinutesRaw ?? "");
+  const hideAfterHours = hideAfterMinutes === "" ? "" : Number(hideAfterMinutes) / 60;
   const mapsUrl = String(payload.mapsUrl || payload.googleMapsUrl || "").trim();
 
   const docData = {
@@ -122,6 +138,7 @@ export async function saveProgramacao(payload, id = "") {
     description: payload.description || "",
     hideAfter: hideAfterHours === "" ? "" : String(hideAfterHours),
     hideAfterHours,
+    hideAfterMinutes,
     songs: Array.isArray(payload.songs) ? payload.songs : [],
     active: payload.active !== false,
     updatedAt: serverTimestamp()

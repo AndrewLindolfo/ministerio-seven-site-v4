@@ -712,6 +712,10 @@
   box-shadow:0 8px 20px rgba(0,0,0,.15);
 }
 
+.programacao-link-chip--letra{
+  border-color:rgba(120,190,255,.25);
+}
+
 .programacao-link-chip--vocal{
   border-color:rgba(180,160,255,.25);
 }

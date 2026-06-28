@@ -61,7 +61,7 @@ function startPublicMusicaLiveWatch(musica = {}) {
     if (nextSignature !== currentPublicMusicaLiveSignature) {
       showMusicaUpdateBanner();
     }
-  }, (error) => console.error("Erro ao observar atualizações da música pública:", error));
+  }, (error) => console.error("Erro ao observar atualizações da música vocal:", error));
 }
 
 function escapeHtml(value = "") {
@@ -134,33 +134,48 @@ function renderPersonalActions(musica) {
   refreshPersonalActionButtons(titleEl.closest(".container") || document);
 }
 
+function extractYoutubeId(raw = "") {
+  const value = String(raw || "").trim();
+  if (!value) return "";
+
+  try {
+    const parsed = new URL(value);
+    const host = parsed.hostname.replace(/^www\./, "");
+
+    if (host === "youtu.be") {
+      return parsed.pathname.split("/").filter(Boolean)[0] || "";
+    }
+
+    if (host.includes("youtube.com") || host.includes("youtube-nocookie.com")) {
+      const byQuery = parsed.searchParams.get("v");
+      if (byQuery) return byQuery;
+
+      const parts = parsed.pathname.split("/").filter(Boolean);
+      const markers = ["embed", "shorts", "live"];
+      for (const marker of markers) {
+        const index = parts.indexOf(marker);
+        if (index >= 0 && parts[index + 1]) return parts[index + 1];
+      }
+    }
+  } catch {}
+
+  return "";
+}
+
 function renderYoutube(url = "") {
   const wrapper = document.getElementById("musica-video-wrapper");
   if (!wrapper) return;
-  const raw = String(url || "").trim();
-  if (!raw) {
+
+  const id = extractYoutubeId(url);
+  if (!id) {
     wrapper.innerHTML = "";
     wrapper.hidden = true;
     return;
   }
-  let embed = "";
-  try {
-    const parsed = new URL(raw);
-    if (parsed.hostname.includes("youtube.com")) {
-      const id = parsed.searchParams.get("v");
-      if (id) embed = `https://www.youtube.com/embed/${id}`;
-    } else if (parsed.hostname.includes("youtu.be")) {
-      const id = parsed.pathname.replace(/^\//, "");
-      if (id) embed = `https://www.youtube.com/embed/${id}`;
-    }
-  } catch {}
-  if (!embed) {
-    wrapper.innerHTML = "";
-    wrapper.hidden = true;
-    return;
-  }
+
+  const embed = `https://www.youtube.com/embed/${encodeURIComponent(id)}`;
   wrapper.hidden = false;
-  wrapper.innerHTML = `<iframe src="${embed}" title="Vídeo da música" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+  wrapper.innerHTML = `<iframe src="${embed}" title="Vídeo da música" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
 }
 
 function closeCifraSelector(menu) {
@@ -342,7 +357,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     initMusicaControls();
   } catch (error) {
-    console.error("Erro ao carregar música pública:", error);
+    console.error("Erro ao carregar música vocal:", error);
     const titleEl = document.getElementById("musica-titulo");
     if (titleEl) titleEl.textContent = "Erro ao carregar música";
   }

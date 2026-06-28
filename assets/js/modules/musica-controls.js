@@ -97,7 +97,34 @@ function saveScrollPanelPos(pos) {
 }
 
 function isScrollPanelVisible() {
+  const bubble = $("#musica-scroll-bubble");
+  if (bubble) return !bubble.hidden && bubble.getAttribute("aria-hidden") !== "true";
   return localStorage.getItem(MUSIC_SCROLL_VISIBLE_KEY) === "1";
+}
+
+function normalizeFixedPanelPos(pos, bubble) {
+  if (!pos || typeof pos.left !== "number" || typeof pos.top !== "number") return null;
+
+  // O painel usa position: fixed. Portanto left/top precisam ser coordenadas da tela,
+  // não coordenadas da página somadas ao scroll. Esta normalização também corrige
+  // posições antigas salvas antes deste ajuste.
+  let left = pos.left;
+  let top = pos.top;
+
+  if (window.scrollX > 0 && left > window.innerWidth && left - window.scrollX >= 0) {
+    left -= window.scrollX;
+  }
+  if (window.scrollY > 0 && top > window.innerHeight && top - window.scrollY >= 0) {
+    top -= window.scrollY;
+  }
+
+  const maxLeft = Math.max(8, window.innerWidth - bubble.offsetWidth - 8);
+  const maxTop = Math.max(8, window.innerHeight - bubble.offsetHeight - 8);
+
+  return {
+    left: clamp(left, 8, maxLeft),
+    top: clamp(top, 8, maxTop)
+  };
 }
 
 function applyDefaultScrollPanelPos() {
@@ -110,20 +137,23 @@ function applyDefaultScrollPanelPos() {
 
   if (anchor) {
     const rect = anchor.getBoundingClientRect();
-    const top = window.scrollY + rect.top - 6;
-    const left = window.scrollX + rect.right + 14;
-    const maxLeft = Math.max(8, window.scrollX + window.innerWidth - bubble.offsetWidth - 8);
-    bubble.style.left = `${clamp(left, window.scrollX + 8, maxLeft)}px`;
-    bubble.style.top = `${Math.max(window.scrollY + 8, top)}px`;
+    const top = rect.top - 6;
+    const left = rect.right + 14;
+    const maxLeft = Math.max(8, window.innerWidth - bubble.offsetWidth - 8);
+    const maxTop = Math.max(8, window.innerHeight - bubble.offsetHeight - 8);
+    bubble.style.left = `${clamp(left, 8, maxLeft)}px`;
+    bubble.style.top = `${clamp(top, 8, maxTop)}px`;
     bubble.style.right = "auto";
     bubble.style.bottom = "auto";
+    bubble.style.transform = "none";
     return;
   }
 
-  bubble.style.left = `${Math.max(16, (window.innerWidth - bubble.offsetWidth) / 2)}px`;
-  bubble.style.top = `${Math.max(16, window.scrollY + 120)}px`;
+  bubble.style.left = `${clamp((window.innerWidth - bubble.offsetWidth) / 2, 16, Math.max(16, window.innerWidth - bubble.offsetWidth - 16))}px`;
+  bubble.style.top = `${clamp(120, 16, Math.max(16, window.innerHeight - bubble.offsetHeight - 16))}px`;
   bubble.style.right = "auto";
   bubble.style.bottom = "auto";
+  bubble.style.transform = "none";
 }
 
 function applyScrollPanelPos() {
@@ -135,21 +165,21 @@ function applyScrollPanelPos() {
     bubble.style.top = "";
     bubble.style.right = "";
     bubble.style.bottom = "";
+    bubble.style.transform = "";
     return;
   }
 
-  const stored = getStoredScrollPanelPos();
-  if (!stored || typeof stored.left !== "number" || typeof stored.top !== "number") {
+  const stored = normalizeFixedPanelPos(getStoredScrollPanelPos(), bubble);
+  if (!stored) {
     applyDefaultScrollPanelPos();
     return;
   }
 
-  const maxLeft = Math.max(window.scrollX + 8, window.scrollX + window.innerWidth - bubble.offsetWidth - 8);
-  const maxTop = Math.max(window.scrollY + 8, window.scrollY + window.innerHeight - bubble.offsetHeight - 8);
-  bubble.style.left = `${clamp(stored.left, window.scrollX + 8, maxLeft)}px`;
-  bubble.style.top = `${clamp(stored.top, window.scrollY + 8, maxTop)}px`;
+  bubble.style.left = `${stored.left}px`;
+  bubble.style.top = `${stored.top}px`;
   bubble.style.right = "auto";
   bubble.style.bottom = "auto";
+  bubble.style.transform = "none";
 }
 
 function updateScrollButton(isRunning) {
@@ -234,36 +264,42 @@ function initScrollPanelDrag() {
     dragging = true;
     startX = clientX;
     startY = clientY;
-    startLeft = rect.left + window.scrollX;
-    startTop = rect.top + window.scrollY;
+    startLeft = rect.left;
+    startTop = rect.top;
     bubble.classList.add("is-dragging");
     bubble.style.right = "auto";
     bubble.style.bottom = "auto";
+    bubble.style.transform = "none";
     bubble.style.left = `${startLeft}px`;
     bubble.style.top = `${startTop}px`;
   };
 
   const move = (clientX, clientY) => {
     if (!dragging) return;
-    const maxLeft = Math.max(window.scrollX + 8, window.scrollX + window.innerWidth - bubble.offsetWidth - 8);
-    const maxTop = Math.max(window.scrollY + 8, window.scrollY + window.innerHeight - bubble.offsetHeight - 8);
-    bubble.style.left = `${clamp(startLeft + (clientX - startX), window.scrollX + 8, maxLeft)}px`;
-    bubble.style.top = `${clamp(startTop + (clientY - startY), window.scrollY + 8, maxTop)}px`;
+    const maxLeft = Math.max(8, window.innerWidth - bubble.offsetWidth - 8);
+    const maxTop = Math.max(8, window.innerHeight - bubble.offsetHeight - 8);
+    bubble.style.left = `${clamp(startLeft + (clientX - startX), 8, maxLeft)}px`;
+    bubble.style.top = `${clamp(startTop + (clientY - startY), 8, maxTop)}px`;
   };
 
   const end = () => {
     if (!dragging) return;
     dragging = false;
     bubble.classList.remove("is-dragging");
+    const rect = bubble.getBoundingClientRect();
     saveScrollPanelPos({
-      left: parseFloat(bubble.style.left) || (bubble.getBoundingClientRect().left + window.scrollX),
-      top: parseFloat(bubble.style.top) || (bubble.getBoundingClientRect().top + window.scrollY)
+      left: Number.isFinite(parseFloat(bubble.style.left)) ? parseFloat(bubble.style.left) : rect.left,
+      top: Number.isFinite(parseFloat(bubble.style.top)) ? parseFloat(bubble.style.top) : rect.top
+    });
+    requestAnimationFrame(() => {
+      if (isScrollPanelVisible()) applyScrollPanelPos();
     });
   };
 
   bubble.addEventListener("pointerdown", (event) => {
     if (event.target.closest("button,input")) return;
     event.preventDefault();
+    try { bubble.setPointerCapture?.(event.pointerId); } catch {}
     begin(event.clientX, event.clientY);
   });
 

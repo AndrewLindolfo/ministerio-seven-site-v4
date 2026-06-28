@@ -446,3 +446,28 @@
 .musica-vocal-observacoes div{
   line-height:1.55;
 }
+
+
+/* V4 etapa 4: ajustes finais da página Música Vocal */
+.musica-scroll-bubble[hidden],
+.musica-scroll-bubble.is-hidden{
+  display:none !important;
+}
+.musica-scroll-bubble.is-open{
+  display:flex !important;
+}
+.musica-video-wrapper[hidden]{
+  display:none !important;
+}
+.musica-vocal-observacoes{
+  width:100%;
+  max-width:100%;
+}
+@media print{
+  .musica-vocal-observacoes{
+    box-shadow:none !important;
+    background:#f7f7f7 !important;
+    color:#000 !important;
+    border-color:#d8d8d8 !important;
+  }
+}

@@ -104,6 +104,28 @@ function openPrintWindow(title = "", html = "") {
       break-inside: avoid;
     }
 
+
+    .musica-vocal-observacoes {
+      margin: 0 0 14px 0 !important;
+      padding: 10px 12px !important;
+      border: 1px solid #d8d8d8 !important;
+      border-radius: 8px !important;
+      background: #f7f7f7 !important;
+      color: #000 !important;
+      box-shadow: none !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    .musica-vocal-observacoes h2 {
+      margin: 0 0 6px 0 !important;
+      font-size: 14px !important;
+    }
+
+    .musica-vocal-observacoes div {
+      line-height: 1.4 !important;
+    }
+
     @page {
       size: auto;
       margin: 10mm;
@@ -125,6 +147,7 @@ function getMusicaExportHtml() {
   const title = document.getElementById("musica-titulo")?.textContent?.trim() || "Música";
   const subtitle = document.getElementById("musica-subtitulo")?.textContent?.trim() || "";
   const metaHtml = document.getElementById("musica-meta")?.innerHTML || "";
+  const observacoesHtml = document.getElementById("musica-vocal-observacoes")?.outerHTML || "";
   const letraHtml = document.getElementById("musica-letra")?.innerHTML || "";
 
   return {
@@ -134,6 +157,7 @@ function getMusicaExportHtml() {
         <h1 class="pdf-title">${escapeHtml(title)}</h1>
         ${subtitle ? `<p class="pdf-subtitle">${escapeHtml(subtitle)}</p>` : ""}
         ${metaHtml ? `<div class="pdf-meta">${metaHtml}</div>` : ""}
+        ${observacoesHtml}
         <article class="pdf-musica-content">${letraHtml}</article>
       </section>
     `

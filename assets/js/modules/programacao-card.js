@@ -1,11 +1,17 @@
 import { listUpcomingProgramacoes } from "../services/programacoes-service.js";
 import { listCifras } from "../services/cifras-service.js";
+import { listMusicas as listMusicasPublicas } from "../services/musicas-publicas-service.js";
+import { getCurrentPublicUser } from "../public-auth.js";
+
+const VOCAL_NAV_CACHE_KEY = "seven_vocal_nav_permission";
 
 function escapeHtml(text = "") {
   return String(text || "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function getSafeExternalUrl(value = "") {
@@ -23,7 +29,7 @@ function getSafeExternalUrl(value = "") {
 function normalize(value = "") {
   return String(value || "")
     .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .trim();
 }
@@ -69,6 +75,29 @@ function buildCountdown(date = "", time = "") {
   return chunks.length ? `Começa em ${chunks.join(" ")}` : "Começa em instantes";
 }
 
+function getCachedVocalPermission() {
+  try {
+    const raw = localStorage.getItem(VOCAL_NAV_CACHE_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    const expiresAt = Number(data.expiresAt || 0);
+    if (!expiresAt || expiresAt < Date.now()) {
+      localStorage.removeItem(VOCAL_NAV_CACHE_KEY);
+      return null;
+    }
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+function canSeeVocalArea() {
+  const profile = getCurrentPublicUser();
+  if (profile?.isAdmin || profile?.isVocalista) return true;
+  const cached = getCachedVocalPermission();
+  return !!cached?.canSeeVocal;
+}
+
 function resolveExistingCifra(song = {}, cifraIndex = []) {
   const songTitle = normalize(song.title || song.name || "");
   const songSlug = String(song.slug || "").trim();
@@ -89,10 +118,52 @@ function resolveExistingCifra(song = {}, cifraIndex = []) {
   }) || null;
 }
 
-function renderVocalLink(song = {}) {
-  if (song.slug) {
+function resolveExistingPublicMusica(song = {}, musicasPublicasIndex = []) {
+  const songTitle = normalize(song.title || song.name || "");
+  const songSlug = String(song.slug || "").trim();
+  const songPublicSlug = String(song.publicSlug || song.publicMusicaSlug || song.musicaPublicaSlug || "").trim();
+  const songPublicId = String(song.publicMusicaId || song.musicaPublicaId || song.publicMusicId || "").trim();
+
+  return musicasPublicasIndex.find((musica) => {
+    const musicaId = String(musica.id || "").trim();
+    const musicaSlug = String(musica.slug || "").trim();
+    const musicaTitle = normalize(musica.title || musica.name || "");
+
+    if (songPublicId && musicaId === songPublicId) return true;
+    if (songPublicSlug && musicaSlug === songPublicSlug) return true;
+    if (songSlug && musicaSlug === songSlug) return true;
+    if (songTitle && musicaTitle === songTitle) return true;
+
+    return false;
+  }) || null;
+}
+
+function renderLetraLink(song = {}, musicasPublicasIndex = []) {
+  const existingMusica = resolveExistingPublicMusica(song, musicasPublicasIndex);
+  if (existingMusica?.slug) {
     return `
-      <a class="programacao-link-chip programacao-link-chip--vocal" href="./musica.html?slug=${song.slug}">
+      <a class="programacao-link-chip programacao-link-chip--letra" href="./musica.html?slug=${encodeURIComponent(existingMusica.slug)}">
+        <span class="programacao-link-icon" aria-hidden="true">📄</span>
+        <span>Letra</span>
+      </a>
+    `;
+  }
+
+  return `
+    <span class="programacao-link-chip programacao-link-chip--muted">
+      <span class="programacao-link-icon" aria-hidden="true">📄</span>
+      <span>Em breve</span>
+    </span>
+  `;
+}
+
+function renderVocalLink(song = {}, canSeeVocal = false) {
+  if (!canSeeVocal) return "";
+
+  const slug = String(song.slug || song.vocalSlug || "").trim();
+  if (slug) {
+    return `
+      <a class="programacao-link-chip programacao-link-chip--vocal" href="./musica-vocal.html?slug=${encodeURIComponent(slug)}">
         <span class="programacao-link-icon" aria-hidden="true">🎤</span>
         <span>Vocal</span>
       </a>
@@ -107,13 +178,13 @@ function renderVocalLink(song = {}) {
   `;
 }
 
-function renderBandaLink(song = {}, cifraIndex = []) {
+function renderCifraLink(song = {}, cifraIndex = []) {
   const existingCifra = resolveExistingCifra(song, cifraIndex);
   if (existingCifra?.slug) {
     return `
-      <a class="programacao-link-chip programacao-link-chip--banda" href="./cifra.html?slug=${existingCifra.slug}">
+      <a class="programacao-link-chip programacao-link-chip--banda" href="./cifra.html?slug=${encodeURIComponent(existingCifra.slug)}">
         <span class="programacao-link-icon" aria-hidden="true">🎸</span>
-        <span>Banda</span>
+        <span>Cifra</span>
       </a>
     `;
   }
@@ -126,7 +197,7 @@ function renderBandaLink(song = {}, cifraIndex = []) {
   `;
 }
 
-function renderSongLine(song = {}, index = 0, cifraIndex = []) {
+function renderSongLine(song = {}, index = 0, cifraIndex = [], musicasPublicasIndex = [], canSeeVocal = false) {
   return `
     <div class="programacao-item">
       <div class="programacao-item-main">
@@ -134,14 +205,15 @@ function renderSongLine(song = {}, index = 0, cifraIndex = []) {
         <span class="programacao-item-title">${escapeHtml(song.title || "")}</span>
       </div>
       <div class="programacao-links">
-        ${renderVocalLink(song)}
-        ${renderBandaLink(song, cifraIndex)}
+        ${renderLetraLink(song, musicasPublicasIndex)}
+        ${renderVocalLink(song, canSeeVocal)}
+        ${renderCifraLink(song, cifraIndex)}
       </div>
     </div>
   `;
 }
 
-function renderProgramacaoBox(item = {}, isFirst = false, cifraIndex = []) {
+function renderProgramacaoBox(item = {}, isFirst = false, cifraIndex = [], musicasPublicasIndex = [], canSeeVocal = false) {
   const countdown = buildCountdown(item.date, item.time);
   const songs = Array.isArray(item.songs) ? item.songs : [];
   const mapsUrl = getSafeExternalUrl(item.mapsUrl || item.googleMapsUrl || "");
@@ -173,7 +245,7 @@ function renderProgramacaoBox(item = {}, isFirst = false, cifraIndex = []) {
         ${countdown ? `<span class="programacao-countdown">${escapeHtml(countdown)}</span>` : ''}
       </div>
       <div class="programacao-lista">
-        ${songs.map((song, index) => renderSongLine(song, index, cifraIndex)).join("")}
+        ${songs.map((song, index) => renderSongLine(song, index, cifraIndex, musicasPublicasIndex, canSeeVocal)).join("")}
       </div>
     </div>
   `;
@@ -184,9 +256,11 @@ export async function renderProgramacaoCard() {
   if (!box) return;
 
   try {
-    const [upcoming, cifras] = await Promise.all([
+    const canSeeVocal = canSeeVocalArea();
+    const [upcoming, cifras, musicasPublicas] = await Promise.all([
       listUpcomingProgramacoes(),
-      listCifras(true)
+      listCifras(true),
+      listMusicasPublicas(true)
     ]);
 
     if (!upcoming.length) {
@@ -199,7 +273,7 @@ export async function renderProgramacaoCard() {
     }
 
     box.innerHTML = upcoming
-      .map((item, index) => renderProgramacaoBox(item, index === 0, cifras || []))
+      .map((item, index) => renderProgramacaoBox(item, index === 0, cifras || [], musicasPublicas || [], canSeeVocal))
       .join("");
   } catch (error) {
     console.error("Erro ao renderizar programação da home:", error);

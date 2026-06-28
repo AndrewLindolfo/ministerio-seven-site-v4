@@ -140,36 +140,82 @@ function renderAvailableSongs(term = "") {
 }
 
 
-function normalizeHideAfterHours(value = "") {
+function normalizeHideAfterMinutes(value = "") {
   const raw = String(value ?? "").trim().replace(",", ".");
   if (!raw) return "";
 
-  if (/^\d+(?:\.\d+)?$/.test(raw)) {
+  if (/^\d+$/.test(raw)) {
     const num = Number(raw);
+    return Number.isFinite(num) && num >= 0 ? num : "";
+  }
+
+  if (/^\d+(?:\.\d+)?$/.test(raw)) {
+    const num = Math.round(Number(raw));
     return Number.isFinite(num) && num >= 0 ? num : "";
   }
 
   if (/^\d{1,2}:\d{2}$/.test(raw)) {
     const [hours, minutes] = raw.split(":").map(Number);
-    const num = (hours || 0) + ((minutes || 0) / 60);
-    return Number.isFinite(num) && num >= 0 ? num : "";
+    if (!Number.isFinite(hours) || !Number.isFinite(minutes) || hours < 0 || minutes < 0 || minutes > 59) return "";
+    const total = (hours * 60) + minutes;
+    return Number.isFinite(total) && total >= 0 ? total : "";
+  }
+
+  return "";
+}
+
+function getHideAfterMinutes(data = {}) {
+  if (data?.hideAfterMinutes !== undefined && data?.hideAfterMinutes !== null && String(data.hideAfterMinutes).trim() !== "") {
+    return normalizeHideAfterMinutes(data.hideAfterMinutes);
+  }
+
+  const legacyHours = data?.hideAfterHours ?? data?.hideAfter ?? "";
+  const raw = String(legacyHours ?? "").trim().replace(",", ".");
+  if (!raw) return "";
+
+  if (/^\d+(?:\.\d+)?$/.test(raw)) {
+    const hours = Number(raw);
+    return Number.isFinite(hours) && hours >= 0 ? Math.round(hours * 60) : "";
+  }
+
+  if (/^\d{1,2}:\d{2}$/.test(raw)) {
+    return normalizeHideAfterMinutes(raw);
   }
 
   return "";
 }
 
 function fmtHideAfter(value) {
-  const hours = normalizeHideAfterHours(value);
-  if (hours === "") return "";
-  if (hours === 0) return "no horário de início";
+  const minutes = normalizeHideAfterMinutes(value);
+  if (minutes === "") return "";
+  if (minutes === 0) return "no horário de início";
 
-  const totalMinutes = Math.round(Number(hours) * 60);
+  const totalMinutes = Math.round(Number(minutes));
   const h = Math.floor(totalMinutes / 60);
   const m = totalMinutes % 60;
   const parts = [];
   if (h) parts.push(`${h} ${h === 1 ? "hora" : "horas"}`);
   if (m) parts.push(`${m} ${m === 1 ? "minuto" : "minutos"}`);
   return parts.join(" e ") || "no horário de início";
+}
+
+function formatMinutesAsHHMM(value) {
+  const minutes = normalizeHideAfterMinutes(value);
+  if (minutes === "") return "";
+
+  const totalMinutes = Math.max(0, Math.round(Number(minutes)));
+  const h = Math.floor(totalMinutes / 60);
+  const m = totalMinutes % 60;
+
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+function formatHideAfterInput() {
+  const input = $("#programacao-hide-after");
+  if (!input) return;
+
+  const formatted = formatMinutesAsHHMM(input.value);
+  if (formatted) input.value = formatted;
 }
 
 function ensureModal() {
@@ -223,9 +269,9 @@ function ensureModal() {
 
         <div class="programacao-grid">
           <label>
-            <span>Ocultar após <small>(horas)</small></span>
-            <input type="number" id="programacao-hide-after" min="0" step="0.25" placeholder="Ex.: 3" />
-            <small class="field-help">Tempo extra depois do início. Ex.: 3 = some 3 horas após começar. Em branco = some no horário de início.</small>
+            <span>Ocultar após <small>(HH:mm)</small></span>
+            <input type="text" id="programacao-hide-after" inputmode="numeric" maxlength="5" placeholder="Ex.: 00:30" />
+            <small class="field-help">Tempo extra depois do início. Ex.: 00:10 = 10 minutos; 01:00 = 1 hora. Em branco = some no horário de início.</small>
           </label>
         </div>
 
@@ -263,6 +309,7 @@ function ensureModal() {
 
   $("#programacao-cancel")?.addEventListener("click", closeModal);
   $("#programacao-form")?.addEventListener("submit", onSubmitForm);
+  $("#programacao-hide-after")?.addEventListener("blur", formatHideAfterInput);
   $("#programacao-song-search")?.addEventListener("input", (event) => renderAvailableSongs(event.target.value));
 }
 
@@ -281,7 +328,7 @@ function openModal(data = null) {
   $("#programacao-location").value = data?.location || "";
   $("#programacao-maps-url").value = data?.mapsUrl || data?.googleMapsUrl || "";
   $("#programacao-description").value = data?.description || "";
-  $("#programacao-hide-after").value = normalizeHideAfterHours(data?.hideAfterHours ?? data?.hideAfter ?? "");
+  $("#programacao-hide-after").value = formatMinutesAsHHMM(getHideAfterMinutes(data || {}));
   $("#programacao-modal-title").textContent = data?.id ? "Editar programação" : "Nova programação";
   $("#programacao-song-search").value = "";
 
@@ -314,10 +361,10 @@ async function onSubmitForm(event) {
   event.preventDefault();
 
   const hideAfterRaw = $("#programacao-hide-after")?.value?.trim() || "";
-  const hideAfterHours = normalizeHideAfterHours(hideAfterRaw);
+  const hideAfterMinutes = normalizeHideAfterMinutes(hideAfterRaw);
 
-  if (hideAfterRaw && hideAfterHours === "") {
-    alert("Preencha o campo 'Ocultar após' apenas com número de horas. Ex.: 1, 3 ou 4.5.");
+  if (hideAfterRaw && hideAfterMinutes === "") {
+    alert("Preencha o campo 'Ocultar após' no formato HH:mm. Ex.: 00:10, 00:30 ou 01:00.");
     return;
   }
 
@@ -328,8 +375,9 @@ async function onSubmitForm(event) {
     location: $("#programacao-location").value.trim(),
     mapsUrl: $("#programacao-maps-url")?.value?.trim() || "",
     description: $("#programacao-description").value.trim(),
-    hideAfter: hideAfterHours === "" ? "" : String(hideAfterHours),
-    hideAfterHours,
+    hideAfter: hideAfterMinutes === "" ? "" : String(Number(hideAfterMinutes) / 60),
+    hideAfterHours: hideAfterMinutes === "" ? "" : Number(hideAfterMinutes) / 60,
+    hideAfterMinutes,
     songs: selectedSongs,
     active: true
   };
@@ -429,7 +477,7 @@ async function renderProgramacoes() {
           <h3>${escapeHtml(item.title || "Sem título")}</h3>
           <p>${escapeHtml(fmtDate(item.date))} • ${escapeHtml(item.time || "--:--")}${item.location ? " • " + escapeHtml(item.location) : ""}</p>
           ${item.mapsUrl || item.googleMapsUrl ? `<p class="programacao-hide-after">Google Maps cadastrado</p>` : ""}
-          ${item.hideAfter || item.hideAfterHours ? `<p class="programacao-hide-after">Ocultar após: ${escapeHtml(fmtHideAfter(item.hideAfterHours ?? item.hideAfter))}</p>` : ""}
+          ${item.hideAfterMinutes || item.hideAfter || item.hideAfterHours ? `<p class="programacao-hide-after">Ocultar após: ${escapeHtml(fmtHideAfter(getHideAfterMinutes(item)))}</p>` : ""}
           ${item.description ? `<small>${escapeHtml(item.description)}</small>` : ""}
           ${buildSongsPreview(item.songs || [])}
         </div>

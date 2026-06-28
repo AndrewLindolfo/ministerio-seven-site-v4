@@ -199,6 +199,10 @@ function initHomeLiveUpdates() {
   );
 }
 
+window.addEventListener("seven:public-auth-updated", async () => {
+  await renderProgramacaoCard();
+});
+
 document.addEventListener("DOMContentLoaded", async () => {
 
   await renderTopNotificacao();

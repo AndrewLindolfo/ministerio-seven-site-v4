@@ -139,6 +139,15 @@ function $(selector) {
   return document.querySelector(selector);
 }
 
+function emitPublicAuthUpdated(profile = null) {
+  try {
+    window.dispatchEvent(new CustomEvent("seven:public-auth-updated", {
+      detail: { profile }
+    }));
+  } catch {}
+}
+
+
 function ensureAuthModal() {
   if ($("#public-auth-modal")) return;
 
@@ -318,6 +327,7 @@ async function renderHeaderAuth(user) {
     clearVocalNavPermissionCache();
     clearPublicHeaderProfileCache();
     await renderLoggedOut(slot);
+    emitPublicAuthUpdated(null);
     return;
   }
 
@@ -346,6 +356,7 @@ async function renderHeaderAuth(user) {
     photoURL: profile.photoURL
   });
   await renderLoggedIn(slot, profile);
+  emitPublicAuthUpdated(profile);
 }
 
 export async function loginPublicUser() {
