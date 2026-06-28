@@ -132,6 +132,11 @@ body.admin-dashboard-permissions-pending .admin-intro{
   visibility:hidden;
 }
 
-
-.field-help { display:block; margin-top:6px; font-size:12px; opacity:.75; }
-.programacao-hide-after { margin-top:6px; font-size:13px; opacity:.82; }
+.admin-empty-permissions{
+  margin-top:18px;
+  color:var(--text-soft);
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px;
+}
