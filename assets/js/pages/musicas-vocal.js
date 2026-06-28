@@ -53,6 +53,9 @@ async function userCanAccessVocalList() {
     openPublicAuthModal();
     return false;
   }
+
+  if (profile?.isAdmin || profile?.isVocalista) return true;
+
   try {
     const [admin, vocalista] = await Promise.all([
       getAdminProfileByEmail(firebaseUser.email || ""),

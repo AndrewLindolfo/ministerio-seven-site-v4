@@ -51,9 +51,9 @@
     <h1>Backup</h1>
 
     <div class="backup-actions">
-      <button type="button" id="backup-export-button" class="button-primary">Fazer backup completo</button>
+      <button type="button" id="backup-export-button" class="button-primary">Fazer backup</button>
 
-      <label for="backup-restore-input" class="button-outline backup-file-label">Escolher arquivo</label>
+      <label for="backup-restore-input" class="button-outline backup-file-label">Escolher arquivo de backup</label>
       <input type="file" id="backup-restore-input" accept=".json,application/json" hidden />
       <span id="backup-file-name" class="backup-file-name">Nenhum arquivo selecionado</span>
 
@@ -61,11 +61,63 @@
     </div>
 
     <div class="backup-help">
-      <p>O backup inclui: músicas, cifras, programações, álbuns, downloads, contatos, links, configurações e admins.</p>
-      <small>Ao recuperar, os itens do arquivo são restaurados com os mesmos IDs no Firebase.</small>
+      <p>O backup agora é seletivo: você escolhe exatamente o que deseja exportar ou recuperar.</p>
+      <small>Na importação, o arquivo é analisado primeiro. Nada é importado automaticamente sem confirmação.</small>
     </div>
   </section>
 </main>
+
+<div id="backup-export-modal" class="backup-modal hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="backup-export-title">
+  <div class="backup-modal-overlay" data-backup-close></div>
+  <div class="backup-modal-panel">
+    <div class="backup-modal-header">
+      <div>
+        <h2 id="backup-export-title">Escolher o que vai no backup</h2>
+        <p>Marque as partes do site que deseja exportar.</p>
+      </div>
+      <button type="button" class="backup-modal-close" data-backup-close aria-label="Fechar">✕</button>
+    </div>
+
+    <label class="backup-select-all">
+      <input type="checkbox" id="backup-export-select-all" checked />
+      <span>Selecionar todas</span>
+    </label>
+
+    <div id="backup-export-options" class="backup-options-list"></div>
+
+    <div class="backup-modal-actions">
+      <button type="button" class="button-outline" data-backup-close>Cancelar</button>
+      <button type="button" id="backup-export-confirm" class="button-primary">Gerar backup</button>
+    </div>
+  </div>
+</div>
+
+<div id="backup-import-modal" class="backup-modal hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="backup-import-title">
+  <div class="backup-modal-overlay" data-backup-close></div>
+  <div class="backup-modal-panel">
+    <div class="backup-modal-header">
+      <div>
+        <h2 id="backup-import-title">Confirmar recuperação do backup</h2>
+        <p>O site analisou o arquivo. Marque o que deseja recuperar.</p>
+      </div>
+      <button type="button" class="backup-modal-close" data-backup-close aria-label="Fechar">✕</button>
+    </div>
+
+    <div id="backup-import-summary" class="backup-import-summary"></div>
+
+    <label class="backup-select-all">
+      <input type="checkbox" id="backup-import-select-all" checked />
+      <span>Selecionar todas disponíveis</span>
+    </label>
+
+    <div id="backup-import-options" class="backup-options-list"></div>
+
+    <div class="backup-modal-actions">
+      <button type="button" class="button-outline" data-backup-close>Cancelar</button>
+      <button type="button" id="backup-import-confirm" class="button-primary">Importar selecionados</button>
+    </div>
+  </div>
+</div>
 
 <div id="global-loading" class="global-loading hidden" aria-hidden="true">
   <div class="spinner"></div>

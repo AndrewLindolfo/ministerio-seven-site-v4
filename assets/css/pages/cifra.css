@@ -1807,3 +1807,16 @@
     color: #111827 !important;
   }
 }
+
+
+/* Etapa 7.4 - cifra pública: controles livres e slider sem conflito de arraste */
+.scroll-bubble input[type="range"],
+.scroll-bubble .desktop-scroll-slider,
+.scroll-bubble .mobile-scroll-slider{
+  touch-action: pan-x;
+  cursor: pointer;
+}
+
+.scroll-bubble.is-dragging input[type="range"]{
+  cursor: pointer;
+}

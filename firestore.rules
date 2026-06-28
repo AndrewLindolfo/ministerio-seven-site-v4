@@ -10,6 +10,13 @@ service cloud.firestore {
       return data.active != false && data.ativo != false;
     }
 
+    // Recuperação segura do admin principal.
+    // Mantém o master funcionando mesmo se o UID/documento ainda não puder ser lido pelo app.
+    function isMasterEmail() {
+      return signedIn()
+        && request.auth.token.email == "lindolfoandrew0@gmail.com";
+    }
+
     function masterAdminPath() {
       return /databases/$(database)/documents/admins/master;
     }
@@ -19,10 +26,13 @@ service cloud.firestore {
     }
 
     function isMasterAdmin() {
-      return signedIn()
-        && exists(masterAdminPath())
-        && get(masterAdminPath()).data.uid == request.auth.uid
-        && isActiveDoc(get(masterAdminPath()).data);
+      return isMasterEmail()
+        || (
+          signedIn()
+          && exists(masterAdminPath())
+          && get(masterAdminPath()).data.uid == request.auth.uid
+          && isActiveDoc(get(masterAdminPath()).data)
+        );
     }
 
     function isUidAdmin() {
@@ -67,11 +77,10 @@ service cloud.firestore {
     }
 
     // Administradores
+    // Leitura liberada para usuário logado para o app conseguir confirmar
+    // se o e-mail atual é administrador. Escrita continua somente para admin.
     match /admins/{adminId} {
-      allow get: if signedIn()
-        && isActiveDoc(resource.data)
-        && (resource.data.uid == request.auth.uid || isAdmin());
-      allow list: if isAdmin();
+      allow get, list: if signedIn();
       allow create, update, delete: if isAdmin();
     }
 
@@ -151,9 +160,9 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // Contato público: qualquer visitante pode enviar mensagem; só admin lê/edita/exclui.
+    // Contato público: qualquer visitante pode enviar mensagem; admin também pode importar/restaurar mensagens.
     match /contatos/{document} {
-      allow create: if validContactCreate();
+      allow create: if isAdmin() || validContactCreate();
       allow read, update, delete: if isAdmin();
     }
 

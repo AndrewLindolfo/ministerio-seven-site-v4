@@ -1,5 +1,4 @@
 import { getMusicaBySlug, listMusicas } from "../services/musicas-publicas-service.js";
-import { listCifrasByMusica, getInstrumentLabel, normalizeInstrument } from "../services/cifras-service.js";
 import { getQueryParam } from "../utils.js";
 import { createPersonalButtons, refreshPersonalActionButtons } from "../modules/personal-actions.js";
 import { watchDocument } from "../db.js";
@@ -158,90 +157,6 @@ function renderYoutube(url = "") {
   wrapper.innerHTML = `<iframe src="${embed}" title="Vídeo da música" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
 }
 
-function closeCifraSelector(menu) {
-  if (menu) menu.classList.add("hidden");
-}
-
-
-function renderVerCifraLink(musica, cifras = []) {
-  const link = document.getElementById("ver-cifra-link");
-  if (!link) return;
-
-  const parent = link.closest(".page-cross-link") || link.parentElement;
-  let menu = document.getElementById("musica-cifra-selector");
-  if (!menu && parent) {
-    menu = document.createElement("div");
-    menu.id = "musica-cifra-selector";
-    menu.className = "musica-cifra-selector hidden";
-    parent.style.position = parent.style.position || "relative";
-    parent.appendChild(menu);
-  }
-
-  const active = (cifras || []).filter(Boolean);
-  const closeMenu = () => {
-    if (menu) menu.classList.add("hidden");
-  };
-
-  if (!active.length) {
-    link.textContent = "Cifra indisponível";
-    link.removeAttribute("href");
-    link.setAttribute("aria-disabled", "true");
-    link.style.pointerEvents = "none";
-    closeMenu();
-    return;
-  }
-
-  const unique = Array.from(
-    new Map(
-      active.map((item) => [normalizeInstrument(item.instrumento || "violao"), item])
-    ).values()
-  );
-
-  if (unique.length === 1) {
-    const item = unique[0];
-    const instrument = normalizeInstrument(item.instrumento || "violao");
-    link.textContent = "Ver cifra";
-    link.href = `./cifra.html?slug=${encodeURIComponent(item.slug)}&instrumento=${encodeURIComponent(instrument)}`;
-    link.removeAttribute("aria-disabled");
-    link.style.pointerEvents = "";
-    link.onclick = null;
-    closeMenu();
-    return;
-  }
-
-  link.textContent = "Ver cifra";
-  link.href = "#";
-  link.removeAttribute("aria-disabled");
-  link.style.pointerEvents = "";
-
-  if (menu) {
-    menu.innerHTML = unique.map((item) => {
-      const instrument = normalizeInstrument(item.instrumento || "violao");
-      return `<a href="./cifra.html?slug=${encodeURIComponent(item.slug)}&instrumento=${encodeURIComponent(instrument)}" class="musica-cifra-selector-option">${getInstrumentLabel(instrument)}</a>`;
-    }).join("");
-  }
-
-  link.onclick = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    if (!menu) return;
-    menu.classList.toggle("hidden");
-  };
-
-  if (menu && !menu.dataset.boundSelector) {
-    menu.addEventListener("click", (event) => {
-      event.stopPropagation();
-    });
-    document.addEventListener("click", (event) => {
-      if (!parent?.contains(event.target)) closeMenu();
-    });
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") closeMenu();
-    });
-    menu.dataset.boundSelector = "1";
-  }
-}
-
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const slug = getQueryParam("slug");
@@ -264,9 +179,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderPersonalActions(musica);
     if (letraEl) letraEl.innerHTML = musica.lyricHtml || "<p>Letra indisponível.</p>";
     renderYoutube("");
-
-    const cifras = await listCifrasByMusica(musica.id, true);
-    renderVerCifraLink(musica, cifras);
+    document.querySelector(".page-cross-link")?.remove();
 
     const all = await listMusicas(true);
     renderPrevNext(musica.slug, all);

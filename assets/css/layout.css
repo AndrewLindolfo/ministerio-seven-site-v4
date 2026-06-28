@@ -1041,3 +1041,20 @@ html[data-theme="light"] .admin-topbar{
     display: none;
   }
 }
+
+/* Etapa 7.3 — evita salto/piscada no cabeçalho enquanto o Firebase confirma o login. */
+.public-user-slot{
+  min-width:40px;
+  min-height:40px;
+  flex:0 0 40px;
+  justify-content:center;
+}
+
+.public-user-slot:empty::before{
+  content:"";
+  display:block;
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  border:1px solid var(--border);
+}

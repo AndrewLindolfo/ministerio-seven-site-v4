@@ -222,3 +222,248 @@ textarea{
   border-color: rgba(34,197,94,.18);
   color: #15803d;
 }
+
+/* V4 etapa 7: modal próprio para baixar PDF sem abrir impressão */
+.pdf-modal-open{
+  overflow:hidden;
+}
+
+.pdf-export-modal{
+  position:fixed;
+  inset:0;
+  z-index:120;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+
+.pdf-export-modal.hidden{
+  display:none !important;
+}
+
+.pdf-export-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.68);
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+}
+
+.pdf-export-panel{
+  position:relative;
+  width:min(980px,100%);
+  max-height:min(92vh,880px);
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  padding:20px;
+  border:1px solid var(--border);
+  border-radius:26px;
+  background:linear-gradient(180deg,var(--surface-2),var(--surface));
+  box-shadow:0 30px 90px rgba(0,0,0,.45);
+}
+
+.pdf-export-close{
+  position:absolute;
+  top:12px;
+  right:12px;
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+}
+
+.pdf-export-header{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  padding-right:38px;
+}
+
+.pdf-export-icon{
+  width:44px;
+  height:44px;
+  flex:0 0 auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:16px;
+  background:rgba(239,27,27,.12);
+  color:#ff7777;
+  border:1px solid rgba(239,27,27,.28);
+  font-size:1.25rem;
+}
+
+.pdf-export-header h2{
+  margin:0;
+  font-size:clamp(1.25rem,2.2vw,1.7rem);
+}
+
+.pdf-export-header p{
+  margin:4px 0 0;
+  color:var(--text-soft);
+  font-size:.95rem;
+}
+
+.pdf-export-preview{
+  flex:1;
+  min-height:220px;
+  overflow:auto;
+  padding:18px;
+  border:1px solid var(--border);
+  border-radius:20px;
+  background:rgba(0,0,0,.22);
+}
+
+.pdf-preview-sheet{
+  width:min(760px,100%);
+  margin:0 auto;
+  padding:34px;
+  border-radius:18px;
+  background:#fff;
+  color:#111827;
+  box-shadow:0 20px 60px rgba(0,0,0,.22);
+  font-family:Arial, Helvetica, sans-serif;
+  line-height:1.55;
+}
+
+.pdf-preview-brand{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#4b5563;
+  font-size:.82rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  margin-bottom:14px;
+}
+
+.pdf-preview-brand span{
+  display:inline-block;
+  width:42px;
+  height:4px;
+  border-radius:999px;
+  background:#ef1b1b;
+}
+
+.pdf-preview-sheet h2{
+  color:#0f172a;
+  margin:0 0 6px;
+  font-size:2rem;
+  line-height:1.15;
+}
+
+.pdf-preview-subtitle,
+.pdf-preview-meta,
+.pdf-preview-kind{
+  display:block;
+  color:#4b5563;
+  margin:0 0 8px;
+}
+
+.pdf-preview-kind{
+  font-weight:800;
+  color:#ef1b1b;
+  margin-bottom:18px;
+}
+
+.pdf-preview-notes{
+  margin:0 0 18px;
+  padding:14px 16px;
+  border-radius:14px;
+  border:1px solid #f3b5b5;
+  background:#fff7f7;
+  color:#111827;
+}
+
+.pdf-preview-notes strong{
+  display:block;
+  color:#ef1b1b;
+  margin-bottom:6px;
+}
+
+.pdf-preview-content{
+  color:#111827;
+}
+
+.pdf-preview-content *{
+  max-width:100%;
+}
+
+.pdf-preview-sheet.is-cifra .pdf-preview-content{
+  font-family:"Courier New", Courier, monospace;
+  white-space:pre-wrap;
+  font-size:.9rem;
+  line-height:1.45;
+}
+
+.pdf-preview-sheet.is-cifra .chord-token{
+  font-weight:800;
+}
+
+.pdf-export-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.pdf-export-actions button:disabled{
+  opacity:.62;
+  cursor:wait;
+}
+
+
+
+/* V4 etapa 7.1: prévia/PDF mais compacto, sem espaços excessivos entre linhas */
+.pdf-preview-content{
+  line-height:1.28;
+}
+
+.pdf-preview-content p,
+.pdf-preview-content div,
+.pdf-preview-content section,
+.pdf-preview-content article{
+  margin-top:0;
+  margin-bottom:4px;
+}
+
+.pdf-preview-content p:empty,
+.pdf-preview-content div:empty{
+  min-height:.55em;
+  margin-bottom:6px;
+}
+
+.pdf-preview-sheet.is-cifra .pdf-preview-content{
+  line-height:1.28;
+}
+
+@media (max-width:720px){
+  .pdf-export-modal{
+    align-items:stretch;
+    padding:10px;
+  }
+  .pdf-export-panel{
+    max-height:96vh;
+    padding:14px;
+    border-radius:22px;
+  }
+  .pdf-export-preview{
+    padding:10px;
+  }
+  .pdf-preview-sheet{
+    padding:22px 18px;
+    border-radius:14px;
+  }
+  .pdf-preview-sheet h2{
+    font-size:1.45rem;
+  }
+  .pdf-export-actions{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+}

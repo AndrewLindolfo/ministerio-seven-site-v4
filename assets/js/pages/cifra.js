@@ -796,13 +796,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     initMiniMetronomeAdminEdit();
     initMiniMetronome(currentCifra);
     if (letraLink) {
-      let musicaSlug = currentCifra.slug || "";
+      let musicaSlug = "";
       if (currentCifra.musicaId) {
-        const musica = await getMusica(currentCifra.musicaId);
-        if (musica?.slug) musicaSlug = musica.slug;
+        try {
+          const musica = await getMusica(currentCifra.musicaId);
+          if (musica?.slug) musicaSlug = musica.slug;
+        } catch (error) {
+          // A cifra é pública, mas a coleção de Músicas Vocal é protegida.
+          // Usuário público não pode depender dessa leitura para usar tom/fonte/foco/rolagem.
+          console.warn("Não foi possível consultar a música vocal vinculada; usando slug da cifra como fallback.", error);
+        }
       }
-      if (musicaSlug) { letraLink.href = `./musica.html?slug=${musicaSlug}`; letraLink.textContent = "Ver letra"; }
-      else { letraLink.removeAttribute('href'); letraLink.textContent = 'Letra indisponível'; }
+      if (!musicaSlug) musicaSlug = currentCifra.slug || "";
+      if (musicaSlug) {
+        letraLink.href = `./musica-vocal.html?slug=${encodeURIComponent(musicaSlug)}`;
+        letraLink.textContent = "Ver música";
+      } else {
+        letraLink.removeAttribute('href');
+        letraLink.textContent = 'Música indisponível';
+      }
     }
     const allCifras = await listCifras(true);
     const uniqueBySlug = Array.from(new Map(allCifras.map((item) => [item.slug, item])).values());

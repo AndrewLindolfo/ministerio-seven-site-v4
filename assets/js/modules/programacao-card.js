@@ -3,7 +3,8 @@ import { listCifras } from "../services/cifras-service.js";
 import { listMusicas as listMusicasPublicas } from "../services/musicas-publicas-service.js";
 import { getCurrentPublicUser } from "../public-auth.js";
 
-const VOCAL_NAV_CACHE_KEY = "seven_vocal_nav_permission";
+const VOCAL_NAV_CACHE_KEY = "seven_vocal_nav_permission_v3";
+const VOCAL_NAV_LEGACY_CACHE_KEYS = ["seven_vocal_nav_permission", "seven_vocal_nav_permission_v2"];
 
 function escapeHtml(text = "") {
   return String(text || "")
@@ -77,15 +78,18 @@ function buildCountdown(date = "", time = "") {
 
 function getCachedVocalPermission() {
   try {
-    const raw = localStorage.getItem(VOCAL_NAV_CACHE_KEY);
-    if (!raw) return null;
-    const data = JSON.parse(raw);
-    const expiresAt = Number(data.expiresAt || 0);
-    if (!expiresAt || expiresAt < Date.now()) {
-      localStorage.removeItem(VOCAL_NAV_CACHE_KEY);
-      return null;
+    for (const key of [VOCAL_NAV_CACHE_KEY, ...VOCAL_NAV_LEGACY_CACHE_KEYS]) {
+      const raw = localStorage.getItem(key);
+      if (!raw) continue;
+      const data = JSON.parse(raw);
+      const expiresAt = Number(data.expiresAt || 0);
+      if (!expiresAt || expiresAt < Date.now()) {
+        localStorage.removeItem(key);
+        continue;
+      }
+      return data;
     }
-    return data;
+    return null;
   } catch {
     return null;
   }

@@ -271,6 +271,8 @@ async function userCanAccessVocalPage() {
     return false;
   }
 
+  if (profile?.isAdmin || profile?.isVocalista) return true;
+
   try {
     const [admin, vocalista] = await Promise.all([
       getAdminProfileByEmail(firebaseUser.email || ""),

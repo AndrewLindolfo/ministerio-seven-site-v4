@@ -8,12 +8,30 @@ import {
 
 const ADMIN_COLLECTION = "admins";
 const PRIMARY_ADMIN_DOC_ID = "master";
+const MASTER_EMAILS = new Set(["lindolfoandrew0@gmail.com"]);
 const CACHE_KEY = "seven_admin_identity";
-const VOCAL_NAV_CACHE_KEY = "seven_vocal_nav_permission";
-const PUBLIC_HEADER_CACHE_KEY = "seven_public_header_profile";
+const VOCAL_NAV_CACHE_KEYS = ["seven_vocal_nav_permission", "seven_vocal_nav_permission_v2", "seven_vocal_nav_permission_v3"];
+const PUBLIC_HEADER_CACHE_KEYS = ["seven_public_header_profile", "seven_public_header_profile_v2", "seven_public_header_profile_v3"];
 
 function normalize(email = "") {
   return String(email).trim().toLowerCase();
+}
+
+function isMasterEmail(email = "") {
+  return MASTER_EMAILS.has(normalize(email));
+}
+
+function buildMasterFallbackAdmin(userOrEmail = "") {
+  const email = normalize(typeof userOrEmail === "string" ? userOrEmail : userOrEmail?.email || "");
+  return {
+    id: PRIMARY_ADMIN_DOC_ID,
+    uid: typeof userOrEmail === "string" ? "" : String(userOrEmail?.uid || "").trim(),
+    email,
+    name: typeof userOrEmail === "string" ? "Andrew" : String(userOrEmail?.displayName || "Andrew").trim(),
+    isPrimary: true,
+    active: true,
+    pendingUid: false
+  };
 }
 
 
@@ -59,7 +77,7 @@ function persistAdminIdentity(admin = null, user = null) {
 
 function clearVocalNavPermissionCache() {
   try {
-    localStorage.removeItem(VOCAL_NAV_CACHE_KEY);
+    VOCAL_NAV_CACHE_KEYS.forEach((key) => localStorage.removeItem(key));
   } catch (error) {
     console.warn("Não foi possível limpar o cache de permissão vocal:", error);
   }
@@ -67,7 +85,7 @@ function clearVocalNavPermissionCache() {
 
 function clearPublicHeaderProfileCache() {
   try {
-    localStorage.removeItem(PUBLIC_HEADER_CACHE_KEY);
+    PUBLIC_HEADER_CACHE_KEYS.forEach((key) => localStorage.removeItem(key));
   } catch (error) {
     console.warn("Não foi possível limpar o cache do usuário do cabeçalho:", error);
   }
@@ -83,6 +101,18 @@ async function getPrimaryAdminProfile() {
 export async function getAdminProfileByEmail(email = "") {
   const normalizedEmail = normalize(email);
   if (!normalizedEmail) return null;
+
+  if (isMasterEmail(normalizedEmail)) {
+    try {
+      const primary = await getPrimaryAdminProfile();
+      if (primary && normalize(primary.email) === normalizedEmail) {
+        return { ...primary, isPrimary: true, active: primary.active !== false && primary.ativo !== false };
+      }
+    } catch (error) {
+      console.warn("Não foi possível ler admins/master; usando fallback local do master:", error);
+    }
+    return buildMasterFallbackAdmin(normalizedEmail);
+  }
 
   const primary = await getPrimaryAdminProfile();
   if (primary && normalize(primary.email) === normalizedEmail) {
@@ -107,6 +137,29 @@ export async function validateAdminUser(user = null) {
   const uid = String(user?.uid || "").trim();
   if (!email || !uid) {
     return { ok: false, reason: "missing-user", admin: null, email, uid };
+  }
+
+  if (isMasterEmail(email)) {
+    let admin = buildMasterFallbackAdmin(user);
+    try {
+      const remoteAdmin = await getAdminProfileByEmail(email);
+      admin = { ...admin, ...(remoteAdmin || {}) };
+      await setDocument(ADMIN_COLLECTION, PRIMARY_ADMIN_DOC_ID, {
+        uid,
+        email,
+        name: admin.name || user?.displayName || "Andrew",
+        isPrimary: true,
+        active: true,
+        pendingUid: false,
+        uidBoundAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+      admin.uid = uid;
+    } catch (error) {
+      console.warn("Não foi possível sincronizar o master no Firestore; mantendo fallback local:", error);
+    }
+    persistAdminIdentity(admin, user);
+    return { ok: true, reason: "master-email", admin, email, uid, savedUid: uid };
   }
 
   const admin = await getAdminProfileByEmail(email);

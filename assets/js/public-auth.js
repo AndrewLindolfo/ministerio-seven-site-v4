@@ -15,21 +15,43 @@ const authReadyPromise = new Promise((resolve) => {
   authReadyResolver = resolve;
 });
 
-const VOCAL_NAV_CACHE_KEY = "seven_vocal_nav_permission";
+const VOCAL_NAV_CACHE_KEY = "seven_vocal_nav_permission_v3";
+const VOCAL_NAV_LEGACY_CACHE_KEYS = ["seven_vocal_nav_permission", "seven_vocal_nav_permission_v2"];
 const VOCAL_NAV_CACHE_TTL = 1000 * 60 * 60 * 24 * 7;
-const PUBLIC_HEADER_CACHE_KEY = "seven_public_header_profile";
+const PUBLIC_HEADER_CACHE_KEY = "seven_public_header_profile_v3";
+const PUBLIC_HEADER_LEGACY_CACHE_KEYS = ["seven_public_header_profile", "seven_public_header_profile_v2"];
 const PUBLIC_HEADER_CACHE_TTL = 1000 * 60 * 60 * 24 * 7;
+const MASTER_EMAILS = new Set(["lindolfoandrew0@gmail.com"]);
+let lastVocalNavState = null;
+let lastHeaderStateKey = "";
+
+function readCachedJson(keys = []) {
+  for (const key of keys) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) continue;
+      const data = JSON.parse(raw);
+      const expiresAt = Number(data.expiresAt || 0);
+      if (!expiresAt || expiresAt < Date.now()) {
+        localStorage.removeItem(key);
+        continue;
+      }
+      return { ...data, __cacheKey: key };
+    } catch {
+      try { localStorage.removeItem(key); } catch {}
+    }
+  }
+  return null;
+}
 
 function getCachedVocalNavPermission() {
   try {
-    const raw = localStorage.getItem(VOCAL_NAV_CACHE_KEY);
-    if (!raw) return null;
-    const data = JSON.parse(raw);
-    const expiresAt = Number(data.expiresAt || 0);
-    if (!expiresAt || expiresAt < Date.now()) {
-      localStorage.removeItem(VOCAL_NAV_CACHE_KEY);
-      return null;
+    const data = readCachedJson([VOCAL_NAV_CACHE_KEY, ...VOCAL_NAV_LEGACY_CACHE_KEYS]);
+    if (!data) return null;
+    if (data.__cacheKey !== VOCAL_NAV_CACHE_KEY) {
+      localStorage.setItem(VOCAL_NAV_CACHE_KEY, JSON.stringify({ ...data, __cacheKey: undefined }));
     }
+    delete data.__cacheKey;
     return data;
   } catch (error) {
     console.warn("Não foi possível ler o cache de permissão vocal:", error);
@@ -60,6 +82,7 @@ function cacheVocalNavPermission(profile = null) {
 function clearVocalNavPermissionCache() {
   try {
     localStorage.removeItem(VOCAL_NAV_CACHE_KEY);
+    VOCAL_NAV_LEGACY_CACHE_KEYS.forEach((key) => localStorage.removeItem(key));
   } catch (error) {
     console.warn("Não foi possível limpar o cache de permissão vocal:", error);
   }
@@ -67,14 +90,12 @@ function clearVocalNavPermissionCache() {
 
 function getCachedPublicHeaderProfile() {
   try {
-    const raw = localStorage.getItem(PUBLIC_HEADER_CACHE_KEY);
-    if (!raw) return null;
-    const data = JSON.parse(raw);
-    const expiresAt = Number(data.expiresAt || 0);
-    if (!expiresAt || expiresAt < Date.now()) {
-      localStorage.removeItem(PUBLIC_HEADER_CACHE_KEY);
-      return null;
+    const data = readCachedJson([PUBLIC_HEADER_CACHE_KEY, ...PUBLIC_HEADER_LEGACY_CACHE_KEYS]);
+    if (!data) return null;
+    if (data.__cacheKey !== PUBLIC_HEADER_CACHE_KEY) {
+      localStorage.setItem(PUBLIC_HEADER_CACHE_KEY, JSON.stringify({ ...data, __cacheKey: undefined }));
     }
+    delete data.__cacheKey;
     return data;
   } catch (error) {
     console.warn("Não foi possível ler o cache do usuário do cabeçalho:", error);
@@ -110,6 +131,7 @@ function cachePublicHeaderProfile(profile = null) {
 function clearPublicHeaderProfileCache() {
   try {
     localStorage.removeItem(PUBLIC_HEADER_CACHE_KEY);
+    PUBLIC_HEADER_LEGACY_CACHE_KEYS.forEach((key) => localStorage.removeItem(key));
   } catch (error) {
     console.warn("Não foi possível limpar o cache do usuário do cabeçalho:", error);
   }
@@ -128,11 +150,17 @@ function getCachedVocalPermissionForUser(user = null) {
   if (!cached || !user) return null;
   const sameUid = String(cached.uid || "").trim() === String(user.uid || "").trim();
   const sameEmail = normalize(cached.email || "") === normalize(user.email || "");
-  return sameUid || sameEmail ? cached : null;
+  if (sameUid || sameEmail) return cached;
+  clearVocalNavPermissionCache();
+  return null;
 }
 
 function normalize(email = "") {
   return String(email || "").trim().toLowerCase();
+}
+
+function isMasterEmail(email = "") {
+  return MASTER_EMAILS.has(normalize(email));
 }
 
 function $(selector) {
@@ -221,31 +249,50 @@ function removeVocalNavLinks() {
 }
 
 function syncVocalNavLink(canSeeVocal = false) {
-  removeVocalNavLinks();
-  if (!canSeeVocal) return;
+  const desired = !!canSeeVocal;
+  if (lastVocalNavState === desired) {
+    const hasAnyLink = !!document.querySelector('[data-vocal-link="1"]');
+    if ((desired && hasAnyLink) || (!desired && !hasAnyLink)) return;
+  }
+
+  lastVocalNavState = desired;
+
+  if (!desired) {
+    removeVocalNavLinks();
+    return;
+  }
 
   document.querySelectorAll(".main-nav, .mobile-menu-panel").forEach((nav) => {
-    if (!nav || nav.querySelector('[data-vocal-link="1"]')) return;
-    const link = document.createElement("a");
-    link.href = "./musicas-vocal.html";
-    link.textContent = "Músicas Vocal";
-    link.setAttribute("data-vocal-link", "1");
-    if (nav.classList.contains("mobile-menu-panel")) {
-      link.className = "mobile-nav-link";
+    if (!nav) return;
+
+    let link = nav.querySelector('[data-vocal-link="1"]');
+    if (!link) {
+      link = document.createElement("a");
+      link.href = "./musicas-vocal.html";
+      link.textContent = "Músicas Vocal";
+      link.setAttribute("data-vocal-link", "1");
+      if (nav.classList.contains("mobile-menu-panel")) {
+        link.className = "mobile-nav-link";
+      }
     }
 
     const musicasLink = Array.from(nav.querySelectorAll("a")).find((item) => String(item.textContent || "").trim().toLowerCase() === "músicas");
-    if (musicasLink) {
+    if (musicasLink && musicasLink.nextElementSibling !== link) {
       musicasLink.insertAdjacentElement("afterend", link);
-    } else {
+    } else if (!musicasLink && link.parentElement !== nav) {
       nav.appendChild(link);
     }
   });
 }
 
 function restoreCachedVocalNavLink() {
-  const cached = getCachedVocalNavPermission();
-  if (cached?.canSeeVocal) {
+  const cachedHeader = getCachedPublicHeaderProfile();
+  const cachedPermission = getCachedVocalNavPermission();
+  if (!cachedHeader?.uid || !cachedPermission?.canSeeVocal) return;
+
+  const sameUid = String(cachedHeader.uid || "").trim() === String(cachedPermission.uid || "").trim();
+  const sameEmail = normalize(cachedHeader.email || "") === normalize(cachedPermission.email || "");
+  if (sameUid || sameEmail) {
     syncVocalNavLink(true);
   }
 }
@@ -254,6 +301,7 @@ function restoreCachedVocalNavLink() {
 async function safeIsAdminByEmail(email = "") {
   const normalizedEmail = normalize(email);
   if (!normalizedEmail) return false;
+  if (isMasterEmail(normalizedEmail)) return true;
 
   try {
     return !!(await getAdminProfileByEmail(normalizedEmail));
@@ -283,6 +331,35 @@ async function buildProfileData(user) {
     isAdmin: await safeIsAdminByEmail(email),
     isVocalista: !!(await isVocalista(user?.uid || ""))
   };
+}
+
+
+function buildHeaderStateKey(profile = null) {
+  if (!profile?.uid) return "logged-out";
+  return [
+    "logged-in",
+    String(profile.uid || "").trim(),
+    normalize(profile.email || ""),
+    String(profile.photoURL || ""),
+    profile.isAdmin ? "admin" : "user",
+    profile.isVocalista ? "vocal" : "novocal"
+  ].join("|");
+}
+
+function renderLoggedInIfNeeded(slot, profile) {
+  const stateKey = buildHeaderStateKey(profile);
+  const alreadyLoggedIn = slot?.querySelector(".public-user-menu");
+  if (alreadyLoggedIn && lastHeaderStateKey === stateKey) return;
+  lastHeaderStateKey = stateKey;
+  renderLoggedIn(slot, profile);
+}
+
+function renderLoggedOutIfNeeded(slot) {
+  const stateKey = "logged-out";
+  const alreadyLoggedOut = slot?.querySelector("#public-login-button");
+  if (alreadyLoggedOut && lastHeaderStateKey === stateKey) return;
+  lastHeaderStateKey = stateKey;
+  renderLoggedOut(slot);
 }
 
 async function renderLoggedOut(slot) {
@@ -341,7 +418,7 @@ async function renderHeaderAuth(user) {
     currentUser = null;
     clearVocalNavPermissionCache();
     clearPublicHeaderProfileCache();
-    await renderLoggedOut(slot);
+    renderLoggedOutIfNeeded(slot);
     emitPublicAuthUpdated(null);
     return;
   }
@@ -349,13 +426,11 @@ async function renderHeaderAuth(user) {
   const cachedHeader = getCachedPublicHeaderForUser(user);
   if (cachedHeader?.uid) {
     currentUser = { ...cachedHeader, firebaseUser: user };
-    await renderLoggedIn(slot, cachedHeader);
+    renderLoggedInIfNeeded(slot, cachedHeader);
   }
 
   const cachedPermission = getCachedVocalPermissionForUser(user);
-  if (cachedPermission?.canSeeVocal) {
-    syncVocalNavLink(true);
-  }
+  syncVocalNavLink(!!cachedPermission?.canSeeVocal);
 
   const profile = await buildProfileData(user);
   currentUser = { ...profile, firebaseUser: user };
@@ -370,7 +445,7 @@ async function renderHeaderAuth(user) {
     phone: profile.phone,
     photoURL: profile.photoURL
   });
-  await renderLoggedIn(slot, profile);
+  renderLoggedInIfNeeded(slot, profile);
   emitPublicAuthUpdated(profile);
 }
 
@@ -421,16 +496,16 @@ function restoreCachedHeaderAuthUi() {
   const cachedHeader = getCachedPublicHeaderProfile();
   if (cachedHeader?.uid) {
     currentUser = { ...cachedHeader, firebaseUser: null };
-    renderLoggedIn(slot, cachedHeader);
+    renderLoggedInIfNeeded(slot, cachedHeader);
+    restoreCachedVocalNavLink();
     return;
   }
 
-  renderLoggedOut(slot);
+  renderLoggedOutIfNeeded(slot);
 }
 
 export function initPublicAuth() {
   ensureAuthModal();
-  restoreCachedVocalNavLink();
   restoreCachedHeaderAuthUi();
   watchPublicAuth();
 

@@ -194,7 +194,10 @@ function initScrollPanelDrag() {
   };
 
   bubble.addEventListener("pointerdown", (event) => {
-    if (event.target.closest("button")) return;
+    const interactiveTarget = event.target.closest(
+      "button, input, select, textarea, a, label, [data-no-drag]"
+    );
+    if (interactiveTarget) return;
     event.preventDefault();
     begin(event.clientX, event.clientY);
   });
@@ -265,9 +268,14 @@ function ensureDesktopSpeedSlider() {
     const toggleBtn = $("#scroll-toggle");
     if (toggleBtn) bubble.insertBefore(slider, toggleBtn.nextSibling);
     else bubble.appendChild(slider);
+    slider.dataset.noDrag = "1";
+    ["pointerdown", "mousedown", "touchstart", "click"].forEach((eventName) => {
+      slider.addEventListener(eventName, (event) => event.stopPropagation(), { passive: true });
+    });
     slider.addEventListener("input", () => {
       scrollSpeed = Number(slider.value || "0.35");
       localStorage.setItem(SPEED_KEY, String(scrollSpeed));
+      updateSpeedIndicator();
     });
   }
   return slider;
@@ -310,6 +318,10 @@ function initMobileScrollBar() {
     if (toggleBtn) bubble.insertBefore(slider, toggleBtn);
     else bubble.appendChild(slider);
 
+    slider.dataset.noDrag = "1";
+    ["pointerdown", "mousedown", "touchstart", "click"].forEach((eventName) => {
+      slider.addEventListener(eventName, (event) => event.stopPropagation(), { passive: true });
+    });
     slider.addEventListener("input", () => {
       scrollSpeed = Number(slider.value || "0.35");
       localStorage.setItem(SPEED_KEY, String(scrollSpeed));

@@ -68,18 +68,27 @@ function injectHomeLinks() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
+async function bootApp() {
   initTheme();
   injectHomeLinks();
   initThemeBranding();
   setFooterYear();
+
+  // Cabeçalho/login primeiro para evitar atraso visual no avatar e no link Músicas Vocal.
+  initPublicAuth();
+
   initSearch();
   initMobileMenu();
   initDownloadsSplitMenu();
-  initPublicAuth();
   initPersonalActions();
   initAdminAccountMenu();
   injectAdminSiteShortcut();
   await injectAdminCreateShortcut();
   initNotificacoesPopup();
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", bootApp, { once: true });
+} else {
+  bootApp();
+}
