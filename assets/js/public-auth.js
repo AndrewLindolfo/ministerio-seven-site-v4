@@ -251,6 +251,21 @@ function restoreCachedVocalNavLink() {
 }
 
 
+async function safeIsAdminByEmail(email = "") {
+  const normalizedEmail = normalize(email);
+  if (!normalizedEmail) return false;
+
+  try {
+    return !!(await getAdminProfileByEmail(normalizedEmail));
+  } catch (error) {
+    if (String(error?.code || "").includes("permission-denied")) {
+      return false;
+    }
+    console.warn("Não foi possível confirmar permissão de administrador no cabeçalho público:", error);
+    return false;
+  }
+}
+
 async function buildProfileData(user) {
   const email = normalize(user?.email || "");
   const profile = await getPublicUserProfile(user?.uid || "");
@@ -265,7 +280,7 @@ async function buildProfileData(user) {
     lastName,
     displayName: profile?.displayName || user?.displayName || [firstName, lastName].filter(Boolean).join(" "),
     phone: profile?.phone || "",
-    isAdmin: !!(await getAdminProfileByEmail(email)),
+    isAdmin: await safeIsAdminByEmail(email),
     isVocalista: !!(await isVocalista(user?.uid || ""))
   };
 }
