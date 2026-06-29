@@ -1,16 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="dark">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DKM3MTBKQ6"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-DKM3MTBKQ6');
-  </script>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard | Admin Seven</title>
@@ -21,66 +11,139 @@
   <link rel="stylesheet" href="../assets/css/responsive.css" />
   <link rel="stylesheet" href="../assets/css/admin.css" />
   <link rel="stylesheet" href="../assets/css/pages/admin-dashboard.css" />
+  <link rel="stylesheet" href="../assets/css/admin-refeito.css" />
 </head>
-<body>
+<body class="admin-clean">
+<div class="admin-shell">
 
-<header class="admin-topbar">
-  <div class="container admin-topbar-inner">
-    <a href="./index.html" class="admin-brand" aria-label="Voltar ao painel">
-      <img src="../assets/img/v7/icon_120.png" alt="V7" class="admin-v7" />
-      <strong>Área de Administração</strong>
-    </a>
+<aside class="admin-sidebar" aria-label="Menu administrativo">
+  <div class="admin-brand-clean">
+    <img src="../assets/img/seven-admin-brand/v7/v7-clara.svg" alt="V7" class="admin-brand-logo" />
+    <div><strong>Painel ADM</strong><span>Painel Administrativo</span></div>
+  </div>
 
-    <div class="header-actions">
-      <button type="button" id="theme-toggle" aria-label="Alternar tema">🌙</button>
-      <div class="admin-account">
-        <button type="button" id="admin-account-toggle">Conta</button>
-        <div id="admin-account-menu" class="admin-account-menu hidden">
-          <img id="admin-user-photo" src="../assets/img/v7/icon_120.png" alt="Conta" class="admin-user-photo" />
-          <p id="admin-user-email">admin@exemplo.com</p>
-          <button type="button" id="admin-logout-button">Sair</button>
-        </div>
-      </div>
+  <div class="admin-user-card">
+    <img id="admin-user-photo" src="../assets/img/seven-admin-brand/icon-user-default.svg" alt="Usuário" />
+    <div>
+      <strong id="admin-user-name">Administrador</strong>
+      <span id="admin-user-role">Administrador</span>
+      <small id="admin-user-email"></small>
     </div>
   </div>
-</header>
 
-<main class="admin-dashboard-page">
-  <section class="container">
-    <h1>Painel Administrativo</h1>
-    <p class="admin-intro">Escolha uma área para gerenciar o conteúdo do site.</p>
+  <div class="admin-menu-title">Menu principal</div>
+  <nav class="admin-nav" aria-label="Menu principal ADM">
+    <a href="index.html" data-admin-module="dashboard"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-dashboard.svg')"></span><span>Dashboard</span><span class="admin-nav-chev">›</span></a>
+<a href="musicas-publicas.html" data-admin-module="musicasPublicas"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-public-music.svg')"></span><span>Músicas Públicas</span><span class="admin-nav-chev">›</span></a>
+<a href="musicas-vocal.html" data-admin-module="musicasVocal"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-vocal-music.svg')"></span><span>Músicas Vocal</span><span class="admin-nav-chev">›</span></a>
+<a href="vocalistas.html" data-admin-module="vocalistas"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-vocalists.svg')"></span><span>Vocalistas</span><span class="admin-nav-chev">›</span></a>
+<a href="cifras.html" data-admin-module="cifras"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-chords.svg')"></span><span>Cifras</span><span class="admin-nav-chev">›</span></a>
+<a href="programacoes.html" data-admin-module="programacoes"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-programs.svg')"></span><span>Programações</span><span class="admin-nav-chev">›</span></a>
+<a href="fotos.html" data-admin-module="fotos"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-photos.svg')"></span><span>Fotos</span><span class="admin-nav-chev">›</span></a>
+<a href="downloads.html" data-admin-module="downloads"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-downloads.svg')"></span><span>Downloads</span><span class="admin-nav-chev">›</span></a>
+<a href="downloads-geral.html" data-admin-module="downloadsGerais"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-downloads.svg')"></span><span>Downloads Gerais</span><span class="admin-nav-chev">›</span></a>
+<a href="downloads-por-musica.html" data-admin-module="downloadsPorMusica"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-downloads.svg')"></span><span>Downloads por Música</span><span class="admin-nav-chev">›</span></a>
+<a href="contatos.html" data-admin-module="contatos"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-contacts.svg')"></span><span>Contatos</span><span class="admin-nav-chev">›</span></a>
+<a href="links.html" data-admin-module="links"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-links.svg')"></span><span>Links</span><span class="admin-nav-chev">›</span></a>
+<a href="notificacoes.html" data-admin-module="notificacoes"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-notifications.svg')"></span><span>Notificações</span><span class="admin-nav-chev">›</span></a>
+<a href="ensaios.html" data-admin-module="ensaios"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-programs.svg')"></span><span>Ensaios</span><span class="admin-nav-chev">›</span></a>
+  </nav>
 
-    <div class="admin-cards-grid">
-      <a href="./musicas-publicas.html" class="admin-card" data-admin-module="musicasPublicas"><img src="../assets/img/admin-cards/card-musicas.png" alt=""><span>Músicas</span></a>
-      <a href="./musicas.html" class="admin-card" data-admin-module="musicas"><img src="../assets/img/admin-cards/card-musicas.png" alt=""><span>Músicas Vocal</span></a>
-      <a href="./vocalistas.html" class="admin-card" data-admin-module="vocalistas"><img src="../assets/img/admin-cards/card-config.png" alt=""><span>Vocalistas</span></a>
-      <a href="./cifras.html" class="admin-card" data-admin-module="cifras"><img src="../assets/img/admin-cards/card-cifras.png" alt=""><span>Cifras</span></a>
-      <a href="./programacoes.html" class="admin-card" data-admin-module="programacoes"><img src="../assets/img/admin-cards/card-programacoes.png" alt=""><span>Programações</span></a>
-      <a href="./fotos.html" class="admin-card" data-admin-module="fotos"><img src="../assets/img/admin-cards/card-fotos.png" alt=""><span>Fotos</span></a>
-      <a href="./downloads.html" class="admin-card" data-admin-module="downloads"><img src="../assets/img/admin-cards/card-downloads.png" alt=""><span>Downloads</span></a>
-      <a href="./contatos.html" class="admin-card" data-admin-module="contatos"><img src="../assets/img/admin-cards/card-contatos.png" alt=""><span>Contatos</span></a>
-      <a href="./links.html" class="admin-card" data-admin-module="links"><img src="../assets/img/admin-cards/card-config.png" alt=""><span>Links</span></a>
-      <a href="./notificacoes.html" class="admin-card" data-admin-module="notificacoes"><img src="../assets/img/admin-cards/card-notificacoes.png" alt=""><span>Notificações</span></a>
-      <a href="./backup.html" class="admin-card" data-admin-module="backup"><img src="../assets/img/admin-cards/card-backup.png" alt=""><span>Backup</span></a>
-      <a href="./admins.html" class="admin-card" data-admin-module="admins"><img src="../assets/img/admin-cards/card-config.png" alt=""><span>ADMs</span></a>
-      <a href="./logs.html" class="admin-card" data-admin-module="logs"><img src="../assets/img/admin-cards/card-config.png" alt=""><span>Log de atividades</span></a>
-    
-      <a class="admin-card" id="admin-ensaios-card" href="./ensaios.html" data-admin-module="ensaios">
-        <img src="../assets/img/admin-cards/card-programacoes.png" alt="Ensaios" class="admin-card-image" />
-        <div class="admin-card-content">
-          <h3>Ensaios</h3>
-          <p>Cadastre e organize ensaios com setlist.</p>
-        </div>
-      </a>
+  <div class="admin-menu-title">Configurações</div>
+  <nav class="admin-nav" aria-label="Configurações ADM">
+    <a href="backup.html" data-admin-module="backup"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-backup.svg')"></span><span>Backup</span><span class="admin-nav-chev">›</span></a>
+<a href="admins.html" data-admin-module="admins"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-users.svg')"></span><span>ADMs</span><span class="admin-nav-chev">›</span></a>
+<a href="logs.html" data-admin-module="logs"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-logs.svg')"></span><span>Log de atividades</span><span class="admin-nav-chev">›</span></a>
+<a href="config.html" data-admin-module="config"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-settings.svg')"></span><span>Configurações</span><span class="admin-nav-chev">›</span></a>
+  </nav>
+
+  <div class="admin-sidebar-bottom">
+    <button type="button" id="theme-toggle" class="admin-side-button" aria-label="Alternar tema">☀️ Alternar tema</button>
+    <button type="button" id="admin-logout-button" class="admin-side-button"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-logout.svg')"></span> Sair</button>
+    <a href="../index.html" class="admin-public-link"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-view-site.svg')"></span> Ver site público</a>
+  </div>
+</aside>
+  <div class="admin-main-wrap">
+    <main class="admin-dashboard-page">
+      <section class="container">
+
+<h1>Dashboard</h1>
+<p class="admin-intro">Visão geral do Ministério Seven. Use os atalhos abaixo para gerenciar cada módulo liberado para o seu perfil.</p>
+<div class="admin-dashboard-kpis">
+  <article class="admin-kpi"><div class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-public-music.svg')"></span></div><div><small>Músicas Públicas</small><strong data-admin-count="musicas-publicas">--</strong><span>repertório público</span></div></article>
+  <article class="admin-kpi"><div class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-vocal-music.svg')"></span></div><div><small>Músicas Vocal</small><strong data-admin-count="musicas-vocal">--</strong><span>ensaios/vocal</span></div></article>
+  <article class="admin-kpi"><div class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-chords.svg')"></span></div><div><small>Cifras</small><strong data-admin-count="cifras">--</strong><span>cifras cadastradas</span></div></article>
+  <article class="admin-kpi"><div class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-programs.svg')"></span></div><div><small>Programações</small><strong data-admin-count="programacoes">--</strong><span>agenda e culto</span></div></article>
+  <article class="admin-kpi"><div class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-downloads.svg')"></span></div><div><small>Downloads</small><strong data-admin-count="downloads">--</strong><span>materiais</span></div></article>
 </div>
-  </section>
-</main>
-
-<div id="global-loading" class="global-loading hidden" aria-hidden="true">
-  <div class="spinner"></div>
+<div class="admin-dashboard-panels">
+  <article class="admin-panel-card"><h2>Músicas acessadas</h2><div class="admin-chart-fake"><svg viewBox="0 0 700 230" preserveAspectRatio="none"><path d="M0 160 C60 80 100 190 150 115 S245 120 300 92 S405 190 460 125 S565 88 620 130 S680 122 700 110" fill="none" stroke="#edc455" stroke-width="4"/><path d="M0 160 C60 80 100 190 150 115 S245 120 300 92 S405 190 460 125 S565 88 620 130 S680 122 700 110 L700 230 L0 230 Z" fill="rgba(237,196,85,.16)"/></svg></div></article>
+  <article class="admin-panel-card"><h2>Atalhos de módulos</h2><div class="admin-cards-grid"><a href="./musicas-publicas.html" class="admin-card" data-admin-module="musicasPublicas">
+  <span class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-public-music.svg')"></span></span>
+  <div><h3>Músicas Públicas</h3><p>Letras públicas do site.</p></div>
+</a>
+<a href="./musicas-vocal.html" class="admin-card" data-admin-module="musicasVocal">
+  <span class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-vocal-music.svg')"></span></span>
+  <div><h3>Músicas Vocal</h3><p>Letras, vídeos e apoio do vocal.</p></div>
+</a>
+<a href="./vocalistas.html" class="admin-card" data-admin-module="vocalistas">
+  <span class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-vocalists.svg')"></span></span>
+  <div><h3>Vocalistas</h3><p>Gerencie quem aparece no módulo vocal.</p></div>
+</a>
+<a href="./cifras.html" class="admin-card" data-admin-module="cifras">
+  <span class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-chords.svg')"></span></span>
+  <div><h3>Cifras</h3><p>Cifras, tom, instrumento e recursos.</p></div>
+</a>
+<a href="./programacoes.html" class="admin-card" data-admin-module="programacoes">
+  <span class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-programs.svg')"></span></span>
+  <div><h3>Programações</h3><p>Monte programações e repertórios.</p></div>
+</a>
+<a href="./fotos.html" class="admin-card" data-admin-module="fotos">
+  <span class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-photos.svg')"></span></span>
+  <div><h3>Fotos</h3><p>Álbuns e capas públicas.</p></div>
+</a>
+<a href="./downloads.html" class="admin-card" data-admin-module="downloads">
+  <span class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-downloads.svg')"></span></span>
+  <div><h3>Downloads</h3><p>Hub de downloads gerais e por música.</p></div>
+</a>
+<a href="./contatos.html" class="admin-card" data-admin-module="contatos">
+  <span class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-contacts.svg')"></span></span>
+  <div><h3>Contatos</h3><p>Mensagens recebidas pelo site.</p></div>
+</a>
+<a href="./links.html" class="admin-card" data-admin-module="links">
+  <span class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-links.svg')"></span></span>
+  <div><h3>Links</h3><p>Redes sociais e agenda incorporada.</p></div>
+</a>
+<a href="./notificacoes.html" class="admin-card" data-admin-module="notificacoes">
+  <span class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-notifications.svg')"></span></span>
+  <div><h3>Notificações</h3><p>Avisos, pop-ups e notificações do site.</p></div>
+</a>
+<a href="./ensaios.html" class="admin-card" data-admin-module="ensaios">
+  <span class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-programs.svg')"></span></span>
+  <div><h3>Ensaios</h3><p>Ensaios e setlists para vocal/banda.</p></div>
+</a>
+<a href="./backup.html" class="admin-card" data-admin-module="backup">
+  <span class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-backup.svg')"></span></span>
+  <div><h3>Backup</h3><p>Backup e recuperação seletiva.</p></div>
+</a>
+<a href="./admins.html" class="admin-card" data-admin-module="admins">
+  <span class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-users.svg')"></span></span>
+  <div><h3>ADMs</h3><p>Cadastre administradores e permissões.</p></div>
+</a>
+<a href="./logs.html" class="admin-card" data-admin-module="logs">
+  <span class="admin-kpi-icon"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-logs.svg')"></span></span>
+  <div><h3>Log de atividades</h3><p>Auditoria de ações administrativas.</p></div>
+</a></div></article>
 </div>
-<script type="module" src="../assets/js/app.js"></script>
-<script type="module" src="../assets/js/auth-guard.js"></script>
-<script type="module" src="../assets/js/pages/admin-dashboard.js"></script>
+
+      </section>
+    </main>
+  </div>
+</div>
+<div id="global-loading" class="global-loading hidden" aria-hidden="true"><div class="spinner"></div></div>
+  <script type="module" src="../assets/js/app.js"></script>
+  <script type="module" src="../assets/js/auth-guard.js"></script>
+  <script type="module" src="../assets/js/admin-refeito.js"></script>
+  <script type="module" src="../assets/js/pages/admin-dashboard.js"></script>
 </body>
 </html>

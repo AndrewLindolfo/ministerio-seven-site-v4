@@ -1,0 +1,540 @@
+/* =========================================================
+   Ministério Seven V7.1 — Correções estruturais do redesign
+   Corrige: sobreposição, espaçamento, banners, toolbar e páginas internas.
+   Deve carregar DEPOIS de assets/css/v7-redesign.css
+   ========================================================= */
+
+body.v7-layout-v71{
+  --v71-max: min(100% - 36px, 1220px);
+  --v71-banner-radius: 28px;
+}
+
+/* Base: remove o pseudo-banner antigo que causava palavra em cima de palavra. */
+body.v7-layout-v71 main:not(.home-page) > section.container::before,
+body.v7-layout-v71 .simple-page > section.container::before,
+body.v7-layout-v71 .listing-page > section.container::before,
+body.v7-layout-v71 .musica-page > section.container::before,
+body.v7-layout-v71 .cifra-page > section.container::before,
+body.v7-layout-v71 .agenda-page > section.container::before,
+body.v7-layout-v71 .ferramentas-page > section.container::before{
+  display:none !important;
+  content:none !important;
+}
+
+body.v7-layout-v71 main:not(.home-page) > section.container,
+body.v7-layout-v71 .listing-page > section.container,
+body.v7-layout-v71 .simple-page > section.container,
+body.v7-layout-v71 .agenda-page > section.container,
+body.v7-layout-v71 .ferramentas-page > section.container,
+body.v7-layout-v71 .musica-page > section.container,
+body.v7-layout-v71 .cifra-page > section.container{
+  padding-top: clamp(24px, 4vw, 46px) !important;
+}
+
+/* Novo cabeçalho real da página — substitui o truque de margem negativa. */
+body.v7-layout-v71 .v7-page-hero-v71{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  width:100%;
+  min-height: clamp(154px, 16vw, 205px);
+  margin: 0 0 clamp(26px, 4vw, 42px) !important;
+  padding: clamp(28px, 4vw, 46px) clamp(26px, 5vw, 58px) !important;
+  border:1px solid var(--border) !important;
+  border-radius: var(--v71-banner-radius) !important;
+  background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.016));
+  box-shadow: var(--shadow) !important;
+}
+body.v7-layout-v71 .v7-page-hero-v71::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  opacity:.24;
+  background: url("../img/banner/banner_dark.png") center right / cover no-repeat;
+  filter:saturate(.85) contrast(1.02);
+}
+body.v7-layout-v71 .v7-page-hero-v71::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background:
+    linear-gradient(90deg, rgba(7,8,12,.98) 0%, rgba(7,8,12,.88) 44%, rgba(7,8,12,.62) 100%),
+    radial-gradient(circle at 14% 24%, rgba(215,173,71,.16), transparent 25rem);
+}
+html[data-theme="light"] body.v7-layout-v71 .v7-page-hero-v71::before{
+  opacity:.18;
+  background-image:url("../img/banner/banner_light.png");
+}
+html[data-theme="light"] body.v7-layout-v71 .v7-page-hero-v71::after{
+  background:
+    linear-gradient(90deg, rgba(255,249,237,.98) 0%, rgba(255,249,237,.88) 48%, rgba(255,249,237,.66) 100%),
+    radial-gradient(circle at 14% 24%, rgba(184,132,34,.15), transparent 24rem);
+}
+
+body.v7-layout-v71 .v7-page-hero-v71 .v7-page-kicker,
+body.v7-layout-v71 .v7-page-hero-v71 > h1,
+body.v7-layout-v71 .v7-page-hero-v71 .v7-page-description,
+body.v7-layout-v71 .v7-page-hero-v71 .page-subtitle,
+body.v7-layout-v71 .v7-page-hero-v71 .meta-line,
+body.v7-layout-v71 .v7-page-hero-v71 .page-cross-link{
+  position:relative;
+  z-index:1;
+  margin-left:0 !important;
+  max-width:min(760px, 100%) !important;
+}
+body.v7-layout-v71 .v7-page-hero-v71 .v7-page-kicker{
+  margin:0 0 10px !important;
+}
+body.v7-layout-v71 .v7-page-hero-v71 > h1{
+  margin:0 !important;
+  font-size: clamp(2.05rem, 4vw, 3.8rem) !important;
+  line-height:1.02 !important;
+}
+body.v7-layout-v71 .v7-page-hero-v71 .v7-page-description,
+body.v7-layout-v71 .v7-page-hero-v71 .page-subtitle{
+  margin: 12px 0 0 !important;
+  color:var(--text-soft) !important;
+  font-size: clamp(.98rem, 1.18vw, 1.1rem) !important;
+  line-height:1.55 !important;
+}
+body.v7-layout-v71 .v7-page-hero-v71 .meta-line{
+  margin-top:14px !important;
+}
+body.v7-layout-v71 .v7-page-hero-v71 .page-cross-link{
+  margin-top:16px !important;
+}
+body.v7-layout-v71 .v7-hidden-original-subtitle{
+  display:none !important;
+}
+
+/* Fallback: caso algum título não tenha sido envelopado pelo JS. */
+body.v7-layout-v71 main:not(.home-page) > section.container > .v7-page-kicker,
+body.v7-layout-v71 main:not(.home-page) > section.container > h1,
+body.v7-layout-v71 main:not(.home-page) > section.container > .v7-page-description{
+  margin-left:0 !important;
+  margin-top:0 !important;
+}
+
+/* Home: mantém a ideia, mas tira o peso visual excessivo do fundo. */
+body.v7-layout-v71 .hero-banner{
+  min-height: clamp(340px, 38vw, 500px) !important;
+  border-radius:30px !important;
+}
+body.v7-layout-v71 .hero-banner::before{
+  background:
+    linear-gradient(90deg, rgba(5,6,9,.985) 0%, rgba(5,6,9,.90) 48%, rgba(5,6,9,.58) 100%),
+    radial-gradient(circle at 30% 28%, rgba(215,173,71,.13), transparent 27rem) !important;
+}
+html[data-theme="light"] body.v7-layout-v71 .hero-banner::before{
+  background:linear-gradient(90deg, rgba(255,249,237,.96), rgba(255,249,237,.86) 55%, rgba(255,249,237,.55)) !important;
+}
+body.v7-layout-v71 .v7-hero-title{
+  max-width:760px;
+  text-shadow:0 8px 30px rgba(0,0,0,.35);
+}
+
+/* Listagens: busca, grupos e itens não podem encostar nos títulos. */
+body.v7-layout-v71 .list-search-bar{
+  margin: 0 0 clamp(22px, 3vw, 34px) !important;
+  max-width: 760px !important;
+  position:relative;
+  z-index:2;
+}
+body.v7-layout-v71 .list-search-bar input{
+  height:54px !important;
+  width:100% !important;
+}
+body.v7-layout-v71 .alphabet-list{
+  margin-top:0 !important;
+  gap:18px !important;
+}
+body.v7-layout-v71 .alphabet-group{
+  min-height:0 !important;
+  padding:18px !important;
+  border-radius:24px !important;
+}
+body.v7-layout-v71 .alphabet-letter{
+  margin:0 0 12px !important;
+  line-height:1.1 !important;
+}
+body.v7-layout-v71 .music-list-item{
+  min-height:58px !important;
+  margin-top:8px !important;
+}
+body.v7-layout-v71 .music-list-item:first-of-type{
+  margin-top:0 !important;
+}
+
+/* Estados vazios mais limpos em páginas sem conteúdo. */
+body.v7-layout-v71 .v7-empty-state,
+body.v7-layout-v71 #agenda-empty,
+body.v7-layout-v71 .agenda-empty{
+  min-height:150px;
+  display:flex !important;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  text-align:center;
+  padding:30px 22px !important;
+  color:var(--text-soft);
+}
+body.v7-layout-v71 .v7-empty-state::before,
+body.v7-layout-v71 #agenda-empty::before,
+body.v7-layout-v71 .agenda-empty::before{
+  content:"✦";
+  display:grid;
+  place-items:center;
+  width:44px;
+  height:44px;
+  border-radius:16px;
+  color:var(--v7-gold);
+  background:rgba(215,173,71,.12);
+  border:1px solid var(--v7-border-2);
+  margin-bottom:6px;
+}
+body.v7-layout-v71 .v7-empty-state strong{
+  color:var(--text);
+  font-size:1.02rem;
+}
+body.v7-layout-v71 .v7-empty-state small{
+  color:var(--muted);
+  max-width:520px;
+  line-height:1.5;
+}
+body.v7-layout-v71 #albuns-grid,
+body.v7-layout-v71 #downloads-grid{
+  min-height:112px !important;
+  padding:18px !important;
+}
+body.v7-layout-v71 #downloads-music-lista-alfabetica:empty,
+body.v7-layout-v71 #musicas-lista-alfabetica:empty,
+body.v7-layout-v71 #cifras-lista-alfabetica:empty{
+  min-height:100px;
+}
+
+/* Agenda: remove duplicidade e deixa embed/empty centralizado. */
+body.v7-layout-v71 .agenda-subtitle{
+  display:none !important;
+}
+body.v7-layout-v71 .agenda-embed-card{
+  min-height:260px !important;
+  padding:18px !important;
+  overflow:hidden !important;
+}
+body.v7-layout-v71 .agenda-embed-card iframe[src=""],
+body.v7-layout-v71 .agenda-embed-card iframe:not([src]){
+  display:none !important;
+}
+
+/* Contato: melhor distribuição em telas largas sem mudar lógica. */
+body.v7-layout-v71.v7-page-contato .simple-page > section.container{
+  display:grid;
+  grid-template-columns:minmax(0, 720px) minmax(280px, 1fr);
+  gap:20px;
+  align-items:start;
+}
+body.v7-layout-v71.v7-page-contato .v7-page-hero-v71{
+  grid-column:1 / -1;
+}
+body.v7-layout-v71.v7-page-contato .contact-form{
+  width:100%;
+  max-width:none !important;
+  margin:0 !important;
+}
+body.v7-layout-v71.v7-page-contato .social-box{
+  margin-top:0 !important;
+}
+
+/* Páginas de letra e cifra: não usar banner pesado; cabeçalho vira card compacto. */
+body.v7-layout-v71.v7-page-musica .v7-page-hero-v71,
+body.v7-layout-v71.v7-page-musica-vocal .v7-page-hero-v71,
+body.v7-layout-v71.v7-page-cifra .v7-page-hero-v71{
+  min-height:auto !important;
+  margin-bottom:22px !important;
+  padding:26px 30px !important;
+  border-radius:26px !important;
+}
+body.v7-layout-v71.v7-page-musica .v7-page-hero-v71::before,
+body.v7-layout-v71.v7-page-musica-vocal .v7-page-hero-v71::before,
+body.v7-layout-v71.v7-page-cifra .v7-page-hero-v71::before{
+  opacity:.10;
+}
+body.v7-layout-v71.v7-page-musica .v7-page-hero-v71 > h1,
+body.v7-layout-v71.v7-page-musica-vocal .v7-page-hero-v71 > h1,
+body.v7-layout-v71.v7-page-cifra .v7-page-hero-v71 > h1{
+  font-size:clamp(1.9rem, 3.2vw, 3rem) !important;
+  text-transform:none !important;
+  letter-spacing:.01em !important;
+}
+body.v7-layout-v71 .page-cross-link a{
+  display:inline-flex;
+  align-items:center;
+  width:auto !important;
+  min-height:42px;
+}
+body.v7-layout-v71 .meta-line{
+  color:var(--text-soft) !important;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 14px;
+}
+
+/* Música/letra: vídeo fica lateral, sem blur atravessando conteúdo. */
+body.v7-layout-v71 .musica-content-layout{
+  display:grid !important;
+  grid-template-columns:minmax(0, 1fr) minmax(290px, 390px) !important;
+  gap:22px !important;
+  align-items:start !important;
+  margin-top:0 !important;
+}
+body.v7-layout-v71 .musica-letra,
+body.v7-layout-v71 #musica-letra{
+  position:relative !important;
+  z-index:1 !important;
+  min-height:260px !important;
+  overflow:visible !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+body.v7-layout-v71 .musica-video-wrapper{
+  position:sticky !important;
+  top:108px !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+body.v7-layout-v71 .musica-video-wrapper:empty{
+  display:none !important;
+}
+
+/* Controles de música vocal/letra, se existirem. */
+body.v7-layout-v71 .musica-top-controls,
+body.v7-layout-v71 .vocal-top-controls,
+body.v7-layout-v71 .lyrics-top-controls{
+  position:sticky !important;
+  top:104px !important;
+  z-index:30 !important;
+  display:flex !important;
+  flex-direction:row !important;
+  flex-wrap:wrap !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:8px !important;
+  width:100% !important;
+  margin:0 0 16px !important;
+  padding:10px !important;
+  border:1px solid var(--border) !important;
+  border-radius:22px !important;
+  background:linear-gradient(180deg, rgba(18,21,28,.94), rgba(11,13,18,.90)) !important;
+  box-shadow:0 18px 42px rgba(0,0,0,.24) !important;
+  backdrop-filter:blur(14px) saturate(130%) !important;
+  -webkit-backdrop-filter:blur(14px) saturate(130%) !important;
+}
+
+/* Cifra: toolbar horizontal de verdade, acima da cifra e nunca cobrindo a leitura. */
+body.v7-layout-v71 .cifra-top-controls{
+  position:sticky !important;
+  top:104px !important;
+  z-index:35 !important;
+  display:flex !important;
+  flex-direction:row !important;
+  flex-wrap:wrap !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:8px !important;
+  width:100% !important;
+  max-width:100% !important;
+  margin:0 0 16px !important;
+  padding:10px !important;
+  border-radius:22px !important;
+  background:linear-gradient(180deg, rgba(18,21,28,.94), rgba(11,13,18,.90)) !important;
+  box-shadow:0 18px 42px rgba(0,0,0,.24) !important;
+  backdrop-filter:blur(14px) saturate(130%) !important;
+  -webkit-backdrop-filter:blur(14px) saturate(130%) !important;
+  transform:none !important;
+  left:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+}
+html[data-theme="light"] body.v7-layout-v71 .cifra-top-controls,
+html[data-theme="light"] body.v7-layout-v71 .musica-top-controls,
+html[data-theme="light"] body.v7-layout-v71 .vocal-top-controls,
+html[data-theme="light"] body.v7-layout-v71 .lyrics-top-controls{
+  background:linear-gradient(180deg, rgba(255,252,245,.96), rgba(248,240,224,.92)) !important;
+}
+body.v7-layout-v71 .cifra-top-controls button,
+body.v7-layout-v71 .musica-top-controls button,
+body.v7-layout-v71 .vocal-top-controls button,
+body.v7-layout-v71 .lyrics-top-controls button,
+body.v7-layout-v71 .tool-icon-btn{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:6px !important;
+  flex:0 0 auto !important;
+  width:auto !important;
+  min-width:46px !important;
+  max-width:none !important;
+  min-height:44px !important;
+  padding:0 12px !important;
+  white-space:nowrap !important;
+  line-height:1 !important;
+}
+body.v7-layout-v71 #transpose-down::after{content:"Tom -" !important;font-size:.75rem;color:var(--text-soft);margin-left:2px;}
+body.v7-layout-v71 #transpose-up::after{content:"Tom +" !important;font-size:.75rem;color:var(--text-soft);margin-left:2px;}
+body.v7-layout-v71 #font-down::after{content:"Fonte -" !important;font-size:.75rem;color:var(--text-soft);margin-left:2px;}
+body.v7-layout-v71 #font-up::after{content:"Fonte +" !important;font-size:.75rem;color:var(--text-soft);margin-left:2px;}
+body.v7-layout-v71 #scroll-panel-toggle{
+  font-size:0 !important;
+}
+body.v7-layout-v71 #scroll-panel-toggle::before{
+  content:"↧";
+  font-size:1rem;
+  color:var(--v7-gold);
+}
+body.v7-layout-v71 #scroll-panel-toggle::after{
+  content:"Auto";
+  font-size:.75rem;
+  color:var(--text-soft);
+}
+body.v7-layout-v71 #mini-metronome-floating-toggle::after{
+  content:"Tempo";
+  font-size:.75rem;
+  color:var(--text-soft);
+  margin-left:2px;
+}
+body.v7-layout-v71 .scroll-panel-toggle-icon{
+  display:none !important;
+}
+
+body.v7-layout-v71 .cifra-instrument-switcher,
+body.v7-layout-v71 .cifra-mini-metronome{
+  margin:0 0 14px !important;
+  position:relative !important;
+  z-index:5 !important;
+}
+body.v7-layout-v71 .cifra-content{
+  position:relative !important;
+  z-index:1 !important;
+  clear:both !important;
+  margin-top:0 !important;
+  min-height:320px !important;
+  overflow:visible !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+body.v7-layout-v71 .prev-next-nav{
+  margin-top:18px !important;
+  padding:14px 0 !important;
+}
+
+/* Corrige qualquer card antigo com blur cobrindo conteúdo. */
+body.v7-layout-v71 .musica-page section.container > .glass-card,
+body.v7-layout-v71 .cifra-page section.container > .glass-card,
+body.v7-layout-v71 .musica-page section.container > .surface-card,
+body.v7-layout-v71 .cifra-page section.container > .surface-card{
+  position:relative !important;
+  z-index:1 !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+
+/* Auto-rolagem flutuante: compacta sem invadir demais. */
+body.v7-layout-v71 .scroll-bubble{
+  z-index:80 !important;
+}
+body.v7-layout-v71 .scroll-bubble[hidden]{
+  display:none !important;
+}
+
+/* Responsivo */
+@media (max-width: 980px){
+  body.v7-layout-v71 .v7-page-hero-v71{
+    min-height:auto;
+    padding:26px 22px !important;
+    border-radius:24px !important;
+  }
+  body.v7-layout-v71 .v7-page-hero-v71 > h1{
+    font-size:clamp(1.85rem, 8vw, 2.85rem) !important;
+  }
+  body.v7-layout-v71 .musica-content-layout{
+    grid-template-columns:1fr !important;
+  }
+  body.v7-layout-v71 .musica-video-wrapper{
+    position:relative !important;
+    top:auto !important;
+    order:-1;
+  }
+  body.v7-layout-v71 .cifra-top-controls,
+  body.v7-layout-v71 .musica-top-controls,
+  body.v7-layout-v71 .vocal-top-controls,
+  body.v7-layout-v71 .lyrics-top-controls{
+    position:sticky !important;
+    top:82px !important;
+    left:auto !important;
+    right:auto !important;
+    bottom:auto !important;
+    transform:none !important;
+    overflow-x:auto !important;
+    flex-wrap:nowrap !important;
+    justify-content:flex-start !important;
+    scrollbar-width:thin;
+  }
+  body.v7-layout-v71.v7-page-contato .simple-page > section.container{
+    display:block;
+  }
+  body.v7-layout-v71.v7-page-contato .social-box{
+    margin-top:18px !important;
+  }
+}
+
+@media (max-width: 680px){
+  body.v7-layout-v71{
+    --v71-max:min(100% - 24px, 1220px);
+  }
+  body.v7-layout-v71 main:not(.home-page) > section.container,
+  body.v7-layout-v71 .listing-page > section.container,
+  body.v7-layout-v71 .simple-page > section.container,
+  body.v7-layout-v71 .agenda-page > section.container,
+  body.v7-layout-v71 .ferramentas-page > section.container,
+  body.v7-layout-v71 .musica-page > section.container,
+  body.v7-layout-v71 .cifra-page > section.container{
+    padding-top:20px !important;
+  }
+  body.v7-layout-v71 .v7-page-hero-v71{
+    margin-bottom:22px !important;
+    padding:24px 18px !important;
+  }
+  body.v7-layout-v71 .v7-page-hero-v71::before{
+    opacity:.14;
+  }
+  body.v7-layout-v71 .list-search-bar{
+    margin-bottom:20px !important;
+  }
+  body.v7-layout-v71 .alphabet-group{
+    padding:12px !important;
+  }
+  body.v7-layout-v71 .music-list-item{
+    min-height:54px !important;
+  }
+  body.v7-layout-v71 .cifra-top-controls button,
+  body.v7-layout-v71 .musica-top-controls button,
+  body.v7-layout-v71 .vocal-top-controls button,
+  body.v7-layout-v71 .lyrics-top-controls button{
+    min-width:42px !important;
+    min-height:42px !important;
+    padding:0 10px !important;
+  }
+  body.v7-layout-v71 #transpose-down::after,
+  body.v7-layout-v71 #transpose-up::after,
+  body.v7-layout-v71 #font-down::after,
+  body.v7-layout-v71 #font-up::after,
+  body.v7-layout-v71 #focus-toggle::after,
+  body.v7-layout-v71 #fullscreen-toggle::after,
+  body.v7-layout-v71 #scroll-panel-toggle::after,
+  body.v7-layout-v71 #mini-metronome-floating-toggle::after{
+    display:none !important;
+  }
+}

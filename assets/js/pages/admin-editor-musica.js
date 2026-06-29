@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         itemName: title
       });
       alert(musicaId ? "✅ Música atualizada com sucesso!" : "✅ Música cadastrada com sucesso!");
-      window.location.href = "./musicas.html";
+      window.location.href = "./musicas-vocal.html";
     } catch (error) {
       console.error("Erro ao salvar música:", error);
       alert("Erro ao salvar música no Firebase.\n\n" + explainFirebaseError(error));
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       await removeMusica(musicaId);
       await recordAdminActivity({ action: "delete", module: "musicas", itemId: musicaId, itemName: musicaName });
       alert("🗑️ Música excluída com sucesso!");
-      window.location.href = "./musicas.html";
+      window.location.href = "./musicas-vocal.html";
     } catch (error) {
       console.error("Erro ao excluir música:", error);
       alert("Erro ao excluir música no Firebase.\n\n" + explainFirebaseError(error));
@@ -134,8 +134,8 @@ watchAuth(async (user) => {
   const admin = await getAdminProfileByEmail(user.email);
   if (!admin) return;
   const isEdit = !!musicaId;
-  const canSave = isEdit ? hasPermission(admin, 'musicas', 'edit') : hasPermission(admin, 'musicas', 'create');
-  const canDelete = isEdit && hasPermission(admin, 'musicas', 'delete');
+  const canSave = isEdit ? hasPermission(admin, 'musicasVocal', 'edit') : hasPermission(admin, 'musicasVocal', 'create');
+  const canDelete = isEdit && hasPermission(admin, 'musicasVocal', 'delete');
   document.querySelector('#admin-editor-musica-form button[type="submit"]')?.classList.toggle('hidden', !canSave);
   document.getElementById('delete-musica-button')?.classList.toggle('hidden', !canDelete);
 });

@@ -1,16 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="dark">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DKM3MTBKQ6"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-DKM3MTBKQ6');
-  </script>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Backup | Admin Seven</title>
@@ -21,34 +11,62 @@
   <link rel="stylesheet" href="../assets/css/responsive.css" />
   <link rel="stylesheet" href="../assets/css/admin.css" />
   <link rel="stylesheet" href="../assets/css/pages/admin-backup.css" />
+  <link rel="stylesheet" href="../assets/css/admin-refeito.css" />
 </head>
-<body>
+<body class="admin-clean">
+<div class="admin-shell">
 
-<header class="admin-topbar">
-  <div class="container admin-topbar-inner">
-    <a href="./index.html" class="admin-brand" aria-label="Voltar ao painel">
-      <img src="../assets/img/v7/icon_120.png" alt="V7" class="admin-v7" />
-      <strong>Área de Administração</strong>
-    </a>
+<aside class="admin-sidebar" aria-label="Menu administrativo">
+  <div class="admin-brand-clean">
+    <img src="../assets/img/seven-admin-brand/v7/v7-clara.svg" alt="V7" class="admin-brand-logo" />
+    <div><strong>Painel ADM</strong><span>Painel Administrativo</span></div>
+  </div>
 
-    <div class="header-actions">
-      <button type="button" id="theme-toggle" aria-label="Alternar tema">🌙</button>
-      <div class="admin-account">
-        <button type="button" id="admin-account-toggle">Conta</button>
-        <div id="admin-account-menu" class="admin-account-menu hidden">
-          <img id="admin-user-photo" src="../assets/img/v7/icon_120.png" alt="Conta" class="admin-user-photo" />
-          <p id="admin-user-email">admin@exemplo.com</p>
-          <button type="button" id="admin-logout-button">Sair</button>
-        </div>
-      </div>
+  <div class="admin-user-card">
+    <img id="admin-user-photo" src="../assets/img/seven-admin-brand/icon-user-default.svg" alt="Usuário" />
+    <div>
+      <strong id="admin-user-name">Administrador</strong>
+      <span id="admin-user-role">Administrador</span>
+      <small id="admin-user-email"></small>
     </div>
   </div>
-</header>
 
-<main class="admin-section-page">
-  <section class="container">
-    <a href="./index.html" class="admin-back-link">← Voltar ao painel</a>
-    <h1>Backup</h1>
+  <div class="admin-menu-title">Menu principal</div>
+  <nav class="admin-nav" aria-label="Menu principal ADM">
+    <a href="index.html" data-admin-module="dashboard"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-dashboard.svg')"></span><span>Dashboard</span><span class="admin-nav-chev">›</span></a>
+<a href="musicas-publicas.html" data-admin-module="musicasPublicas"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-public-music.svg')"></span><span>Músicas Públicas</span><span class="admin-nav-chev">›</span></a>
+<a href="musicas-vocal.html" data-admin-module="musicasVocal"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-vocal-music.svg')"></span><span>Músicas Vocal</span><span class="admin-nav-chev">›</span></a>
+<a href="vocalistas.html" data-admin-module="vocalistas"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-vocalists.svg')"></span><span>Vocalistas</span><span class="admin-nav-chev">›</span></a>
+<a href="cifras.html" data-admin-module="cifras"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-chords.svg')"></span><span>Cifras</span><span class="admin-nav-chev">›</span></a>
+<a href="programacoes.html" data-admin-module="programacoes"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-programs.svg')"></span><span>Programações</span><span class="admin-nav-chev">›</span></a>
+<a href="fotos.html" data-admin-module="fotos"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-photos.svg')"></span><span>Fotos</span><span class="admin-nav-chev">›</span></a>
+<a href="downloads.html" data-admin-module="downloads"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-downloads.svg')"></span><span>Downloads</span><span class="admin-nav-chev">›</span></a>
+<a href="downloads-geral.html" data-admin-module="downloadsGerais"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-downloads.svg')"></span><span>Downloads Gerais</span><span class="admin-nav-chev">›</span></a>
+<a href="downloads-por-musica.html" data-admin-module="downloadsPorMusica"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-downloads.svg')"></span><span>Downloads por Música</span><span class="admin-nav-chev">›</span></a>
+<a href="contatos.html" data-admin-module="contatos"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-contacts.svg')"></span><span>Contatos</span><span class="admin-nav-chev">›</span></a>
+<a href="links.html" data-admin-module="links"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-links.svg')"></span><span>Links</span><span class="admin-nav-chev">›</span></a>
+<a href="notificacoes.html" data-admin-module="notificacoes"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-notifications.svg')"></span><span>Notificações</span><span class="admin-nav-chev">›</span></a>
+<a href="ensaios.html" data-admin-module="ensaios"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-programs.svg')"></span><span>Ensaios</span><span class="admin-nav-chev">›</span></a>
+  </nav>
+
+  <div class="admin-menu-title">Configurações</div>
+  <nav class="admin-nav" aria-label="Configurações ADM">
+    <a href="backup.html" data-admin-module="backup"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-backup.svg')"></span><span>Backup</span><span class="admin-nav-chev">›</span></a>
+<a href="admins.html" data-admin-module="admins"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-users.svg')"></span><span>ADMs</span><span class="admin-nav-chev">›</span></a>
+<a href="logs.html" data-admin-module="logs"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-logs.svg')"></span><span>Log de atividades</span><span class="admin-nav-chev">›</span></a>
+<a href="config.html" data-admin-module="config"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-settings.svg')"></span><span>Configurações</span><span class="admin-nav-chev">›</span></a>
+  </nav>
+
+  <div class="admin-sidebar-bottom">
+    <button type="button" id="theme-toggle" class="admin-side-button" aria-label="Alternar tema">☀️ Alternar tema</button>
+    <button type="button" id="admin-logout-button" class="admin-side-button"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-logout.svg')"></span> Sair</button>
+    <a href="../index.html" class="admin-public-link"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-view-site.svg')"></span> Ver site público</a>
+  </div>
+</aside>
+  <div class="admin-main-wrap">
+    <main class="admin-section-page">
+      <section class="container">
+<h1>Backup</h1>
 
     <div class="backup-actions">
       <button type="button" id="backup-export-button" class="button-primary">Fazer backup</button>
@@ -64,66 +82,14 @@
       <p>O backup agora é seletivo: você escolhe exatamente o que deseja exportar ou recuperar.</p>
       <small>Na importação, o arquivo é analisado primeiro. Nada é importado automaticamente sem confirmação.</small>
     </div>
-  </section>
-</main>
-
-<div id="backup-export-modal" class="backup-modal hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="backup-export-title">
-  <div class="backup-modal-overlay" data-backup-close></div>
-  <div class="backup-modal-panel">
-    <div class="backup-modal-header">
-      <div>
-        <h2 id="backup-export-title">Escolher o que vai no backup</h2>
-        <p>Marque as partes do site que deseja exportar.</p>
-      </div>
-      <button type="button" class="backup-modal-close" data-backup-close aria-label="Fechar">✕</button>
-    </div>
-
-    <label class="backup-select-all">
-      <input type="checkbox" id="backup-export-select-all" checked />
-      <span>Selecionar todas</span>
-    </label>
-
-    <div id="backup-export-options" class="backup-options-list"></div>
-
-    <div class="backup-modal-actions">
-      <button type="button" class="button-outline" data-backup-close>Cancelar</button>
-      <button type="button" id="backup-export-confirm" class="button-primary">Gerar backup</button>
-    </div>
+      </section>
+    </main>
   </div>
 </div>
-
-<div id="backup-import-modal" class="backup-modal hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="backup-import-title">
-  <div class="backup-modal-overlay" data-backup-close></div>
-  <div class="backup-modal-panel">
-    <div class="backup-modal-header">
-      <div>
-        <h2 id="backup-import-title">Confirmar recuperação do backup</h2>
-        <p>O site analisou o arquivo. Marque o que deseja recuperar.</p>
-      </div>
-      <button type="button" class="backup-modal-close" data-backup-close aria-label="Fechar">✕</button>
-    </div>
-
-    <div id="backup-import-summary" class="backup-import-summary"></div>
-
-    <label class="backup-select-all">
-      <input type="checkbox" id="backup-import-select-all" checked />
-      <span>Selecionar todas disponíveis</span>
-    </label>
-
-    <div id="backup-import-options" class="backup-options-list"></div>
-
-    <div class="backup-modal-actions">
-      <button type="button" class="button-outline" data-backup-close>Cancelar</button>
-      <button type="button" id="backup-import-confirm" class="button-primary">Importar selecionados</button>
-    </div>
-  </div>
-</div>
-
-<div id="global-loading" class="global-loading hidden" aria-hidden="true">
-  <div class="spinner"></div>
-</div>
-<script type="module" src="../assets/js/app.js"></script>
-<script type="module" src="../assets/js/auth-guard.js"></script>
-<script type="module" src="../assets/js/pages/admin-backup.js"></script>
+<div id="global-loading" class="global-loading hidden" aria-hidden="true"><div class="spinner"></div></div>
+  <script type="module" src="../assets/js/app.js"></script>
+  <script type="module" src="../assets/js/auth-guard.js"></script>
+  <script type="module" src="../assets/js/admin-refeito.js"></script>
+  <script type="module" src="../assets/js/pages/admin-backup.js"></script>
 </body>
 </html>

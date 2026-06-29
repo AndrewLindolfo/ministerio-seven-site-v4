@@ -44,12 +44,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function applyMusicPermissions(admin) {
   const createBtn = document.querySelector('.admin-toolbar .button-primary');
-  if (createBtn) createBtn.classList.toggle('hidden', !hasPermission(admin, 'musicas', 'create'));
+  if (createBtn) createBtn.classList.toggle('hidden', !hasPermission(admin, 'musicasVocal', 'create'));
   document.querySelectorAll('.admin-list-actions .button-outline').forEach((el) => {
-    el.classList.toggle('hidden', !hasPermission(admin, 'musicas', 'edit'));
+    el.classList.toggle('hidden', !hasPermission(admin, 'musicasVocal', 'edit'));
   });
   document.querySelectorAll('[data-delete-id]').forEach((el) => {
-    el.classList.toggle('hidden', !hasPermission(admin, 'musicas', 'delete'));
+    el.classList.toggle('hidden', !hasPermission(admin, 'musicasVocal', 'delete'));
   });
 }
 

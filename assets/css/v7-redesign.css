@@ -1,0 +1,625 @@
+/* =========================================================
+   Ministério Seven V7 — Letras & Cifras Premium
+   Patch visual: identidade, layout, componentes e ADM.
+   Foco: letras, cifras, ensaio vocal e ferramentas.
+   ========================================================= */
+@font-face{
+  font-family:"SevenLogoOne";
+  src:url("../fonts/seven/fonte-logo-1.ttf") format("truetype");
+  font-display:swap;
+}
+@font-face{
+  font-family:"SevenLogoTwo";
+  src:url("../fonts/seven/fonte-logo-2.ttf") format("truetype");
+  font-display:swap;
+}
+:root{
+  --v7-bg:#08090c;
+  --v7-bg-2:#0c0f14;
+  --v7-panel:rgba(18,21,28,.78);
+  --v7-panel-2:rgba(24,28,38,.86);
+  --v7-panel-solid:#12161f;
+  --v7-text:#f8f3e7;
+  --v7-text-2:#d8d2c4;
+  --v7-muted:#9e988a;
+  --v7-gold:#d7ad47;
+  --v7-gold-2:#f0ce72;
+  --v7-gold-3:#9c762c;
+  --v7-cream:#fff7e6;
+  --v7-red:#c93f46;
+  --v7-green:#39c980;
+  --v7-blue:#6fa8ff;
+  --v7-border:rgba(245,226,180,.14);
+  --v7-border-2:rgba(245,226,180,.24);
+  --v7-shadow:0 22px 60px rgba(0,0,0,.36);
+  --v7-glow:0 0 0 1px rgba(215,173,71,.12), 0 16px 40px rgba(215,173,71,.09);
+  --primary:var(--v7-gold) !important;
+  --primary-soft:rgba(215,173,71,.13) !important;
+  --success:var(--v7-green) !important;
+  --radius-sm:12px;
+  --radius:18px;
+  --radius-lg:28px;
+  --font-main:Manrope,Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --font-title:"SevenLogoOne","Playfair Display",Georgia,serif;
+}
+html[data-theme="dark"]{
+  --bg:var(--v7-bg) !important;
+  --bg-soft:var(--v7-bg-2) !important;
+  --surface:rgba(18,21,28,.86) !important;
+  --surface-2:rgba(26,31,42,.94) !important;
+  --text:var(--v7-text) !important;
+  --text-soft:var(--v7-text-2) !important;
+  --muted:var(--v7-muted) !important;
+  --border:var(--v7-border) !important;
+  --shadow:var(--v7-shadow) !important;
+}
+html[data-theme="light"]{
+  --bg:#f8f3e8 !important;
+  --bg-soft:#fffaf0 !important;
+  --surface:rgba(255,252,245,.94) !important;
+  --surface-2:#f3ead8 !important;
+  --text:#1b1712 !important;
+  --text-soft:#5d574d !important;
+  --muted:#84796a !important;
+  --border:rgba(75,55,22,.14) !important;
+  --shadow:0 18px 48px rgba(61,45,20,.12) !important;
+  --primary:#b88422 !important;
+  --primary-soft:rgba(184,132,34,.13) !important;
+}
+body{
+  background:
+    radial-gradient(circle at 18% 2%, rgba(215,173,71,.12), transparent 32rem),
+    radial-gradient(circle at 82% 8%, rgba(93,120,160,.10), transparent 34rem),
+    linear-gradient(180deg, var(--bg), var(--bg-soft) 62%, var(--bg)) !important;
+  color:var(--text) !important;
+  letter-spacing:-.01em;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+  opacity:.42;
+  background:
+    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.014) 1px, transparent 1px);
+  background-size:42px 42px;
+  mask-image:linear-gradient(to bottom, black, transparent 78%);
+}
+html[data-theme="light"] body::before{opacity:.2;}
+a,button,input,textarea,select{transition:all .22s ease;}
+::selection{background:rgba(215,173,71,.32);color:var(--text);}
+.container{width:min(100% - 36px,1220px) !important;}
+.hidden{display:none!important;}
+
+/* Header e marca oficial */
+.site-header,.admin-topbar{
+  position:sticky !important;
+  top:10px !important;
+  width:min(100% - 24px,1280px);
+  margin:10px auto 0;
+  border:1px solid var(--border) !important;
+  border-radius:22px !important;
+  background:linear-gradient(180deg, rgba(18,22,29,.78), rgba(8,10,14,.66)) !important;
+  box-shadow:0 18px 46px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.06) !important;
+  backdrop-filter:blur(18px) saturate(130%) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(130%) !important;
+  overflow:visible;
+}
+html[data-theme="light"] .site-header,
+html[data-theme="light"] .admin-topbar{
+  background:linear-gradient(180deg, rgba(255,252,245,.92), rgba(255,247,232,.84)) !important;
+  box-shadow:0 18px 46px rgba(61,45,20,.10), inset 0 1px 0 rgba(255,255,255,.9) !important;
+}
+.header-inner,.admin-topbar-inner{min-height:74px !important;padding:0 18px;}
+.brand-link{gap:12px;min-width:0;}
+.brand-v7{
+  width:clamp(138px,16vw,188px) !important;
+  height:54px !important;
+  object-fit:contain !important;
+  object-position:left center !important;
+  filter:drop-shadow(0 8px 20px rgba(0,0,0,.22));
+}
+.admin-brand strong{
+  color:var(--text) !important;
+  font-family:var(--font-title);
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  font-size:clamp(.95rem,1.3vw,1.15rem);
+}
+.admin-v7{width:48px !important;height:48px !important;object-fit:contain !important;filter:drop-shadow(0 10px 18px rgba(0,0,0,.24));}
+.main-nav{gap:6px !important;}
+.main-nav a{
+  position:relative;
+  padding:10px 12px;
+  border-radius:999px;
+  font-size:.88rem;
+  font-weight:750 !important;
+  letter-spacing:.01em;
+  color:var(--text-soft) !important;
+}
+.main-nav a:hover,.main-nav a.active,.main-nav [aria-current="page"]{
+  color:var(--text) !important;
+  background:rgba(215,173,71,.10);
+}
+.main-nav a::after{
+  content:"";
+  position:absolute;
+  left:18px;right:18px;bottom:5px;
+  height:2px;
+  border-radius:999px;
+  background:linear-gradient(90deg, transparent, var(--v7-gold), transparent);
+  transform:scaleX(0);
+  transition:transform .22s ease;
+}
+.main-nav a:hover::after,.main-nav a.active::after{transform:scaleX(1);}
+.header-actions button,#theme-toggle,#search-toggle,#mobile-menu-toggle,#admin-account-toggle,.admin-view-site-link,#admin-create-link{
+  border:1px solid var(--border) !important;
+  background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02)) !important;
+  color:var(--text) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+}
+.header-actions button:hover,#theme-toggle:hover,#search-toggle:hover,#mobile-menu-toggle:hover,#admin-account-toggle:hover,.admin-view-site-link:hover,#admin-create-link:hover{
+  transform:translateY(-1px);
+  border-color:var(--v7-border-2) !important;
+  box-shadow:var(--v7-glow) !important;
+}
+#search-toggle,#theme-toggle,#mobile-menu-toggle{font-size:0!important;position:relative;overflow:hidden;}
+#search-toggle::before{content:"⌕";font-size:1.35rem;line-height:1;color:var(--text);}
+#theme-toggle::before{content:"☀";font-size:1.05rem;color:var(--v7-gold);}
+html[data-theme="light"] #theme-toggle::before{content:"☾";color:#4f4537;}
+#mobile-menu-toggle::before{content:"☰";font-size:1.12rem;color:var(--text);}
+
+/* Tipografia de página */
+h1,h2,h3,.alphabet-letter,.admin-dashboard-page h1,.admin-section-page h1{
+  color:var(--text) !important;
+  letter-spacing:.02em;
+}
+main h1{
+  font-family:var(--font-title);
+  text-transform:uppercase;
+  font-weight:800;
+  line-height:1.05;
+  letter-spacing:.055em;
+}
+main h1::first-letter{color:var(--v7-gold);}
+main:not(.home-page) > section.container,
+.simple-page > section.container,
+.listing-page > section.container,
+.musica-page > section.container,
+.cifra-page > section.container,
+.agenda-page > section.container,
+.ferramentas-page > section.container,
+.admin-dashboard-page > section.container,
+.admin-section-page > section.container{
+  position:relative;
+}
+main:not(.home-page) > section.container::before,
+.simple-page > section.container::before,
+.listing-page > section.container::before,
+.musica-page > section.container::before,
+.cifra-page > section.container::before,
+.agenda-page > section.container::before,
+.ferramentas-page > section.container::before{
+  content:"";
+  display:block;
+  height:clamp(110px,16vw,190px);
+  margin:-4px 0 28px;
+  border:1px solid var(--border);
+  border-radius:28px;
+  background:
+    linear-gradient(90deg, rgba(8,9,12,.98) 0%, rgba(8,9,12,.76) 42%, rgba(8,9,12,.22) 100%),
+    radial-gradient(circle at 70% 15%, rgba(215,173,71,.14), transparent 26rem),
+    url("../img/banner/banner_dark.png") center/cover no-repeat;
+  box-shadow:var(--shadow);
+}
+html[data-theme="light"] main:not(.home-page) > section.container::before,
+html[data-theme="light"] .simple-page > section.container::before,
+html[data-theme="light"] .listing-page > section.container::before,
+html[data-theme="light"] .musica-page > section.container::before,
+html[data-theme="light"] .cifra-page > section.container::before,
+html[data-theme="light"] .agenda-page > section.container::before,
+html[data-theme="light"] .ferramentas-page > section.container::before{
+  background:
+    linear-gradient(90deg, rgba(255,249,237,.96) 0%, rgba(255,249,237,.78) 48%, rgba(255,249,237,.30) 100%),
+    radial-gradient(circle at 72% 18%, rgba(184,132,34,.17), transparent 24rem),
+    url("../img/banner/banner_light.png") center/cover no-repeat;
+}
+main:not(.home-page) > section.container > h1,
+.simple-page > section.container > h1,
+.listing-page > section.container > h1,
+.musica-page > section.container > h1,
+.cifra-page > section.container > h1,
+.agenda-page > section.container > h1,
+.ferramentas-head{
+  margin-top:calc(clamp(110px,16vw,190px) * -1 + 38px) !important;
+  margin-left:clamp(22px,4vw,54px);
+  max-width:min(680px,calc(100% - 44px));
+  position:relative;
+  z-index:1;
+}
+.v7-page-kicker{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:8px;
+  color:var(--v7-gold);
+  font-size:.78rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.18em;
+}
+.v7-page-kicker::before{content:"✦";font-size:.76rem;}
+.v7-page-description{
+  position:relative;
+  z-index:2;
+  margin:8px 0 42px clamp(22px,4vw,54px) !important;
+  max-width:680px;
+  color:var(--text-soft);
+  font-size:clamp(.96rem,1.2vw,1.08rem);
+}
+
+/* Home — portal de letras e cifras, não streaming */
+.home-page{padding-top:20px;}
+.hero-banner{
+  position:relative !important;
+  width:min(100% - 36px,1220px) !important;
+  min-height:clamp(360px,42vw,540px) !important;
+  margin:24px auto 30px !important;
+  border-radius:34px !important;
+  overflow:hidden !important;
+  border:1px solid var(--border) !important;
+  box-shadow:var(--shadow) !important;
+  background-size:cover !important;
+  background-position:center !important;
+}
+.hero-banner::before{
+  content:"";
+  position:absolute;inset:0;
+  background:
+    linear-gradient(90deg, rgba(4,5,8,.94), rgba(4,5,8,.76) 42%, rgba(4,5,8,.22)),
+    radial-gradient(circle at 30% 28%, rgba(215,173,71,.18), transparent 28rem);
+  z-index:1;
+}
+html[data-theme="light"] .hero-banner::before{
+  background:linear-gradient(90deg, rgba(255,249,237,.92), rgba(255,249,237,.72) 50%, rgba(255,249,237,.25));
+}
+.v7-hero-content{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:clamp(28px,5vw,72px);
+  max-width:820px;
+}
+.v7-hero-kicker{color:var(--v7-gold);font-weight:950;letter-spacing:.22em;text-transform:uppercase;font-size:.8rem;margin-bottom:14px;}
+.v7-hero-title{font-family:var(--font-title);font-size:clamp(2.7rem,6vw,5.75rem);line-height:.96;letter-spacing:.025em;color:var(--text);}
+.v7-hero-title span{color:var(--v7-gold);display:block;}
+.v7-hero-text{margin-top:20px;max-width:610px;color:var(--text-soft);font-size:clamp(1rem,1.25vw,1.14rem);}
+.v7-hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;}
+.v7-hero-actions a{min-height:50px;padding:0 22px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:900;}
+.v7-hero-actions .primary{background:linear-gradient(135deg,var(--v7-gold-2),var(--v7-gold));color:#231806;box-shadow:0 18px 42px rgba(215,173,71,.20);}
+.v7-hero-actions .secondary{border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);}
+.v7-hero-actions a:hover{transform:translateY(-2px);box-shadow:var(--v7-glow);}
+.v7-home-quick-grid{
+  width:min(100% - 36px,1220px);
+  margin:0 auto 34px;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+}
+.v7-home-quick-card{
+  min-height:142px;
+  padding:20px;
+  border-radius:24px;
+  border:1px solid var(--border);
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.025));
+  box-shadow:0 12px 34px rgba(0,0,0,.18);
+}
+.v7-home-quick-card .icon{font-size:1.55rem;color:var(--v7-gold);display:block;margin-bottom:10px;}
+.v7-home-quick-card strong{display:block;font-size:1.05rem;margin-bottom:4px;color:var(--text);}
+.v7-home-quick-card small{color:var(--text-soft);line-height:1.45;}
+.v7-home-quick-card:hover{transform:translateY(-3px);border-color:var(--v7-border-2);box-shadow:var(--v7-glow);}
+.programacao-section,.destaques-section,.seven-photo-section,.notificacoes-home-section{padding-top:16px!important;}
+.programacao-section h2,.destaques-section h2,.notificacoes-home-section h2{
+  font-family:var(--font-title);
+  letter-spacing:.055em;
+  text-transform:uppercase;
+  color:var(--text);
+  display:flex;align-items:center;gap:12px;
+}
+.programacao-section h2::after,.destaques-section h2::after,.notificacoes-home-section h2::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--v7-gold),transparent);}
+.programacao-box,.destaque-box,.home-notificacao-card,#seven-photo-card{
+  border:1px solid var(--border)!important;
+  border-radius:26px!important;
+  background:linear-gradient(180deg, rgba(255,255,255,.065), rgba(255,255,255,.025))!important;
+  box-shadow:var(--shadow)!important;
+}
+
+/* Campos, botões e cards globais */
+input,textarea,select{
+  border:1px solid var(--border) !important;
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.026)) !important;
+  color:var(--text) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+html[data-theme="light"] input,html[data-theme="light"] textarea,html[data-theme="light"] select{background:#fffaf0!important;}
+input:focus,textarea:focus,select:focus{border-color:rgba(215,173,71,.55)!important;box-shadow:0 0 0 4px rgba(215,173,71,.12)!important;}
+button,.button-primary,.button-outline,.button-danger,.contact-form button,.tool-expand-btn,.tool-collapse-btn,.personal-library-primary{
+  border-radius:15px !important;
+  font-weight:900 !important;
+}
+.button-primary,.contact-form button,.tool-expand-btn,.personal-library-primary{
+  border:1px solid rgba(255,255,255,.1)!important;
+  background:linear-gradient(135deg,var(--v7-gold-2),var(--v7-gold))!important;
+  color:#241805!important;
+  box-shadow:0 15px 34px rgba(215,173,71,.20)!important;
+}
+.button-outline,.tool-collapse-btn{
+  border:1px solid var(--border)!important;
+  background:rgba(255,255,255,.035)!important;
+  color:var(--text)!important;
+}
+.button-danger{background:linear-gradient(135deg,#9b2730,var(--v7-red))!important;color:#fff!important;}
+.button-primary:hover,.button-outline:hover,.button-danger:hover,.contact-form button:hover,.tool-expand-btn:hover{transform:translateY(-2px)!important;filter:saturate(1.08);}
+
+/* Listas alfabéticas de músicas/cifras */
+.list-search-bar{position:relative;z-index:2;margin:18px 0 28px clamp(22px,4vw,54px)!important;max-width:720px;}
+.list-search-bar input{height:54px;border-radius:18px!important;padding-left:20px!important;font-size:1rem;}
+.alphabet-list{display:grid;gap:24px;margin-top:24px;}
+.alphabet-group{
+  border:1px solid var(--border);
+  border-radius:28px;
+  background:linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.018));
+  padding:20px;
+  box-shadow:0 14px 38px rgba(0,0,0,.16);
+}
+.alphabet-letter{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:12px!important;
+  color:var(--v7-gold)!important;
+  font-family:var(--font-title);
+  text-transform:uppercase;
+}
+.alphabet-letter::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--v7-border-2),transparent);}
+.music-list-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:14px 16px!important;
+  border:1px solid transparent!important;
+  border-radius:16px;
+  background:rgba(255,255,255,.026);
+  margin-top:8px;
+}
+.music-list-item:hover{border-color:var(--v7-border-2)!important;background:rgba(215,173,71,.08);transform:translateX(4px);}
+.music-list-item a{display:flex;align-items:center;gap:12px;width:100%;font-weight:850;color:var(--text)!important;}
+.music-list-item a::before{content:"♬";display:grid;place-items:center;width:34px;height:34px;border-radius:12px;background:rgba(215,173,71,.12);color:var(--v7-gold);font-size:1rem;flex:0 0 auto;}
+.cifras-page .music-list-item a::before,.listing-page:has(#cifras-filter-input) .music-list-item a::before{content:"♯";}
+
+/* Página de letra */
+.musica-content-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,390px);gap:24px;align-items:start;margin-top:22px;}
+.musica-letra,#musica-letra{
+  border:1px solid var(--border);
+  border-radius:30px;
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  box-shadow:var(--shadow);
+  padding:clamp(24px,4vw,44px);
+  color:var(--text);
+  font-size:clamp(1.05rem,1.35vw,1.22rem);
+  line-height:1.86;
+}
+#musica-letra p{margin:0 0 1.05em;}
+#musica-letra span[style*="color"]{font-weight:650;}
+.musica-video-wrapper{
+  position:sticky;
+  top:112px;
+  border:1px solid var(--border);
+  border-radius:26px;
+  background:linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.02));
+  box-shadow:var(--shadow);
+  padding:12px;
+}
+.musica-video-wrapper:empty{display:none;}
+.musica-video-wrapper iframe{border-radius:18px!important;box-shadow:0 18px 40px rgba(0,0,0,.25);}
+.page-cross-link a{
+  min-height:44px;
+  padding:0 18px!important;
+  border-radius:999px!important;
+  border-color:var(--v7-border-2)!important;
+  background:rgba(215,173,71,.10)!important;
+  color:var(--text)!important;
+  font-weight:900;
+}
+.page-cross-link a::after{content:"→";margin-left:8px;color:var(--v7-gold);}
+
+/* Página de cifra */
+.cifra-page .container{max-width:1280px;}
+.cifra-instrument-switcher,.cifra-mini-metronome{
+  margin:14px 0 10px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:rgba(255,255,255,.035);
+  box-shadow:0 12px 30px rgba(0,0,0,.14);
+}
+.cifra-top-controls{
+  margin:20px 0 18px!important;
+  padding:10px!important;
+  border:1px solid var(--border);
+  border-radius:24px;
+  background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.026));
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(14px);
+  position:sticky;
+  top:104px;
+  z-index:20;
+}
+.cifra-top-controls button,.musica-top-controls button,.tool-icon-btn{
+  min-height:48px!important;
+  min-width:48px;
+  padding:0 14px!important;
+  border-radius:16px!important;
+  border:1px solid var(--border)!important;
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02))!important;
+  color:var(--text)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+}
+.cifra-top-controls button:hover,.musica-top-controls button:hover,.tool-icon-btn:hover{transform:translateY(-2px);border-color:var(--v7-border-2)!important;box-shadow:var(--v7-glow)!important;}
+#transpose-down::after{content:" Tom -";font-size:.76rem;color:var(--text-soft);margin-left:4px;}
+#transpose-up::after{content:" Tom +";font-size:.76rem;color:var(--text-soft);margin-left:4px;}
+#font-down::after{content:" Fonte -";font-size:.76rem;color:var(--text-soft);margin-left:4px;}
+#font-up::after{content:" Fonte +";font-size:.76rem;color:var(--text-soft);margin-left:4px;}
+#focus-toggle,#fullscreen-toggle,#scroll-panel-toggle,#pdf-toggle,#mini-metronome-floating-toggle{font-size:0!important;}
+#focus-toggle::before{content:"◉";font-size:1.05rem;color:var(--v7-gold);}
+#focus-toggle::after{content:" Foco";font-size:.76rem;color:var(--text-soft);margin-left:5px;}
+#fullscreen-toggle::before{content:"⛶";font-size:1.05rem;color:var(--v7-gold);}
+#fullscreen-toggle::after{content:" Tela";font-size:.76rem;color:var(--text-soft);margin-left:5px;}
+#mini-metronome-floating-toggle::before{content:"♩";font-size:1.08rem;color:var(--v7-gold);}
+#pdf-toggle .pdf-btn-icon{font-size:1.05rem;color:var(--v7-gold);}
+#pdf-toggle .pdf-btn-label{font-size:.7rem;color:var(--text-soft);}
+.cifra-content{
+  font-family:var(--font-mono)!important;
+  border:1px solid var(--border)!important;
+  border-radius:30px!important;
+  background:
+    linear-gradient(90deg, rgba(215,173,71,.08) 0 1px, transparent 1px) 0 0/100% 2.9em,
+    linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.018))!important;
+  box-shadow:var(--shadow)!important;
+  padding:clamp(22px,3.6vw,46px)!important;
+  color:var(--text)!important;
+  line-height:1.72!important;
+  font-size:clamp(1rem,1.18vw,1.12rem)!important;
+}
+.cifra-content b,.cifra-content strong,.cifra-content .chord,.cifra-content span[class*="chord"]{color:var(--v7-gold)!important;}
+.scroll-bubble{
+  right:20px!important;bottom:20px!important;
+  padding:10px 12px!important;
+  gap:8px!important;
+  border-radius:24px!important;
+  border:1px solid var(--v7-border-2)!important;
+  background:linear-gradient(180deg, rgba(19,22,31,.92), rgba(10,12,18,.88))!important;
+  box-shadow:0 18px 50px rgba(0,0,0,.34),0 0 0 1px rgba(215,173,71,.08)!important;
+}
+.scroll-bubble button{width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;background:rgba(255,255,255,.05)!important;color:var(--text)!important;border:1px solid var(--border)!important;}
+.scroll-bubble #scroll-toggle{background:linear-gradient(135deg,var(--v7-gold-2),var(--v7-gold))!important;color:#241805!important;}
+.scroll-bubble-close{top:-9px!important;right:-9px!important;width:24px!important;height:24px!important;min-width:24px!important;min-height:24px!important;background:var(--v7-bg-2)!important;}
+
+/* Agenda, fotos, downloads, ferramentas, contato */
+.agenda-embed-card,#albuns-grid,#downloads-grid,.ferramentas-grid,.contact-form,.social-box,.login-panel,.personal-playlist-card,.notificacao-publica-card{
+  border:1px solid var(--border)!important;
+  border-radius:28px!important;
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02))!important;
+  box-shadow:var(--shadow)!important;
+}
+#albuns-grid,#downloads-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px!important;padding:18px!important;}
+#albuns-grid > *,#downloads-grid > *,.tool-card{
+  border:1px solid var(--border)!important;
+  border-radius:24px!important;
+  background:linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.02))!important;
+  box-shadow:0 14px 36px rgba(0,0,0,.16)!important;
+  overflow:hidden;
+}
+#albuns-grid > *:hover,#downloads-grid > *:hover,.tool-card:hover{transform:translateY(-3px);border-color:var(--v7-border-2)!important;box-shadow:var(--v7-glow)!important;}
+.ferramentas-grid{padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;}
+.tool-card{padding:22px!important;}
+.tool-chip{background:rgba(215,173,71,.12)!important;color:var(--v7-gold)!important;border:1px solid var(--v7-border-2)!important;border-radius:999px;padding:6px 10px;font-weight:900;text-transform:uppercase;font-size:.7rem;letter-spacing:.08em;}
+.contact-form{padding:24px!important;max-width:720px;}
+.contact-form button{min-height:50px;border:0!important;}
+.social-box{padding:20px!important;margin-top:18px!important;}
+
+/* ADM — visual premium */
+.admin-dashboard-page,.admin-section-page{padding-top:28px;}
+.admin-dashboard-page h1,.admin-section-page h1{font-family:var(--font-title);letter-spacing:.05em;text-transform:uppercase;}
+.admin-intro{font-size:1rem;color:var(--text-soft)!important;}
+.admin-cards-grid{
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr))!important;
+  gap:16px!important;
+}
+.admin-card{
+  position:relative;
+  min-height:190px!important;
+  border:1px solid var(--border)!important;
+  border-radius:26px!important;
+  background:
+    radial-gradient(circle at 88% 18%, rgba(215,173,71,.13), transparent 7rem),
+    linear-gradient(180deg, rgba(255,255,255,.065), rgba(255,255,255,.022))!important;
+  box-shadow:var(--shadow)!important;
+  overflow:hidden;
+}
+.admin-card::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg, rgba(255,255,255,.06), transparent 38%);opacity:.8;pointer-events:none;}
+.admin-card img{width:74px!important;height:74px!important;filter:drop-shadow(0 12px 22px rgba(0,0,0,.22)) saturate(1.1);}
+.admin-card span{font-size:1.05rem!important;letter-spacing:.02em;color:var(--text)!important;}
+.admin-card:hover{transform:translateY(-5px)!important;border-color:var(--v7-border-2)!important;box-shadow:var(--v7-glow)!important;}
+.admin-form,.admin-list-card,.admin-permission-card,.admin-field-block,.backup-actions,#admin-page-content > *,#admin-musicas-list > *,#admin-cifras-list > *,#admin-programacoes-list > *,#admin-fotos-list > *,#admin-downloads-list > *,#admin-contatos-list > *{
+  border-color:var(--border)!important;
+  background:linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.018))!important;
+  box-shadow:0 14px 36px rgba(0,0,0,.14)!important;
+}
+.admin-form{padding:22px;border:1px solid var(--border);border-radius:28px;}
+.admin-permission-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px!important;}
+.admin-permission-card{border:1px solid var(--border);border-radius:22px;padding:16px!important;}
+.admin-permission-card h3{color:var(--v7-gold)!important;letter-spacing:.04em;text-transform:uppercase;font-size:.95rem;}
+.admin-list-card{border-radius:22px!important;}
+.admin-account-menu{border:1px solid var(--border)!important;border-radius:22px!important;background:var(--surface)!important;box-shadow:var(--shadow)!important;}
+#admin-account-menu .admin-user-photo{border:2px solid var(--v7-gold);}
+
+/* Modais, busca e menu mobile */
+.search-modal-panel,.mobile-menu-panel{
+  border:1px solid var(--border)!important;
+  border-radius:26px!important;
+  background:linear-gradient(180deg, rgba(18,22,30,.96), rgba(10,12,18,.96))!important;
+  box-shadow:var(--shadow)!important;
+}
+html[data-theme="light"] .search-modal-panel,html[data-theme="light"] .mobile-menu-panel{background:linear-gradient(180deg,#fffaf0,#f8f0df)!important;}
+.search-result-item{border-radius:18px!important;border-color:var(--border)!important;background:rgba(255,255,255,.04)!important;}
+.search-result-item:hover{border-color:var(--v7-border-2)!important;transform:translateX(3px);}
+.mobile-menu-panel a{border-bottom:1px solid var(--border)!important;}
+
+/* Footer */
+.site-footer{
+  width:min(100% - 36px,1220px);
+  margin:64px auto 28px!important;
+  padding:36px 26px!important;
+  border:1px solid var(--border)!important;
+  border-radius:32px;
+  background:linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.018))!important;
+  box-shadow:var(--shadow);
+}
+.footer-logo{width:min(100%,260px)!important;max-height:112px;object-fit:contain!important;}
+.site-footer small{color:var(--muted);}
+
+/* Responsivo */
+@media (max-width: 980px){
+  .site-header,.admin-topbar{top:6px;width:min(100% - 14px,1280px);border-radius:18px!important;}
+  .main-nav{display:none!important;}
+  .header-inner,.admin-topbar-inner{min-height:66px!important;padding:0 12px;}
+  .brand-v7{width:136px!important;height:46px!important;}
+  .v7-home-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .musica-content-layout{grid-template-columns:1fr;}
+  .musica-video-wrapper{position:relative;top:auto;}
+  .cifra-top-controls{position:fixed!important;left:50%!important;right:auto!important;bottom:14px!important;top:auto!important;transform:translateX(-50%)!important;max-width:calc(100vw - 20px);overflow-x:auto;flex-wrap:nowrap!important;border-radius:22px!important;}
+  .cifra-page{padding-bottom:110px;}
+  #transpose-down::after,#transpose-up::after,#font-down::after,#font-up::after,#focus-toggle::after,#fullscreen-toggle::after{display:none;}
+}
+@media (max-width: 680px){
+  .container{width:min(100% - 24px,1220px)!important;}
+  .hero-banner{width:min(100% - 24px,1220px)!important;min-height:520px!important;border-radius:26px!important;}
+  .v7-hero-content{padding:28px;justify-content:flex-end;}
+  .v7-hero-title{font-size:clamp(2.45rem,12vw,3.5rem);}
+  .v7-home-quick-grid{width:min(100% - 24px,1220px);grid-template-columns:1fr;}
+  main:not(.home-page) > section.container > h1,.simple-page > section.container > h1,.listing-page > section.container > h1,.musica-page > section.container > h1,.cifra-page > section.container > h1,.agenda-page > section.container > h1,.ferramentas-head{margin-left:20px!important;}
+  .v7-page-description,.list-search-bar{margin-left:20px!important;}
+  .alphabet-group{padding:14px;border-radius:22px;}
+  .music-list-item{padding:12px!important;}
+  .site-footer{width:min(100% - 24px,1220px);border-radius:24px;}
+  .admin-cards-grid{grid-template-columns:1fr!important;}
+}
+
+/* Movimento sutil */
+@keyframes v7FloatIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.v7-hero-content,.v7-home-quick-card,.alphabet-group,.admin-card,.programacao-box,.destaque-box,.tool-card,.contact-form{animation:v7FloatIn .42s ease both;}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important;}}

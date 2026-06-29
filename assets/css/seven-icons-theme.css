@@ -1,0 +1,102 @@
+
+/* Ministério Seven — Logos e ícones oficiais aplicados ao site todo */
+:root{
+  --seven-icon-size:1.12em;
+  --seven-icon-color:currentColor;
+}
+.seven-icon,
+.site-icon,
+.admin-icon-svg{
+  display:inline-block;
+  width:var(--seven-icon-size,1.12em);
+  height:var(--seven-icon-size,1.12em);
+  flex:0 0 var(--seven-icon-size,1.12em);
+  background:var(--seven-icon-color,currentColor);
+  -webkit-mask:var(--seven-icon-url) center/contain no-repeat;
+  mask:var(--seven-icon-url) center/contain no-repeat;
+  vertical-align:-.17em;
+}
+.seven-icon-only{font-size:0!important;line-height:1!important;gap:0!important;}
+.seven-icon-only .seven-icon{font-size:1rem;vertical-align:middle;}
+.seven-icon-sr{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;}
+
+/* Logo do cabeçalho público */
+.site-header .brand-link{display:inline-flex;align-items:center;justify-content:center;min-width:64px;}
+.site-header #header-v7-logo.seven-theme-logo{
+  width:clamp(54px,7.4vw,92px)!important;
+  height:auto!important;
+  max-height:38px!important;
+  object-fit:contain!important;
+  border-radius:0!important;
+  padding:0!important;
+  background:transparent!important;
+  filter:none!important;
+}
+.site-footer #footer-logo.seven-theme-footer-logo{
+  width:auto!important;
+  max-width:190px!important;
+  height:auto!important;
+  max-height:54px!important;
+  object-fit:contain!important;
+}
+
+/* Ícones no menu público */
+.main-nav a,.mobile-nav-link{display:inline-flex;align-items:center;gap:.46rem;}
+.main-nav a .seven-icon,.mobile-nav-link .seven-icon{--seven-icon-size:1.05em;color:currentColor;opacity:.96;}
+.main-nav a:hover .seven-icon,.mobile-nav-link:hover .seven-icon{opacity:1;}
+
+/* Botões do cabeçalho e modais */
+.header-actions button,
+#search-modal-close,
+#mobile-menu-close,
+.public-auth-modal__close{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:.4rem!important;
+}
+#search-toggle .seven-icon,
+#theme-toggle .seven-icon,
+#mobile-menu-toggle .seven-icon,
+#search-modal-close .seven-icon,
+#mobile-menu-close .seven-icon,
+.public-auth-modal__close .seven-icon{
+  --seven-icon-size:1.15rem;
+}
+
+/* Página de música/cifra e controles */
+.cifra-top-controls button,.page-cross-link a,.prev-next-nav a,
+.scroll-bubble button,.pdf-modern-btn,.tool-fullscreen-btn{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:.42rem!important;
+}
+.cifra-top-controls .seven-icon,.scroll-bubble .seven-icon,.pdf-modern-btn .seven-icon,.page-cross-link .seven-icon{--seven-icon-size:1.05rem;}
+.scroll-panel-toggle-icon{display:none!important;}
+
+/* Favoritos/playlists */
+.favorite-button,.personal-action-button,.personal-playlist-remove,.personal-playlist-delete,
+[data-favorite-button], [data-playlist-button], [data-delete-playlist], [data-remove-item], #new-playlist-page-button{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:.42rem!important;
+}
+
+/* Ações e ADM */
+.button-primary,.button-outline,.button-danger,.admin-card,.admin-side-button,.admin-public-link,
+.admin-toolbar a,.admin-toolbar button,.admin-list-actions a,.admin-list-actions button,
+.admin-form-actions button,.admin-form-actions a{
+  gap:.48rem!important;
+}
+.seven-action-icon{--seven-icon-size:1rem;}
+.admin-side-button .seven-icon,.admin-public-link .seven-icon{--seven-icon-size:1.05rem;}
+.admin-clean #theme-toggle{font-size:1rem!important;}
+
+/* Spinner usando a identidade visual */
+.global-loading .spinner{
+  border-top-color:var(--accent,#edc455)!important;
+}
+
+/* Cores por tema: os SVGs usam currentColor/mask */
+html[data-theme="dark"] .seven-icon{color:inherit;}
+html[data-theme="light"] .seven-icon{color:inherit;}
+
+@media (max-width:760px){
+  .site-header #header-v7-logo.seven-theme-logo{width:70px!important;max-height:34px!important;}
+}

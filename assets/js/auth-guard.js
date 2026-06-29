@@ -20,16 +20,18 @@ function resolveAdminPageKey() {
   if (path.endsWith("/admin/backup.html")) return "backup";
   if (path.endsWith("/admin/logs.html")) return "logs";
 
-  if (path.endsWith("/admin/musicas.html")) return "musicas";
-  if (path.endsWith("/admin/editor-musica.html")) return editing ? "editor-musica-edit" : "editor-musica-create";
+  if (path.endsWith("/admin/musicas-publicas.html")) return "musicas-publicas";
+  if (path.endsWith("/admin/editor-musica-publica.html")) return editing ? "editor-musica-edit" : "editor-musica-create";
 
   if (
+    path.endsWith("/admin/musicas.html") ||
     path.endsWith("/admin/musicas-vocal.html") ||
     path.endsWith("/admin/musicas-vocais.html") ||
     path.endsWith("/admin/vocal-musicas.html")
   ) return "musicas-vocal";
 
   if (
+    path.endsWith("/admin/editor-musica.html") ||
     path.endsWith("/admin/editor-musica-vocal.html") ||
     path.endsWith("/admin/editor-musicas-vocal.html") ||
     path.endsWith("/admin/editor-musica-vocais.html") ||

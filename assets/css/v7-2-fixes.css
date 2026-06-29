@@ -1,0 +1,283 @@
+/* =========================================================
+   Ministério Seven V7.2 — Correções finas
+   Corrige: hero inicial cortado, logo pouco visível, botão Auto vazio
+   e painel flutuante de auto-rolagem grande/arrastando slider.
+   Carregar depois de v7-redesign.css e v7-fixes.css.
+   ========================================================= */
+
+/* 1) Header/logo: deixa a marca oficial mais legível sem trocar a logo. */
+.site-header .brand-link,
+.admin-topbar .admin-brand{
+  flex:0 0 auto !important;
+}
+.site-header .brand-link{
+  min-width:clamp(178px, 18vw, 230px) !important;
+  padding:6px 10px !important;
+  border-radius:18px !important;
+  background:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.012)) !important;
+}
+.brand-v7{
+  width:clamp(154px, 16vw, 202px) !important;
+  height:64px !important;
+  object-fit:contain !important;
+  object-position:left center !important;
+  filter:brightness(1.12) contrast(1.13) saturate(1.08) drop-shadow(0 8px 20px rgba(0,0,0,.42)) !important;
+}
+html[data-theme="light"] .brand-v7{
+  filter:contrast(1.1) saturate(1.04) drop-shadow(0 7px 16px rgba(61,45,20,.14)) !important;
+}
+.header-inner,
+.admin-topbar-inner{
+  min-height:82px !important;
+}
+
+/* 2) Home: evita cortar os botões Ver letras / Abrir cifras. */
+.home-page .hero-banner,
+body.v7-layout-v71 .hero-banner,
+body.v7-layout-v72 .hero-banner{
+  min-height:clamp(485px, 45vw, 650px) !important;
+  overflow:hidden !important;
+  display:flex !important;
+  align-items:stretch !important;
+}
+.home-page .v7-hero-content,
+body.v7-layout-v71 .v7-hero-content,
+body.v7-layout-v72 .v7-hero-content{
+  position:relative !important;
+  inset:auto !important;
+  width:100% !important;
+  min-height:inherit !important;
+  padding-top:clamp(42px, 5vw, 72px) !important;
+  padding-bottom:clamp(90px, 9vw, 138px) !important;
+  justify-content:center !important;
+}
+.home-page .v7-hero-title,
+body.v7-layout-v71 .v7-hero-title,
+body.v7-layout-v72 .v7-hero-title{
+  font-size:clamp(2.45rem, 5.25vw, 5.15rem) !important;
+  line-height:1.02 !important;
+  max-width:790px !important;
+}
+.home-page .v7-hero-text,
+body.v7-layout-v71 .v7-hero-text,
+body.v7-layout-v72 .v7-hero-text{
+  max-width:700px !important;
+  line-height:1.58 !important;
+}
+.home-page .v7-hero-actions,
+body.v7-layout-v71 .v7-hero-actions,
+body.v7-layout-v72 .v7-hero-actions{
+  position:relative !important;
+  z-index:5 !important;
+  margin-top:30px !important;
+  margin-bottom:0 !important;
+}
+.v7-home-quick-grid{
+  margin-top:clamp(20px, 2.5vw, 34px) !important;
+}
+
+/* 3) Botão Auto: se o HTML vier só com span/ícone vazio, mostra rótulo. */
+.scroll-panel-toggle-btn,
+#scroll-panel-toggle{
+  min-width:74px !important;
+  padding:0 12px !important;
+  gap:7px !important;
+  font-size:0 !important;
+}
+.scroll-panel-toggle-btn::before,
+#scroll-panel-toggle::before{
+  content:"↧" !important;
+  font-size:1rem !important;
+  line-height:1 !important;
+  color:var(--v7-gold, var(--primary)) !important;
+}
+.scroll-panel-toggle-btn::after,
+#scroll-panel-toggle::after{
+  content:"Auto" !important;
+  font-size:.78rem !important;
+  line-height:1 !important;
+  font-weight:850 !important;
+  color:var(--text-soft, #d8d2c4) !important;
+}
+.scroll-panel-toggle-icon{display:none !important;}
+
+/* 4) Painel de auto-rolagem compacto e arrastável. */
+.v72-scroll-bubble-compact,
+body.v7-layout-v72 .scroll-bubble:not([hidden]),
+body.v7-layout-v72 .musica-scroll-bubble:not([hidden]),
+body.v7-layout-v72 #scroll-bubble:not([hidden]),
+body.v7-layout-v72 #musica-scroll-bubble:not([hidden]){
+  position:fixed !important;
+  left:auto !important;
+  top:auto !important;
+  right:18px !important;
+  bottom:18px !important;
+  width:auto !important;
+  min-width:0 !important;
+  max-width:min(355px, calc(100vw - 28px)) !important;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:72px !important;
+  padding:9px 12px !important;
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:8px !important;
+  overflow:visible !important;
+  resize:none !important;
+  border-radius:999px !important;
+  border:1px solid var(--border, rgba(255,255,255,.14)) !important;
+  background:linear-gradient(180deg, rgba(18,21,28,.98), rgba(9,11,15,.95)) !important;
+  box-shadow:0 18px 46px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.06) !important;
+  backdrop-filter:blur(16px) saturate(135%) !important;
+  -webkit-backdrop-filter:blur(16px) saturate(135%) !important;
+  transform:none !important;
+  cursor:grab !important;
+  z-index:9999 !important;
+  opacity:1 !important;
+}
+html[data-theme="light"] .v72-scroll-bubble-compact,
+html[data-theme="light"] body.v7-layout-v72 .scroll-bubble:not([hidden]),
+html[data-theme="light"] body.v7-layout-v72 .musica-scroll-bubble:not([hidden]){
+  background:linear-gradient(180deg, rgba(255,252,245,.98), rgba(248,240,224,.96)) !important;
+  box-shadow:0 18px 42px rgba(61,45,20,.14), inset 0 1px 0 rgba(255,255,255,.85) !important;
+}
+.v72-scroll-bubble-compact.v72-positioned{
+  right:auto !important;
+  bottom:auto !important;
+}
+.v72-scroll-bubble-compact:active{cursor:grabbing !important;}
+.v72-scroll-bubble-compact[hidden],
+body.v7-layout-v72 .scroll-bubble[hidden],
+body.v7-layout-v72 .musica-scroll-bubble[hidden]{
+  display:none !important;
+}
+.v72-scroll-bubble-compact *{
+  max-height:52px !important;
+}
+.v72-scroll-bubble-compact button,
+body.v7-layout-v72 .scroll-bubble button,
+body.v7-layout-v72 .musica-scroll-bubble button{
+  flex:0 0 auto !important;
+  width:34px !important;
+  height:34px !important;
+  min-width:34px !important;
+  min-height:34px !important;
+  max-width:34px !important;
+  max-height:34px !important;
+  padding:0 !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  border-radius:999px !important;
+  font-size:.82rem !important;
+  line-height:1 !important;
+  cursor:pointer !important;
+}
+.v72-scroll-bubble-compact input[type="range"],
+.v72-scroll-bubble-compact .desktop-scroll-slider,
+body.v7-layout-v72 .scroll-bubble input[type="range"],
+body.v7-layout-v72 .musica-scroll-bubble input[type="range"],
+body.v7-layout-v72 .desktop-scroll-slider{
+  flex:0 0 118px !important;
+  width:118px !important;
+  min-width:84px !important;
+  max-width:118px !important;
+  height:18px !important;
+  max-height:18px !important;
+  padding:0 !important;
+  margin:0 !important;
+  cursor:pointer !important;
+  accent-color:#f59b3a !important;
+}
+.v72-scroll-bubble-compact .scroll-bubble-close,
+body.v7-layout-v72 .scroll-bubble .scroll-bubble-close,
+body.v7-layout-v72 .musica-scroll-bubble .scroll-bubble-close{
+  position:absolute !important;
+  right:-8px !important;
+  top:-8px !important;
+  width:24px !important;
+  height:24px !important;
+  min-width:24px !important;
+  min-height:24px !important;
+  max-width:24px !important;
+  max-height:24px !important;
+  font-size:.82rem !important;
+  background:rgba(24,27,35,.98) !important;
+  color:var(--text, #fff) !important;
+  border:1px solid var(--border, rgba(255,255,255,.15)) !important;
+  box-shadow:0 8px 18px rgba(0,0,0,.28) !important;
+  z-index:2 !important;
+}
+.v72-scroll-drag-handle{
+  flex:0 0 auto;
+  width:18px;
+  height:34px;
+  display:inline-grid;
+  place-items:center;
+  border-radius:999px;
+  color:var(--v7-gold, var(--primary));
+  opacity:.82;
+  cursor:grab;
+  user-select:none;
+}
+.v72-scroll-drag-handle::before{content:"⋮⋮";font-size:.9rem;letter-spacing:-.28em;transform:rotate(90deg);}
+.v72-scroll-bubble-compact.v72-dragging .v72-scroll-drag-handle,
+.v72-scroll-bubble-compact.v72-dragging{cursor:grabbing !important;}
+
+/* 5) Painel de música/cifra: o vídeo fica ao lado, mas o auto-scroll nunca vira modal gigante. */
+body.v7-layout-v72 .musica-video-wrapper{
+  max-width:430px !important;
+}
+body.v7-layout-v72 .musica-video-wrapper iframe,
+body.v7-layout-v72 .musica-video-wrapper .youtube-embed,
+body.v7-layout-v72 .musica-video-wrapper > *{
+  max-width:100% !important;
+}
+body.v7-layout-v72 .musica-content-layout{
+  overflow:visible !important;
+}
+body.v7-layout-v72 .cifra-content,
+body.v7-layout-v72 #cifra-content,
+body.v7-layout-v72 .musica-letra,
+body.v7-layout-v72 #musica-letra{
+  overflow:visible !important;
+}
+
+@media (max-width:980px){
+  .site-header .brand-link{min-width:auto !important;padding:4px 6px !important;}
+  .brand-v7{width:142px !important;height:54px !important;}
+  .home-page .hero-banner,
+  body.v7-layout-v71 .hero-banner,
+  body.v7-layout-v72 .hero-banner{min-height:560px !important;}
+  .home-page .v7-hero-title,
+  body.v7-layout-v71 .v7-hero-title,
+  body.v7-layout-v72 .v7-hero-title{font-size:clamp(2.35rem, 9vw, 4.2rem) !important;}
+}
+@media (max-width:680px){
+  .brand-v7{width:132px !important;height:48px !important;}
+  .home-page .hero-banner,
+  body.v7-layout-v71 .hero-banner,
+  body.v7-layout-v72 .hero-banner{min-height:610px !important;}
+  .home-page .v7-hero-content,
+  body.v7-layout-v71 .v7-hero-content,
+  body.v7-layout-v72 .v7-hero-content{padding-bottom:120px !important;}
+  .v72-scroll-bubble-compact,
+  body.v7-layout-v72 .scroll-bubble:not([hidden]),
+  body.v7-layout-v72 .musica-scroll-bubble:not([hidden]){
+    right:12px !important;
+    bottom:12px !important;
+    max-width:calc(100vw - 24px) !important;
+    gap:6px !important;
+    padding:8px 10px !important;
+  }
+  .v72-scroll-bubble-compact input[type="range"],
+  body.v7-layout-v72 .scroll-bubble input[type="range"],
+  body.v7-layout-v72 .musica-scroll-bubble input[type="range"],
+  body.v7-layout-v72 .desktop-scroll-slider{
+    flex-basis:92px !important;
+    width:92px !important;
+    max-width:92px !important;
+  }
+}

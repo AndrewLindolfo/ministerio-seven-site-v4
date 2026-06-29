@@ -1,16 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="dark">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DKM3MTBKQ6"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-DKM3MTBKQ6');
-  </script>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ensaios | Admin Seven</title>
@@ -21,34 +11,62 @@
   <link rel="stylesheet" href="../assets/css/responsive.css" />
   <link rel="stylesheet" href="../assets/css/admin.css" />
   <link rel="stylesheet" href="../assets/css/pages/admin-ensaios.css" />
+  <link rel="stylesheet" href="../assets/css/admin-refeito.css" />
 </head>
-<body>
-<header class="admin-topbar">
-  <div class="container admin-topbar-inner">
-    <a href="./index.html" class="admin-brand" aria-label="Voltar ao painel">
-      <img src="../assets/img/v7/icon_120.png" alt="V7" class="admin-v7" />
-      <strong>Área de Administração</strong>
-    </a>
+<body class="admin-clean">
+<div class="admin-shell">
 
-    <div class="header-actions">
-      <a href="../index.html" class="admin-view-site-link">Ver site</a>
-      <button type="button" id="theme-toggle" aria-label="Alternar tema">🌙</button>
-      <div class="admin-account">
-        <button type="button" id="admin-account-toggle">Conta</button>
-        <div id="admin-account-menu" class="admin-account-menu hidden">
-          <img id="admin-user-photo" src="../assets/img/v7/icon_120.png" alt="Conta" class="admin-user-photo" />
-          <p id="admin-user-email">admin@exemplo.com</p>
-          <button type="button" id="admin-logout-button">Sair</button>
-        </div>
-      </div>
+<aside class="admin-sidebar" aria-label="Menu administrativo">
+  <div class="admin-brand-clean">
+    <img src="../assets/img/seven-admin-brand/v7/v7-clara.svg" alt="V7" class="admin-brand-logo" />
+    <div><strong>Painel ADM</strong><span>Painel Administrativo</span></div>
+  </div>
+
+  <div class="admin-user-card">
+    <img id="admin-user-photo" src="../assets/img/seven-admin-brand/icon-user-default.svg" alt="Usuário" />
+    <div>
+      <strong id="admin-user-name">Administrador</strong>
+      <span id="admin-user-role">Administrador</span>
+      <small id="admin-user-email"></small>
     </div>
   </div>
-</header>
 
-<main class="admin-section-page">
-  <section class="container">
-    <a href="./index.html" class="admin-back-link">← Voltar ao painel</a>
-    <h1>Ensaios</h1>
+  <div class="admin-menu-title">Menu principal</div>
+  <nav class="admin-nav" aria-label="Menu principal ADM">
+    <a href="index.html" data-admin-module="dashboard"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-dashboard.svg')"></span><span>Dashboard</span><span class="admin-nav-chev">›</span></a>
+<a href="musicas-publicas.html" data-admin-module="musicasPublicas"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-public-music.svg')"></span><span>Músicas Públicas</span><span class="admin-nav-chev">›</span></a>
+<a href="musicas-vocal.html" data-admin-module="musicasVocal"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-vocal-music.svg')"></span><span>Músicas Vocal</span><span class="admin-nav-chev">›</span></a>
+<a href="vocalistas.html" data-admin-module="vocalistas"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-vocalists.svg')"></span><span>Vocalistas</span><span class="admin-nav-chev">›</span></a>
+<a href="cifras.html" data-admin-module="cifras"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-chords.svg')"></span><span>Cifras</span><span class="admin-nav-chev">›</span></a>
+<a href="programacoes.html" data-admin-module="programacoes"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-programs.svg')"></span><span>Programações</span><span class="admin-nav-chev">›</span></a>
+<a href="fotos.html" data-admin-module="fotos"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-photos.svg')"></span><span>Fotos</span><span class="admin-nav-chev">›</span></a>
+<a href="downloads.html" data-admin-module="downloads"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-downloads.svg')"></span><span>Downloads</span><span class="admin-nav-chev">›</span></a>
+<a href="downloads-geral.html" data-admin-module="downloadsGerais"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-downloads.svg')"></span><span>Downloads Gerais</span><span class="admin-nav-chev">›</span></a>
+<a href="downloads-por-musica.html" data-admin-module="downloadsPorMusica"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-downloads.svg')"></span><span>Downloads por Música</span><span class="admin-nav-chev">›</span></a>
+<a href="contatos.html" data-admin-module="contatos"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-contacts.svg')"></span><span>Contatos</span><span class="admin-nav-chev">›</span></a>
+<a href="links.html" data-admin-module="links"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-links.svg')"></span><span>Links</span><span class="admin-nav-chev">›</span></a>
+<a href="notificacoes.html" data-admin-module="notificacoes"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-notifications.svg')"></span><span>Notificações</span><span class="admin-nav-chev">›</span></a>
+<a href="ensaios.html" data-admin-module="ensaios"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-programs.svg')"></span><span>Ensaios</span><span class="admin-nav-chev">›</span></a>
+  </nav>
+
+  <div class="admin-menu-title">Configurações</div>
+  <nav class="admin-nav" aria-label="Configurações ADM">
+    <a href="backup.html" data-admin-module="backup"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-backup.svg')"></span><span>Backup</span><span class="admin-nav-chev">›</span></a>
+<a href="admins.html" data-admin-module="admins"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-users.svg')"></span><span>ADMs</span><span class="admin-nav-chev">›</span></a>
+<a href="logs.html" data-admin-module="logs"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-logs.svg')"></span><span>Log de atividades</span><span class="admin-nav-chev">›</span></a>
+<a href="config.html" data-admin-module="config"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-settings.svg')"></span><span>Configurações</span><span class="admin-nav-chev">›</span></a>
+  </nav>
+
+  <div class="admin-sidebar-bottom">
+    <button type="button" id="theme-toggle" class="admin-side-button" aria-label="Alternar tema">☀️ Alternar tema</button>
+    <button type="button" id="admin-logout-button" class="admin-side-button"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-logout.svg')"></span> Sair</button>
+    <a href="../index.html" class="admin-public-link"><span class="admin-nav-icon" style="--icon:url('../assets/icons/seven-admin/icon-admin-view-site.svg')"></span> Ver site público</a>
+  </div>
+</aside>
+  <div class="admin-main-wrap">
+    <main class="admin-section-page">
+      <section class="container">
+<h1>Ensaios</h1>
     <p class="admin-intro">Cadastre e organize ensaios com título, descrição opcional e setlist de músicas já cadastradas.</p>
 
     <div class="admin-toolbar">
@@ -56,14 +74,14 @@
     </div>
 
     <div id="admin-ensaios-list"></div>
-  </section>
-</main>
-
-<div id="global-loading" class="global-loading hidden" aria-hidden="true">
-  <div class="spinner"></div>
+      </section>
+    </main>
+  </div>
 </div>
-<script type="module" src="../assets/js/app.js"></script>
-<script type="module" src="../assets/js/auth-guard.js"></script>
-<script type="module" src="../assets/js/pages/admin-ensaios.js"></script>
+<div id="global-loading" class="global-loading hidden" aria-hidden="true"><div class="spinner"></div></div>
+  <script type="module" src="../assets/js/app.js"></script>
+  <script type="module" src="../assets/js/auth-guard.js"></script>
+  <script type="module" src="../assets/js/admin-refeito.js"></script>
+  <script type="module" src="../assets/js/pages/admin-ensaios.js"></script>
 </body>
 </html>

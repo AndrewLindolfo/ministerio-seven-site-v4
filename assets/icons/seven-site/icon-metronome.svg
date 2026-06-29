@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="365px" height="426px" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 365 425.93">
+ <defs>
+  <style type="text/css">
+   
+    .str0 {stroke:currentColor;stroke-width:7.99;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:22.9256}
+    .fil0 {fill:none}
+   
+  </style>
+ </defs>
+ <g id="Camada_x0020_1">
+  <metadata id="CorelCorpID_0Corel-Layer" />
+  <g id="metronome-tempo-beat-bpm-svgrepo-com.svg">
+   <line class="fil0 str0" x1="149.25" y1="278.47" x2="349.01" y2="11.73" />
+   <line class="fil0 str0" x1="133.89" y1="74.49" x2="164.62" y2="74.49" />
+   <line class="fil0 str0" x1="133.89" y1="121.56" x2="164.62" y2="121.56" />
+   <line class="fil0 str0" x1="133.89" y1="168.63" x2="164.62" y2="168.63" />
+   <path class="fil0 str0" d="M252.2 215.71l38.42 152.2c6.14,26.68 -12.29,51.78 -39.95,51.78l-204.36 0c-26.13,0 -46.1,-25.1 -39.95,-50.21l72.21 -321.67c6.15,-21.96 24.59,-36.08 44.57,-36.08l52.24 0c21.51,0 38.41,15.69 43.02,36.08l21.51 109.84" />
+   <line class="fil0 str0" x1="17.11" y1="325.54" x2="272.18" y2="325.54" />
+  </g>
+ </g>
+</svg>
