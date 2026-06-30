@@ -18,17 +18,16 @@ function updateThemeToggleIcon(isDark) {
   const toggle = document.getElementById("theme-toggle");
   if (!toggle) return;
 
-  // No modo escuro aparece sol para ir ao claro
-  // No modo claro aparece lua para ir ao escuro
   toggle.textContent = isDark ? "☀️" : "🌙";
-  toggle.setAttribute(
-    "aria-label",
-    isDark ? "Ativar modo claro" : "Ativar modo escuro"
-  );
-  toggle.setAttribute(
-    "title",
-    isDark ? "Ativar modo claro" : "Ativar modo escuro"
-  );
+  toggle.setAttribute("aria-label", isDark ? "Ativar modo claro" : "Ativar modo escuro");
+  toggle.setAttribute("title", isDark ? "Ativar modo claro" : "Ativar modo escuro");
+}
+
+function headerLogoSrc(assets, isDark) {
+  // Modo escuro usa logo clara; modo claro usa logo escura.
+  return isDark
+    ? `${assets}/img/logo-header/logo-header-clara.svg`
+    : `${assets}/img/logo-header/logo-header-escura.svg`;
 }
 
 export function applyThemeBranding() {
@@ -42,9 +41,9 @@ export function applyThemeBranding() {
   const favicon = ensureFavicon();
 
   if (headerLogo) {
-    headerLogo.src = isDark
-      ? `${assets}/img/v7/icon_dark.png`
-      : `${assets}/img/v7/icon_light.png`;
+    headerLogo.src = headerLogoSrc(assets, isDark);
+    headerLogo.alt = "Ministério Seven";
+    headerLogo.classList.add("header-seven-logo");
   }
 
   if (footerLogo) {

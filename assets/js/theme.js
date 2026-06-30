@@ -16,8 +16,10 @@ export function applyTheme(theme) {
 
   if (headerLogo) {
     headerLogo.src = isLight
-      ? "assets/img/v7/icon_120.png"
-      : "assets/img/v7/icon_120.png";
+      ? "assets/img/logo-header/logo-header-escura.svg"
+      : "assets/img/logo-header/logo-header-clara.svg";
+    headerLogo.alt = "Ministério Seven";
+    headerLogo.classList.add("header-seven-logo");
   }
 
   if (footerLogo) {

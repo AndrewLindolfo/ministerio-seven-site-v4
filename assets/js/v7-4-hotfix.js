@@ -12,7 +12,7 @@
     return htmlTheme === 'light' || bodyTheme === 'light' || document.documentElement.classList.contains('light') || document.body?.classList.contains('light');
   };
 
-  const logoSrc = () => asset(`img/logo/${isLight() ? 'logo_light.png' : 'logo_dark.png'}`);
+  const logoSrc = () => asset(`img/logo-header/${isLight() ? 'logo-header-escura.svg' : 'logo-header-clara.svg'}`);
 
   function restoreHeaderLogo(){
     document.querySelectorAll('.site-header .brand-link').forEach((brand) => {
@@ -80,9 +80,11 @@
         <button type="button" class="v74-scroll-play" aria-label="Iniciar ou pausar"></button>
         <div class="v74-scroll-range-wrap">
           <div class="v74-scroll-range-label"><span>Velocidade</span><span class="v74-scroll-speed-value">1.6x</span></div>
-          <input class="v74-scroll-range" type="range" min="0.3" max="4" step="0.1" value="1.6" aria-label="Velocidade da auto-rolagem" />
+          <div class="v74-scroll-range-row">
+            <input class="v74-scroll-range" type="range" min="0.3" max="4" step="0.1" value="1.6" aria-label="Velocidade da auto-rolagem" />
+            <button type="button" class="v74-scroll-reset" title="Voltar velocidade padrão" aria-label="Voltar velocidade padrão">1x</button>
+          </div>
         </div>
-        <button type="button" class="v74-scroll-reset" title="Voltar velocidade padrão">1x</button>
       </div>
       <div class="v74-scroll-hint">Arraste pela barra superior.</div>`;
     document.body.appendChild(panel);
@@ -93,7 +95,7 @@
     const value = panel.querySelector('.v74-scroll-speed-value');
     const reset = panel.querySelector('.v74-scroll-reset');
 
-    close?.addEventListener('click', (ev) => { ev.preventDefault(); stopAuto(); panel.classList.remove('is-open'); }, true);
+    close?.addEventListener('click', (ev) => { ev.preventDefault(); ev.stopPropagation(); closeAutoPanel(); }, true);
     play?.addEventListener('click', (ev) => { ev.preventDefault(); timer ? stopAuto() : startAuto(); }, true);
     range?.addEventListener('input', () => {
       speed = Number(range.value) || 1;
@@ -181,6 +183,35 @@
     });
   }
 
+  function setAutoButtonsActive(active){
+    document.querySelectorAll('#scroll-panel-toggle, #musica-scroll-panel-toggle, .scroll-panel-toggle-btn, .v72-auto-btn-fixed').forEach((btn) => {
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  function closeAutoPanel(){
+    stopAuto();
+    if (panel) {
+      panel.classList.remove('is-open', 'is-dragging');
+      panel.setAttribute('aria-hidden', 'true');
+    }
+    setAutoButtonsActive(false);
+  }
+
+  function openAutoPanel(){
+    hideLegacyBubbles();
+    const box = createScrollPanel();
+    box.classList.add('is-open');
+    box.setAttribute('aria-hidden', 'false');
+    setAutoButtonsActive(true);
+  }
+
+  function toggleAutoPanel(){
+    if (panel?.classList.contains('is-open')) closeAutoPanel();
+    else openAutoPanel();
+  }
+
   function initAutoScroll(){
     stopLegacyHeavyScripts();
     hideLegacyBubbles();
@@ -190,10 +221,12 @@
       ev.preventDefault();
       ev.stopPropagation();
       ev.stopImmediatePropagation();
-      hideLegacyBubbles();
-      createScrollPanel().classList.add('is-open');
+      toggleAutoPanel();
     }, true);
-    document.querySelectorAll('#scroll-panel-toggle, .scroll-panel-toggle-btn, .v72-auto-btn-fixed').forEach((btn) => {
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape' && panel?.classList.contains('is-open')) closeAutoPanel();
+    });
+    document.querySelectorAll('#scroll-panel-toggle, #musica-scroll-panel-toggle, .scroll-panel-toggle-btn, .v72-auto-btn-fixed').forEach((btn) => {
       btn.setAttribute('title', 'Auto-rolagem');
       btn.setAttribute('aria-label', 'Auto-rolagem');
       btn.classList.add('v74-auto-button');
@@ -340,19 +373,149 @@
     applyAdminLayout(items.length ? items : adminMenu.filter((item) => item.key === 'dashboard'));
   }
 
+
+
+  /* ---------- Ícones de favoritos e playlists ---------- */
+  function personalIconUrl(name){
+    return asset(`icons/seven-personal/${name}`);
+  }
+
+  function personalIcon(name){
+    const url = personalIconUrl(name);
+    return `<span class="ms-personal-icon" aria-hidden="true" style="-webkit-mask-image:url('${url}');mask-image:url('${url}')"></span>`;
+  }
+
+  function safeText(value){
+    return String(value || '')
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#39;');
+  }
+
+  function originalButtonText(button, fallback = ''){
+    if(!button) return fallback;
+    if(!button.dataset.msPersonalOriginalText){
+      const text = (button.textContent || '').replace(/\s+/g,' ').trim();
+      button.dataset.msPersonalOriginalText = text || fallback;
+    }
+    return button.dataset.msPersonalOriginalText || fallback;
+  }
+
+  function setPersonalButton(button, icon, title, options = {}){
+    if(!button) return;
+    const withText = options.text === true;
+    const text = options.textValue || originalButtonText(button, title || '');
+    const nextKey = `${icon}|${withText ? text : ''}`;
+    button.classList.add('ms-personal-icon-btn');
+    if(withText) button.classList.add('ms-personal-icon-btn--text');
+    else button.classList.remove('ms-personal-icon-btn--text');
+    if(button.dataset.msPersonalRenderKey !== nextKey || !button.querySelector('.ms-personal-icon')){
+      button.innerHTML = `${personalIcon(icon)}${withText ? `<span class="ms-personal-label">${safeText(text)}</span>` : ''}`;
+      button.dataset.msPersonalRenderKey = nextKey;
+    }
+    if(title){
+      button.setAttribute('title', title);
+      button.setAttribute('aria-label', title);
+    }
+  }
+
+  function isFavoriteActive(button){
+    if(!button) return false;
+    const aria = String(button.getAttribute('aria-pressed') || '').toLowerCase();
+    return aria === 'true' || button.classList.contains('is-active') || button.classList.contains('active');
+  }
+
+  function applyFavoritePlaylistIcons(){
+    document.querySelectorAll('[data-favorite-button]').forEach((button) => {
+      const active = isFavoriteActive(button);
+      setPersonalButton(button, active ? 'icon-star-2.svg' : 'icon-star-1.svg', active ? 'Remover dos favoritos' : 'Adicionar aos favoritos');
+      button.classList.toggle('ms-personal-favorite-active', active);
+    });
+
+    document.querySelectorAll('[data-playlist-button]').forEach((button) => {
+      setPersonalButton(button, 'icon-playlist-add.svg', 'Adicionar à playlist');
+    });
+
+    document.querySelectorAll('.playlist-modal__close,[data-close-playlist-modal="1"].playlist-modal__close').forEach((button) => {
+      setPersonalButton(button, 'icon-remove.svg', 'Fechar');
+    });
+
+    document.querySelectorAll('#playlist-create-button').forEach((button) => {
+      setPersonalButton(button, 'icon-list-plus.svg', 'Criar e adicionar', { text:true, textValue:'Criar e adicionar' });
+    });
+
+    document.querySelectorAll('.playlist-modal__choice[data-playlist-choice]').forEach((button) => {
+      setPersonalButton(button, 'icon-playlist-add.svg', 'Adicionar nesta playlist', { text:true });
+    });
+
+    document.querySelectorAll('#new-playlist-page-button').forEach((button) => {
+      setPersonalButton(button, 'icon-list-plus.svg', 'Criar playlist', { text:true, textValue:'Criar playlist' });
+    });
+
+    document.querySelectorAll('[data-delete-playlist],.personal-playlist-delete').forEach((button) => {
+      setPersonalButton(button, 'icon-remove.svg', 'Excluir playlist', { text:true, textValue:'Excluir' });
+    });
+
+    document.querySelectorAll('[data-remove-item],.personal-playlist-remove').forEach((button) => {
+      setPersonalButton(button, 'icon-remove.svg', button.getAttribute('aria-label') || 'Remover da playlist');
+    });
+
+    document.querySelectorAll('[data-toggle-playlist],.personal-playlist-toggle').forEach((button) => {
+      setPersonalButton(button, 'icon-empty-playlist.svg', 'Abrir playlist', { text:true });
+    });
+
+    document.querySelectorAll('.personal-library-empty').forEach((box) => {
+      if(box.dataset.msPersonalEmptyIcon === '1') return;
+      if(box.querySelector('button,a,input')) return;
+      const txt = (box.textContent || '').replace(/\s+/g,' ').trim();
+      if(!txt) return;
+      const icon = /playlist/i.test(txt) ? 'icon-empty-playlist.svg' : 'icon-star-1.svg';
+      box.innerHTML = `${personalIcon(icon)}<span>${safeText(txt)}</span>`;
+      box.dataset.msPersonalEmptyIcon = '1';
+      box.classList.add('ms-personal-empty-iconized');
+    });
+  }
+
+  let personalIconScheduled = false;
+  function schedulePersonalIcons(){
+    if(personalIconScheduled) return;
+    personalIconScheduled = true;
+    window.setTimeout(() => {
+      personalIconScheduled = false;
+      applyFavoritePlaylistIcons();
+    }, 70);
+  }
+
+  function initFavoritePlaylistIcons(){
+    applyFavoritePlaylistIcons();
+    window.setTimeout(applyFavoritePlaylistIcons, 180);
+    window.setTimeout(applyFavoritePlaylistIcons, 700);
+    try{
+      const observer = new MutationObserver((mutations) => {
+        if(mutations.some((m) => m.type === 'childList' || m.attributeName === 'class' || m.attributeName === 'aria-pressed')){
+          schedulePersonalIcons();
+        }
+      });
+      observer.observe(document.body, { childList:true, subtree:true, attributes:true, attributeFilter:['class','aria-pressed'] });
+    }catch{}
+  }
+
   function run(){
     document.body.classList.add('v7-layout-v74');
     restoreHeaderLogo();
     normalizePublicNav();
     initAutoScroll();
     initAdminSidebar();
+    initFavoritePlaylistIcons();
     refreshThemeLogos();
     setTimeout(() => { restoreHeaderLogo(); normalizePublicNav(); refreshThemeLogos(); }, 160);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
   else run();
-  window.addEventListener('load', () => setTimeout(() => { restoreHeaderLogo(); normalizePublicNav(); refreshThemeLogos(); }, 120));
+  window.addEventListener('load', () => setTimeout(() => { restoreHeaderLogo(); normalizePublicNav(); refreshThemeLogos(); applyFavoritePlaylistIcons(); }, 120));
 
   /* Só observa troca de tema; não observa DOM inteiro para evitar travamentos no Live Server. */
   try {

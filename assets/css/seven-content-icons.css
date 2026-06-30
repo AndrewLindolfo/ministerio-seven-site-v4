@@ -1,0 +1,159 @@
+/* Ministério Seven — Ícones pontuais sem duplicidade */
+:root{
+  --seven-content-icon:#d8ad3c;
+  --seven-content-icon-strong:#f0c84b;
+  --seven-content-icon-muted:rgba(240,200,75,.76);
+  --seven-content-icon-card:rgba(240,200,75,.10);
+  --seven-content-icon-border:rgba(240,200,75,.34);
+}
+html[data-theme="light"]{
+  --seven-content-icon:#725118;
+  --seven-content-icon-strong:#8a631e;
+  --seven-content-icon-muted:rgba(92,65,16,.82);
+  --seven-content-icon-card:rgba(138,99,30,.10);
+  --seven-content-icon-border:rgba(138,99,30,.28);
+}
+.seven-svg-icon{
+  --seven-icon-size:1.05em;
+  width:var(--seven-icon-size);
+  height:var(--seven-icon-size);
+  display:inline-block;
+  flex:0 0 auto;
+  background:currentColor;
+  -webkit-mask:var(--seven-icon-url) center/contain no-repeat;
+  mask:var(--seven-icon-url) center/contain no-repeat;
+  color:var(--seven-content-icon);
+  vertical-align:-.15em;
+}
+
+/* Lista de músicas/cifras: o ícone oficial substitui o ::before antigo */
+.music-list-item{
+  display:flex;
+  align-items:center;
+  gap:.62rem;
+}
+.music-list-item.seven-has-leading-icon > a::before,
+.music-list-item.seven-has-leading-icon > .music-list-link::before,
+.music-list-item > .seven-list-leading-icon + a::before,
+.music-list-item > .seven-list-leading-icon ~ a::before,
+.music-list-item > .seven-list-leading-icon + .music-list-link::before,
+.music-list-item > .seven-list-leading-icon ~ .music-list-link::before{
+  content:none !important;
+  display:none !important;
+  width:0 !important;
+  height:0 !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  background:none !important;
+}
+.music-list-item > .seven-list-leading-icon{
+  --seven-icon-size:1.22rem;
+  width:2.15rem;
+  height:2.15rem;
+  display:inline-grid;
+  place-items:center;
+  border-radius:.72rem;
+  background:var(--seven-content-icon-card);
+  border:1px solid var(--seven-content-icon-border);
+  color:var(--seven-content-icon-strong);
+  flex:0 0 2.15rem;
+}
+.music-list-item > .seven-list-leading-icon .seven-svg-icon{
+  --seven-icon-size:1.04rem;
+  color:inherit;
+}
+.music-list-item .music-list-link{
+  min-width:0;
+}
+
+/* Título da Música, Música Vocal e Cifra */
+.page-title-row,
+#musica-title-row,
+#cifra-title-row{
+  display:flex;
+  align-items:center;
+  gap:.72rem;
+  flex-wrap:wrap;
+}
+.seven-title-icon-normalized > .seven-page-title-icon ~ .seven-page-title-icon,
+.page-title-row > .seven-page-title-icon ~ .seven-page-title-icon,
+#musica-title-row > .seven-page-title-icon ~ .seven-page-title-icon,
+#cifra-title-row > .seven-page-title-icon ~ .seven-page-title-icon{
+  display:none !important;
+}
+.seven-page-title-icon{
+  width:2.55rem;
+  height:2.55rem;
+  display:inline-grid;
+  place-items:center;
+  border-radius:.9rem;
+  background:var(--seven-content-icon-card);
+  border:1px solid var(--seven-content-icon-border);
+  color:var(--seven-content-icon-strong);
+  flex:0 0 2.55rem;
+}
+.seven-page-title-icon .seven-svg-icon{
+  --seven-icon-size:1.35rem;
+  color:inherit;
+}
+
+/* Link abrir cifra / ver letra */
+.page-cross-link a,
+.v7-hero-actions a.secondary{
+  display:inline-flex;
+  align-items:center;
+  gap:.45rem;
+}
+.seven-link-inline-icon{
+  --seven-icon-size:1.02rem;
+  color:currentColor;
+}
+
+/* Cards rápidos da página inicial */
+.v7-home-quick-card .icon{
+  color:var(--seven-content-icon-strong)!important;
+  background:transparent!important;
+  border:none!important;
+  width:auto!important;
+  height:auto!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  line-height:1!important;
+}
+.v7-home-quick-card .icon .seven-svg-icon{
+  --seven-icon-size:1.42rem;
+  color:var(--seven-content-icon-strong);
+}
+
+/* Ferramentas: afinador e metrônomo */
+.seven-tool-title-wrap{
+  display:flex;
+  align-items:center;
+  gap:.75rem;
+  margin:.55rem 0 .35rem;
+}
+.seven-tool-title-wrap h2{margin:0!important;}
+.seven-tool-title-icon{
+  width:2.65rem;
+  height:2.65rem;
+  display:inline-grid;
+  place-items:center;
+  border-radius:.95rem;
+  background:var(--seven-content-icon-card);
+  border:1px solid var(--seven-content-icon-border);
+  color:var(--seven-content-icon-strong);
+  flex:0 0 2.65rem;
+}
+.seven-tool-title-icon .seven-svg-icon{
+  --seven-icon-size:1.42rem;
+  color:inherit;
+}
+
+@media (max-width:700px){
+  .music-list-item > .seven-list-leading-icon{width:1.95rem;height:1.95rem;flex-basis:1.95rem;border-radius:.65rem;}
+  .seven-page-title-icon{width:2.2rem;height:2.2rem;flex-basis:2.2rem;}
+  .seven-tool-title-icon{width:2.25rem;height:2.25rem;flex-basis:2.25rem;}
+}

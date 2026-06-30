@@ -1058,3 +1058,48 @@ html[data-theme="light"] .admin-topbar{
   border-radius:50%;
   border:1px solid var(--border);
 }
+
+
+/* Ajuste controlado — logo oficial do cabeçalho */
+.site-header .brand-link,
+.site-header .brand-link[data-v74-brand="1"]{
+  width:clamp(190px, 18vw, 260px) !important;
+  min-width:clamp(190px, 18vw, 260px) !important;
+  height:64px !important;
+  padding:8px 18px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  border-radius:22px !important;
+  overflow:hidden !important;
+}
+.site-header #header-v7-logo,
+.site-header .brand-v7,
+.site-header .v74-brand-logo,
+.site-header .header-seven-logo{
+  width:100% !important;
+  height:54px !important;
+  max-width:220px !important;
+  max-height:54px !important;
+  object-fit:contain !important;
+  object-position:center !important;
+  display:block !important;
+  border-radius:0 !important;
+}
+@media (max-width:900px){
+  .site-header .brand-link,
+  .site-header .brand-link[data-v74-brand="1"]{
+    width:170px !important;
+    min-width:170px !important;
+    height:58px !important;
+    padding:8px 14px !important;
+  }
+  .site-header #header-v7-logo,
+  .site-header .brand-v7,
+  .site-header .v74-brand-logo,
+  .site-header .header-seven-logo{
+    max-width:148px !important;
+    height:46px !important;
+    max-height:46px !important;
+  }
+}

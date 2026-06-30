@@ -379,3 +379,342 @@ body.v74-admin-page .admin-cards-grid{display:none !important;}
 .v74-admin-dashboard-welcome p{margin:0;color:var(--text-soft,#d8d2c4);line-height:1.55;}
 .v74-admin-content > .container,.v74-admin-content > section.container,.v74-admin-content > section{width:100% !important;max-width:none !important;margin-inline:0 !important;}
 @media (max-width:980px){.v74-admin-shell{grid-template-columns:1fr}.v74-admin-sidebar{position:relative;top:auto;min-height:0}.v74-admin-menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));}}
+
+
+/* V4 ajuste: auto-rolagem com um único X e botão Auto alternando abrir/fechar */
+.v74-scroll-reset{display:none !important;}
+.v74-scroll-body{grid-template-columns:46px minmax(0,1fr) !important;}
+@media (max-width:760px){.v74-scroll-body{grid-template-columns:42px minmax(0,1fr) !important;}}
+#scroll-panel-toggle.is-active,
+#musica-scroll-panel-toggle.is-active,
+.scroll-panel-toggle-btn.is-active,
+.v72-auto-btn-fixed.is-active{
+  border-color:var(--v7-gold, #d7ad47) !important;
+  box-shadow:0 0 0 1px rgba(215,173,71,.18), inset 0 0 0 1px rgba(215,173,71,.10) !important;
+}
+
+
+/* V4 ajuste fino — toolbar só com ícones e auto-rolagem compacta */
+.cifra-top-controls button,
+.musica-top-controls button,
+.letra-top-controls button,
+.vocal-top-controls button,
+.lyrics-top-controls button,
+.public-music-toolbar button,
+.public-cifra-toolbar button,
+#transpose-down,
+#transpose-up,
+#font-down,
+#font-up,
+#focus-toggle,
+#fullscreen-toggle,
+#scroll-panel-toggle,
+#pdf-toggle,
+#mini-metronome-floating-toggle,
+#cifra-mini-metronome-toggle,
+#musica-font-down,
+#musica-font-up,
+#musica-focus-toggle,
+#musica-fullscreen-toggle,
+#musica-scroll-panel-toggle,
+#musica-pdf-toggle{
+  width:48px !important;
+  min-width:48px !important;
+  max-width:48px !important;
+  height:48px !important;
+  min-height:48px !important;
+  max-height:48px !important;
+  padding:0 !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:0 !important;
+  font-size:0 !important;
+  white-space:nowrap !important;
+}
+
+#scroll-panel-toggle::before,
+#scroll-panel-toggle::after,
+#musica-scroll-panel-toggle::before,
+#musica-scroll-panel-toggle::after,
+.scroll-panel-toggle-btn::before,
+.scroll-panel-toggle-btn::after,
+.v72-auto-btn-fixed::before,
+.v72-auto-btn-fixed::after{
+  content:none !important;
+  display:none !important;
+}
+
+.v74-scroll-panel{
+  width:min(330px, calc(100vw - 28px)) !important;
+  border-radius:20px !important;
+}
+
+.v74-scroll-head{
+  height:40px !important;
+  padding:7px 10px 7px 13px !important;
+}
+
+.v74-scroll-body{
+  grid-template-columns:44px minmax(0,1fr) !important;
+  gap:11px !important;
+  padding:12px 13px 10px !important;
+}
+
+.v74-scroll-play{
+  width:44px !important;
+  height:44px !important;
+  min-width:44px !important;
+  min-height:44px !important;
+  padding:0 !important;
+  color:#171006 !important;
+}
+
+.v74-scroll-play::before{
+  color:#171006 !important;
+}
+
+.v74-scroll-range-label{
+  margin-bottom:5px !important;
+  font-size:.72rem !important;
+}
+
+.v74-scroll-range-row{
+  display:flex !important;
+  align-items:center !important;
+  gap:9px !important;
+  min-width:0 !important;
+}
+
+.v74-scroll-range{
+  min-width:0 !important;
+  flex:1 1 auto !important;
+}
+
+.v74-scroll-reset{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:42px !important;
+  min-width:42px !important;
+  max-width:42px !important;
+  height:32px !important;
+  min-height:32px !important;
+  max-height:32px !important;
+  padding:0 !important;
+  border-radius:999px !important;
+  font-size:.78rem !important;
+  font-weight:950 !important;
+}
+
+.v74-scroll-hint{
+  padding:0 13px 11px !important;
+  font-size:.66rem !important;
+}
+
+.v74-scroll-play .ms-tool-icon{
+  width:22px !important;
+  height:22px !important;
+  background-color:#171006 !important;
+}
+
+@media (max-width:760px){
+  .v74-scroll-panel{left:12px !important;right:12px !important;width:auto !important;}
+  .v74-scroll-body{grid-template-columns:42px minmax(0,1fr) !important;}
+}
+
+
+/* ---------- Ícones oficiais: favoritos e playlists ---------- */
+.personal-action-btn,
+.personal-favorite-btn,
+.personal-playlist-btn,
+.playlist-modal__close,
+.personal-playlist-remove{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+.ms-personal-icon-btn{
+  position:relative !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:8px !important;
+  line-height:1 !important;
+}
+
+.personal-action-btn.ms-personal-icon-btn,
+.personal-favorite-btn.ms-personal-icon-btn,
+.personal-playlist-btn.ms-personal-icon-btn,
+.personal-playlist-remove.ms-personal-icon-btn,
+.playlist-modal__close.ms-personal-icon-btn{
+  width:38px !important;
+  min-width:38px !important;
+  max-width:38px !important;
+  height:38px !important;
+  min-height:38px !important;
+  max-height:38px !important;
+  padding:0 !important;
+  border-radius:999px !important;
+  font-size:0 !important;
+}
+
+.ms-personal-icon{
+  display:inline-block !important;
+  width:18px !important;
+  height:18px !important;
+  min-width:18px !important;
+  flex:0 0 18px !important;
+  background-color:currentColor !important;
+  background-repeat:no-repeat !important;
+  background-position:center !important;
+  background-size:contain !important;
+  -webkit-mask-repeat:no-repeat !important;
+  mask-repeat:no-repeat !important;
+  -webkit-mask-position:center !important;
+  mask-position:center !important;
+  -webkit-mask-size:contain !important;
+  mask-size:contain !important;
+}
+
+.ms-personal-label{
+  display:inline-block !important;
+  font-size:.86rem !important;
+  font-weight:850 !important;
+  line-height:1 !important;
+  color:currentColor !important;
+}
+
+/* Botões com texto nas páginas de Playlist/modal */
+.ms-personal-icon-btn--text{
+  width:auto !important;
+  min-width:0 !important;
+  max-width:none !important;
+  height:auto !important;
+  min-height:38px !important;
+  padding:9px 13px !important;
+  font-size:.86rem !important;
+}
+
+/* Cores por tema: sem trocar arquivo, o SVG usa currentColor */
+html[data-theme="dark"] .personal-action-btn.ms-personal-icon-btn,
+html[data-theme="dark"] .playlist-modal__close.ms-personal-icon-btn,
+html[data-theme="dark"] .playlist-modal__choice.ms-personal-icon-btn,
+html[data-theme="dark"] .personal-library-primary.ms-personal-icon-btn,
+html[data-theme="dark"] .personal-playlist-delete.ms-personal-icon-btn,
+html[data-theme="dark"] .personal-playlist-remove.ms-personal-icon-btn,
+html[data-theme="dark"] .personal-playlist-toggle.ms-personal-icon-btn{
+  color:var(--v7-gold, #edc455) !important;
+}
+
+html[data-theme="light"] .personal-action-btn.ms-personal-icon-btn,
+html[data-theme="light"] .playlist-modal__close.ms-personal-icon-btn,
+html[data-theme="light"] .playlist-modal__choice.ms-personal-icon-btn,
+html[data-theme="light"] .personal-library-primary.ms-personal-icon-btn,
+html[data-theme="light"] .personal-playlist-delete.ms-personal-icon-btn,
+html[data-theme="light"] .personal-playlist-remove.ms-personal-icon-btn,
+html[data-theme="light"] .personal-playlist-toggle.ms-personal-icon-btn{
+  color:#6f4b10 !important;
+}
+
+.personal-favorite-btn.ms-personal-favorite-active,
+html[data-theme="dark"] .personal-favorite-btn.ms-personal-favorite-active,
+html[data-theme="light"] .personal-favorite-btn.ms-personal-favorite-active{
+  color:var(--v7-gold, #edc455) !important;
+  border-color:rgba(237,196,85,.72) !important;
+  background:rgba(237,196,85,.13) !important;
+  box-shadow:0 0 0 1px rgba(237,196,85,.18), 0 8px 20px rgba(237,196,85,.10) !important;
+}
+
+.personal-action-btn.ms-personal-icon-btn:hover,
+.playlist-modal__choice.ms-personal-icon-btn:hover,
+.personal-library-primary.ms-personal-icon-btn:hover,
+.personal-playlist-delete.ms-personal-icon-btn:hover,
+.personal-playlist-remove.ms-personal-icon-btn:hover,
+.personal-playlist-toggle.ms-personal-icon-btn:hover{
+  border-color:rgba(237,196,85,.65) !important;
+  transform:translateY(-1px);
+}
+
+.personal-playlist-delete.ms-personal-icon-btn,
+.personal-playlist-remove.ms-personal-icon-btn{
+  color:#f05d68 !important;
+}
+
+.personal-playlist-remove.ms-personal-icon-btn .ms-personal-icon{
+  width:16px !important;
+  height:16px !important;
+  min-width:16px !important;
+  flex-basis:16px !important;
+}
+
+.ms-personal-empty-iconized{
+  display:flex !important;
+  align-items:center !important;
+  gap:10px !important;
+  justify-content:center !important;
+  text-align:center !important;
+}
+
+.ms-personal-empty-iconized .ms-personal-icon{
+  width:22px !important;
+  height:22px !important;
+  min-width:22px !important;
+}
+
+html[data-theme="dark"] .ms-personal-empty-iconized .ms-personal-icon{ color:var(--v7-gold,#edc455) !important; }
+html[data-theme="light"] .ms-personal-empty-iconized .ms-personal-icon{ color:#6f4b10 !important; }
+
+/* ---------- Correção V4: contraste do botão Criar Playlist ---------- */
+#playlist-create-button.ms-personal-icon-btn,
+#new-playlist-page-button.ms-personal-icon-btn,
+.personal-library-primary.ms-personal-icon-btn,
+button.ms-personal-icon-btn--text[id*="playlist" i],
+button.ms-personal-icon-btn--text[class*="playlist" i]{
+  background:linear-gradient(180deg,#f5d66a 0%,#e4b640 100%) !important;
+  border-color:rgba(245,214,106,.92) !important;
+  color:#171006 !important;
+  text-shadow:none !important;
+  box-shadow:0 10px 22px rgba(237,196,85,.16), inset 0 1px 0 rgba(255,255,255,.24) !important;
+  opacity:1 !important;
+  filter:none !important;
+}
+
+#playlist-create-button.ms-personal-icon-btn .ms-personal-label,
+#new-playlist-page-button.ms-personal-icon-btn .ms-personal-label,
+.personal-library-primary.ms-personal-icon-btn .ms-personal-label,
+button.ms-personal-icon-btn--text[id*="playlist" i] .ms-personal-label,
+button.ms-personal-icon-btn--text[class*="playlist" i] .ms-personal-label{
+  color:#171006 !important;
+  opacity:1 !important;
+  text-shadow:none !important;
+}
+
+#playlist-create-button.ms-personal-icon-btn .ms-personal-icon,
+#new-playlist-page-button.ms-personal-icon-btn .ms-personal-icon,
+.personal-library-primary.ms-personal-icon-btn .ms-personal-icon,
+button.ms-personal-icon-btn--text[id*="playlist" i] .ms-personal-icon,
+button.ms-personal-icon-btn--text[class*="playlist" i] .ms-personal-icon{
+  background-color:#171006 !important;
+  color:#171006 !important;
+  opacity:1 !important;
+}
+
+#playlist-create-button.ms-personal-icon-btn:disabled,
+#new-playlist-page-button.ms-personal-icon-btn:disabled,
+.personal-library-primary.ms-personal-icon-btn:disabled,
+button.ms-personal-icon-btn--text[id*="playlist" i]:disabled,
+button.ms-personal-icon-btn--text[class*="playlist" i]:disabled{
+  opacity:.72 !important;
+  cursor:not-allowed !important;
+}
+
+#playlist-create-button.ms-personal-icon-btn:hover:not(:disabled),
+#new-playlist-page-button.ms-personal-icon-btn:hover:not(:disabled),
+.personal-library-primary.ms-personal-icon-btn:hover:not(:disabled),
+button.ms-personal-icon-btn--text[id*="playlist" i]:hover:not(:disabled),
+button.ms-personal-icon-btn--text[class*="playlist" i]:hover:not(:disabled){
+  color:#0f0b04 !important;
+  transform:translateY(-1px);
+}

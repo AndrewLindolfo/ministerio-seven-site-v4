@@ -232,3 +232,95 @@ body.v77-admin-active{
   .v77-kpis,.v77-perm-grid,.v77-quick-grid,.v77-module-grid{grid-template-columns:1fr;}
   .v77-admin-topbar{display:block}.v77-admin-actions{margin-top:14px;}
 }
+
+/* =========================================================
+   Ajuste controlado — Header público: distância, ícones e avatar
+   - Contato não encosta na lupa
+   - Ícones oficiais para buscar/sol/lua
+   - Avatar Google acompanha o card arredondado
+   ========================================================= */
+.site-header .main-nav{
+  margin-right:18px !important;
+}
+.site-header .main-nav a:last-child{
+  margin-right:8px !important;
+}
+.site-header .header-actions{
+  margin-left:18px !important;
+  gap:10px !important;
+}
+
+#search-toggle,
+#theme-toggle{
+  display:inline-grid !important;
+  place-items:center !important;
+  font-size:0 !important;
+  line-height:0 !important;
+}
+
+#search-toggle::before,
+#theme-toggle::before{
+  content:"" !important;
+  display:block !important;
+  width:19px !important;
+  height:19px !important;
+  background-color:currentColor !important;
+  background-image:none !important;
+  background-repeat:no-repeat !important;
+  background-position:center !important;
+  background-size:contain !important;
+  -webkit-mask-repeat:no-repeat !important;
+  mask-repeat:no-repeat !important;
+  -webkit-mask-position:center !important;
+  mask-position:center !important;
+  -webkit-mask-size:contain !important;
+  mask-size:contain !important;
+}
+
+#search-toggle::before{
+  color:var(--text) !important;
+  -webkit-mask-image:url("../icons/seven-header-actions/icon-search.svg") !important;
+  mask-image:url("../icons/seven-header-actions/icon-search.svg") !important;
+}
+
+html[data-theme="dark"] #theme-toggle::before{
+  color:var(--v7-gold, #d7ad47) !important;
+  -webkit-mask-image:url("../icons/seven-header-actions/icon-sun.svg") !important;
+  mask-image:url("../icons/seven-header-actions/icon-sun.svg") !important;
+}
+
+html[data-theme="light"] #theme-toggle::before{
+  color:#4f4537 !important;
+  -webkit-mask-image:url("../icons/seven-header-actions/icon-moon.svg") !important;
+  mask-image:url("../icons/seven-header-actions/icon-moon.svg") !important;
+}
+
+/* Foto do usuário logado: segue o card arredondado, não fica redonda */
+.public-user-toggle{
+  width:44px !important;
+  height:44px !important;
+  padding:3px !important;
+  border-radius:14px !important;
+  overflow:hidden !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+.public-user-avatar,
+#public-user-toggle img,
+.public-user-toggle img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  border-radius:11px !important;
+  display:block !important;
+}
+
+@media (max-width:900px){
+  .site-header .main-nav{
+    margin-right:0 !important;
+  }
+  .site-header .header-actions{
+    margin-left:auto !important;
+  }
+}

@@ -1,0 +1,251 @@
+/* Ministério Seven — correção controlada V2: barras de ferramentas de música/vocal/cifra
+   Corrige duplicidade de texto causada por pseudo-elementos antigos e aplica ícones também nos controles da música vocal. */
+
+.cifra-top-controls,
+.musica-top-controls,
+.letra-top-controls,
+.vocal-top-controls,
+.lyrics-top-controls,
+.public-music-toolbar,
+.public-cifra-toolbar{
+  gap:10px !important;
+  align-items:center !important;
+}
+
+/* Remove textos/ícones antigos que vinham por ::before/::after dos patches anteriores. */
+.cifra-top-controls button::before,
+.cifra-top-controls button::after,
+.musica-top-controls button::before,
+.musica-top-controls button::after,
+.letra-top-controls button::before,
+.letra-top-controls button::after,
+.vocal-top-controls button::before,
+.vocal-top-controls button::after,
+.lyrics-top-controls button::before,
+.lyrics-top-controls button::after,
+#scroll-panel-toggle::before,
+#scroll-panel-toggle::after,
+.scroll-panel-toggle-btn::before,
+.scroll-panel-toggle-btn::after,
+.v72-auto-btn-fixed::before,
+.v72-auto-btn-fixed::after,
+#focus-toggle::before,
+#focus-toggle::after,
+#fullscreen-toggle::before,
+#fullscreen-toggle::after,
+#mini-metronome-floating-toggle::before,
+#mini-metronome-floating-toggle::after,
+#musica-focus-toggle::before,
+#musica-focus-toggle::after,
+#musica-fullscreen-toggle::before,
+#musica-fullscreen-toggle::after,
+#musica-scroll-panel-toggle::before,
+#musica-scroll-panel-toggle::after,
+#musica-pdf-toggle::before,
+#musica-pdf-toggle::after,
+#pdf-toggle::before,
+#pdf-toggle::after{
+  content:none !important;
+  display:none !important;
+}
+
+.cifra-top-controls button,
+.musica-top-controls button,
+.letra-top-controls button,
+.vocal-top-controls button,
+.lyrics-top-controls button,
+.public-music-toolbar button,
+.public-cifra-toolbar button,
+#scroll-bubble button,
+.scroll-bubble button,
+#musica-scroll-bubble button,
+.musica-scroll-bubble button,
+.v74-scroll-panel button,
+#cifra-mini-metronome-toggle,
+#mini-metronome-floating-toggle{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:7px !important;
+  white-space:nowrap !important;
+  line-height:1 !important;
+}
+
+/* Botões já tratados pelo script. */
+.ms-toolbar-clean{
+  font-size:0 !important;
+}
+
+.ms-tool-icon{
+  display:inline-block !important;
+  width:18px !important;
+  height:18px !important;
+  min-width:18px !important;
+  flex:0 0 18px !important;
+  background-color:currentColor !important;
+  background-repeat:no-repeat !important;
+  background-position:center !important;
+  background-size:contain !important;
+  -webkit-mask-repeat:no-repeat !important;
+  mask-repeat:no-repeat !important;
+  -webkit-mask-position:center !important;
+  mask-position:center !important;
+  -webkit-mask-size:contain !important;
+  mask-size:contain !important;
+}
+
+.ms-tool-label{
+  display:inline-block !important;
+  font-size:.78rem !important;
+  font-weight:850 !important;
+  line-height:1 !important;
+  color:currentColor !important;
+}
+
+/* Mantém PDF/Auto/Tempo um pouco mais legíveis, sem duplicar texto. */
+#pdf-toggle.ms-toolbar-clean,
+#musica-pdf-toggle.ms-toolbar-clean{
+  min-width:54px !important;
+}
+#scroll-panel-toggle.ms-toolbar-clean,
+#musica-scroll-panel-toggle.ms-toolbar-clean,
+#mini-metronome-floating-toggle.ms-toolbar-clean{
+  min-width:78px !important;
+}
+
+/* Esconde restos antigos dentro do botão PDF quando existirem. */
+#pdf-toggle .pdf-btn-icon,
+#pdf-toggle .pdf-btn-label,
+#musica-pdf-toggle .pdf-btn-icon,
+#musica-pdf-toggle .pdf-btn-label,
+.scroll-panel-toggle-icon{
+  display:none !important;
+}
+
+html[data-theme="dark"] .cifra-top-controls button,
+html[data-theme="dark"] .musica-top-controls button,
+html[data-theme="dark"] .letra-top-controls button,
+html[data-theme="dark"] .vocal-top-controls button,
+html[data-theme="dark"] .lyrics-top-controls button,
+html[data-theme="dark"] .public-music-toolbar button,
+html[data-theme="dark"] .public-cifra-toolbar button,
+html[data-theme="dark"] #scroll-bubble button,
+html[data-theme="dark"] .scroll-bubble button,
+html[data-theme="dark"] .v74-scroll-panel button{
+  color:var(--v7-gold, #edc455) !important;
+}
+
+html[data-theme="light"] .cifra-top-controls button,
+html[data-theme="light"] .musica-top-controls button,
+html[data-theme="light"] .letra-top-controls button,
+html[data-theme="light"] .vocal-top-controls button,
+html[data-theme="light"] .lyrics-top-controls button,
+html[data-theme="light"] .public-music-toolbar button,
+html[data-theme="light"] .public-cifra-toolbar button,
+html[data-theme="light"] #scroll-bubble button,
+html[data-theme="light"] .scroll-bubble button,
+html[data-theme="light"] .v74-scroll-panel button{
+  color:#7b5515 !important;
+}
+
+/* Botões que devem ficar apenas com ícone, mantendo o visual compacto. */
+#musica-font-down .ms-tool-label,
+#musica-font-up .ms-tool-label,
+#musica-focus-toggle .ms-tool-label,
+#musica-fullscreen-toggle .ms-tool-label,
+#musica-pdf-toggle .ms-tool-label{
+  display:none !important;
+}
+
+@media (max-width:760px){
+  .cifra-top-controls,
+  .musica-top-controls,
+  .letra-top-controls,
+  .vocal-top-controls,
+  .lyrics-top-controls,
+  .public-music-toolbar,
+  .public-cifra-toolbar{
+    gap:8px !important;
+  }
+  .ms-tool-label{display:none !important;}
+  .cifra-top-controls button,
+  .musica-top-controls button,
+  .letra-top-controls button,
+  .vocal-top-controls button,
+  .lyrics-top-controls button,
+  .public-music-toolbar button,
+  .public-cifra-toolbar button{
+    width:46px !important;
+    min-width:46px !important;
+    padding-inline:0 !important;
+  }
+}
+
+
+/* V3 — barras somente com ícones, sem texto visível */
+.cifra-top-controls button,
+.musica-top-controls button,
+.letra-top-controls button,
+.vocal-top-controls button,
+.lyrics-top-controls button,
+.public-music-toolbar button,
+.public-cifra-toolbar button,
+#transpose-down,
+#transpose-up,
+#font-down,
+#font-up,
+#focus-toggle,
+#fullscreen-toggle,
+#scroll-panel-toggle,
+#pdf-toggle,
+#mini-metronome-floating-toggle,
+#cifra-mini-metronome-toggle,
+#musica-font-down,
+#musica-font-up,
+#musica-focus-toggle,
+#musica-fullscreen-toggle,
+#musica-scroll-panel-toggle,
+#musica-pdf-toggle{
+  width:48px !important;
+  min-width:48px !important;
+  max-width:48px !important;
+  height:48px !important;
+  min-height:48px !important;
+  max-height:48px !important;
+  padding:0 !important;
+  gap:0 !important;
+  text-indent:0 !important;
+}
+
+.ms-tool-label{
+  display:none !important;
+}
+
+.ms-tool-icon{
+  width:20px !important;
+  height:20px !important;
+  min-width:20px !important;
+  flex-basis:20px !important;
+  margin:0 !important;
+}
+
+/* Play/Pause dentro da janela de auto-rolagem precisa contrastar com o botão dourado */
+.v74-scroll-play .ms-tool-icon,
+#scroll-toggle .ms-tool-icon,
+#musica-scroll-toggle .ms-tool-icon{
+  width:22px !important;
+  height:22px !important;
+  background-color:#171006 !important;
+  opacity:1 !important;
+}
+
+html[data-theme="light"] .v74-scroll-play .ms-tool-icon,
+html[data-theme="light"] #scroll-toggle .ms-tool-icon,
+html[data-theme="light"] #musica-scroll-toggle .ms-tool-icon{
+  background-color:#171006 !important;
+}
+
+.v74-scroll-reset{
+  text-indent:0 !important;
+  font-size:.78rem !important;
+}
