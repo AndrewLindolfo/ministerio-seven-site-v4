@@ -1,4 +1,4 @@
-import { getCollection, explainFirebaseError } from "../db.js";
+﻿import { getCollection, explainFirebaseError } from "../db.js";
 
 export const BACKUP_SECTIONS = [
   {
@@ -14,10 +14,10 @@ export const BACKUP_SECTIONS = [
     collections: ["usuariosPublicos"]
   },
   {
-    id: "vocalistas",
-    label: "Vocalistas",
+    id: "integrantes",
+    label: "integrantes",
     description: "Liberação de acesso à área Músicas Vocal.",
-    collections: ["vocalistas"]
+    collections: ["Integrantes"]
   },
   {
     id: "musicasPublicas",
@@ -110,7 +110,7 @@ export const BACKUP_COLLECTIONS = Array.from(new Set(BACKUP_SECTIONS.flatMap((se
 const OPTIONAL_COLLECTIONS = new Set([
   "admins",
   "usuariosPublicos",
-  "vocalistas",
+  "integrantes",
   "contatos",
   "activity_logs",
   "bibliotecasUsuarios",
@@ -232,3 +232,4 @@ export async function exportBackupJson(sectionIds = null) {
   result._summary = summary;
   return result;
 }
+

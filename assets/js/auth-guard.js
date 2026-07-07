@@ -1,4 +1,4 @@
-import { watchAuth, getAdminProfileByEmail } from "./auth.js";
+﻿import { watchAuth, getAdminProfileByEmail } from "./auth.js";
 import { canAccessAdminPage } from "./services/admin-permissions-service.js";
 
 function normalize(email = "") {
@@ -38,8 +38,8 @@ function resolveAdminPageKey() {
     path.endsWith("/admin/editor-musicas-vocais.html")
   ) return editing ? "editor-musica-vocal-edit" : "editor-musica-vocal-create";
 
-  if (path.endsWith("/admin/vocalistas.html")) return "vocalistas";
-  if (path.endsWith("/admin/editor-vocalista.html")) return editing ? "editor-vocalista-edit" : "editor-vocalista-create";
+  if (path.endsWith("/admin/integrantes.html") || path.endsWith("/admin/vocalistas.html")) return "integrantes";
+  if (path.endsWith("/admin/editor-integrante.html")) return editing ? "editor-integrante-edit" : "editor-integrante-create";
 
   if (path.endsWith("/admin/cifras.html")) return "cifras";
   if (path.endsWith("/admin/editor-cifra.html")) return editing ? "editor-cifra-edit" : "editor-cifra-create";
@@ -87,3 +87,4 @@ export function protectAdminPage() {
 }
 
 protectAdminPage();
+

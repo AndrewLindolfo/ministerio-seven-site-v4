@@ -1,0 +1,45 @@
+/* Ministério Seven V4 — ajuste fino da logo do cabeçalho público
+   Reduz a logo horizontal para ficar proporcional ao menu. */
+
+.site-header .brand-link,
+header.site-header .brand-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 54px !important;
+  padding: 0 14px !important;
+  box-sizing: border-box !important;
+}
+
+.site-header .brand-link img,
+header.site-header .brand-link img,
+#header-v7-logo,
+.brand-v7,
+.brand-logo,
+.header-logo {
+  width: clamp(132px, 10.5vw, 172px) !important;
+  max-width: 172px !important;
+  height: auto !important;
+  max-height: 46px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+@media (max-width: 900px) {
+  .site-header .brand-link,
+  header.site-header .brand-link {
+    min-height: 48px !important;
+    padding: 0 10px !important;
+  }
+
+  .site-header .brand-link img,
+  header.site-header .brand-link img,
+  #header-v7-logo,
+  .brand-v7,
+  .brand-logo,
+  .header-logo {
+    width: clamp(112px, 30vw, 142px) !important;
+    max-width: 142px !important;
+    max-height: 38px !important;
+  }
+}

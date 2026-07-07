@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR" data-theme="dark">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -27,7 +27,6 @@
   <link rel="stylesheet" href="assets/css/layout.css" />
   <link rel="stylesheet" href="assets/css/animations.css" />
   <link rel="stylesheet" href="assets/css/responsive.css" />
-  <link rel="stylesheet" href="assets/css/pages/ferramentas.css" />
   <link rel="stylesheet" href="assets/css/v7-redesign.css" />
   <link rel="stylesheet" href="assets/css/v7-fixes.css" />
   <link rel="stylesheet" href="assets/css/v7-2-fixes.css" />
@@ -37,6 +36,14 @@
   <link rel="stylesheet" href="assets/css/v7-6-admin-panel-fix.css" />
   <link rel="stylesheet" href="assets/css/v7-7-admin-dashboard.css" />
   <link rel="stylesheet" href="assets/css/seven-content-icons.css" />
+  <link rel="stylesheet" href="assets/css/seven-logo-menu-proporcional.css" />
+  <link rel="stylesheet" href="assets/css/seven-logo-menu-compacta-v2.css" />
+  <link rel="stylesheet" href="assets/css/ajuste-logo-menu-card-v3.css" />
+  <link rel="stylesheet" href="assets/css/seven-header-user-icon-fix.css" />
+  <link rel="stylesheet" href="assets/css/seven-header-user-icon-fix-v2.css" />
+  <link rel="stylesheet" href="assets/css/seven-router.css" />
+  <link rel="stylesheet" href="assets/css/seven-home-card-icons-fix.css" />
+  <link rel="stylesheet" href="assets/css/pages/ferramentas.css" />
 </head>
 <body>
 <header class="site-header">
@@ -85,142 +92,122 @@
 </div>
 
 <main class="ferramentas-page">
-  <section class="container">
-    <div class="ferramentas-head">
-      <h1>Ferramentas</h1>
-      <p class="ferramentas-subtitle">Recursos úteis para estudo, ensaio e afinação.</p>
+  <section class="tools-hero ferramentas-container" aria-label="Ferramentas musicais">
+    <div class="tools-hero-content">
+      <span class="tools-eyebrow">Ferramentas</span>
+      <h1>Afinador e <span>Metr&ocirc;nomo</span></h1>
+      <p>Recursos para apoiar ensaios, estudos de cifra, prepara&ccedil;&atilde;o vocal e ministra&ccedil;&atilde;o.</p>
     </div>
+  </section>
 
-    <div class="ferramentas-grid">
-      <article class="tool-card" id="tool-card-afinador" data-tool="afinador">
-        <div class="tool-card-head">
-          <div>
-            <span class="tool-chip">Ferramenta</span>
+  <section class="tools-grid ferramentas-container">
+    <article class="seven-tool-card" data-tool="tuner">
+      <div class="tool-card-top">
+        <div class="tool-head-text">
+          <span class="tool-badge">Ferramenta</span>
+          <div class="tool-title-line">
+            <span class="tool-round-icon" aria-hidden="true"><span class="tool-svg-icon icon-tuner"></span></span>
             <h2>Afinador</h2>
-            <p>Use o microfone do aparelho para detectar notas, frequência em Hz e afinar qualquer instrumento cromaticamente.</p>
           </div>
-          <div class="tool-head-actions">
-            <button type="button" class="tool-expand-btn" data-target="afinador">Abrir</button>
-            <button type="button" class="tool-focus-btn tool-icon-btn" data-target="afinador" aria-pressed="false" aria-label="Modo foco" title="Modo foco">👁</button>
-            <button type="button" class="tool-fullscreen-btn tool-icon-btn" data-target="afinador" aria-pressed="false" aria-label="Tela cheia" title="Tela cheia">⛶</button>
+          <p class="tool-description">Use o microfone do aparelho para detectar notas, frequ&ecirc;ncia em Hz e afinar qualquer instrumento cromaticamente.</p>
+        </div>
+        <div class="tool-head-actions">
+          <button type="button" class="tool-expand-btn" aria-expanded="false">Abrir</button>
+          <button type="button" class="tool-icon-btn tool-focus-btn" aria-label="Modo foco" title="Modo foco" aria-pressed="false"></button>
+          <button type="button" class="tool-icon-btn tool-fullscreen-btn" aria-label="Tela cheia" title="Tela cheia"></button>
+        </div>
+      </div>
+
+      <div class="tool-body">
+        <div class="tuner-panel">
+          <div class="tuner-topline">
+            <span id="tuner-status">Aguardando in&iacute;cio</span>
+            <span id="tuner-hz" class="tuner-hz">-- Hz</span>
+          </div>
+
+          <div class="tuner-note-wrap">
+            <strong id="tuner-note" class="tuner-note">--</strong>
+            <span id="tuner-octave" class="tuner-octave">--</span>
+          </div>
+
+          <div class="tuner-meter-wrap">
+            <div class="tuner-meter-scale"><span>-50</span><span>-25</span><span>0</span><span>+25</span><span>+50</span></div>
+            <div class="tuner-meter">
+              <div class="tuner-meter-zones" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+              <div id="tuner-needle" class="tuner-needle" aria-hidden="true"></div>
+            </div>
+            <div class="tuner-meter-labels"><span>Muito baixo</span><span>Baixo</span><span>Afinado</span><span>Alto</span><span>Muito alto</span></div>
+          </div>
+
+          <div class="tool-actions-row">
+            <button type="button" id="tuner-start-btn" class="tool-toggle-btn" aria-pressed="false">Iniciar afinador</button>
+          </div>
+
+          <div class="tuner-reference">
+            <strong>Afina&ccedil;&otilde;es comuns</strong>
+            <ul>
+              <li>Viol&atilde;o / Guitarra: E A D G B E</li>
+              <li>Baixo: E A D G</li>
+              <li>Ukulele: G C E A</li>
+            </ul>
           </div>
         </div>
+      </div>
+    </article>
 
-        <div class="tool-body hidden" id="tool-body-afinador">
-          <div class="tool-inline-actions">
-            <button type="button" class="tool-collapse-btn" data-target="afinador">Fechar</button>
+    <article class="seven-tool-card" data-tool="metronome">
+      <div class="tool-card-top">
+        <div class="tool-head-text">
+          <span class="tool-badge">Ferramenta</span>
+          <div class="tool-title-line">
+            <span class="tool-round-icon" aria-hidden="true"><span class="tool-svg-icon icon-metronome"></span></span>
+            <h2>Metr&ocirc;nomo</h2>
           </div>
-
-          <div class="tuner-panel">
-            <div class="tuner-topline">
-              <span class="tuner-status" id="tuner-status">Aguardando início</span>
-              <span class="tuner-hz" id="tuner-hz">-- Hz</span>
-            </div>
-
-            <div class="tuner-note-wrap">
-              <div class="tuner-note" id="tuner-note">--</div>
-              <div class="tuner-octave" id="tuner-octave">--</div>
-            </div>
-
-            <div class="tuner-meter-wrap">
-              <div class="tuner-meter-scale">
-                <span>-50</span>
-                <span>-25</span>
-                <span>0</span>
-                <span>+25</span>
-                <span>+50</span>
-              </div>
-              <div class="tuner-meter">
-                <div class="tuner-meter-zones">
-                  <span class="zone-red"></span>
-                  <span class="zone-yellow"></span>
-                  <span class="zone-green"></span>
-                  <span class="zone-yellow"></span>
-                  <span class="zone-red"></span>
-                </div>
-                <div class="tuner-needle" id="tuner-needle"></div>
-              </div>
-              <div class="tuner-meter-labels">
-                <span>Muito baixo</span>
-                <span>Baixo</span>
-                <span>Afinado</span>
-                <span>Alto</span>
-                <span>Muito alto</span>
-              </div>
-            </div>
-
-            <div class="tool-actions-row">
-              <button type="button" id="tuner-start-btn" class="button-primary tool-toggle-btn is-stopped" aria-pressed="false">Iniciar afinador</button>
-            </div>
-
-            <div class="tuner-reference">
-              <strong>Afinações comuns</strong>
-              <ul>
-                <li>Violão / Guitarra: E A D G B E</li>
-                <li>Baixo: E A D G</li>
-                <li>Ukulele: G C E A</li>
-              </ul>
-            </div>
-          </div>
+          <p class="tool-description">Controle o tempo do ensaio com BPM ajust&aacute;vel, compasso e pulso visual com primeira batida destacada.</p>
         </div>
-      </article>
-
-      <article class="tool-card" id="tool-card-metronomo" data-tool="metronomo">
-        <div class="tool-card-head">
-          <div>
-            <span class="tool-chip">Ferramenta</span>
-            <h2>Metrônomo</h2>
-            <p>Controle o tempo do ensaio com BPM ajustável, compasso e pulso visual com primeira batida destacada.</p>
-          </div>
-          <div class="tool-head-actions">
-            <button type="button" class="tool-expand-btn" data-target="metronomo">Abrir</button>
-            <button type="button" class="tool-focus-btn tool-icon-btn" data-target="metronomo" aria-pressed="false" aria-label="Modo foco" title="Modo foco">👁</button>
-            <button type="button" class="tool-fullscreen-btn tool-icon-btn" data-target="metronomo" aria-pressed="false" aria-label="Tela cheia" title="Tela cheia">⛶</button>
-          </div>
+        <div class="tool-head-actions">
+          <button type="button" class="tool-expand-btn" aria-expanded="false">Abrir</button>
+          <button type="button" class="tool-icon-btn tool-focus-btn" aria-label="Modo foco" title="Modo foco" aria-pressed="false"></button>
+          <button type="button" class="tool-icon-btn tool-fullscreen-btn" aria-label="Tela cheia" title="Tela cheia"></button>
         </div>
+      </div>
 
-        <div class="tool-body hidden" id="tool-body-metronomo">
-          <div class="tool-inline-actions">
-            <button type="button" class="tool-collapse-btn" data-target="metronomo">Fechar</button>
+      <div class="tool-body">
+        <div class="metronome-panel">
+          <div class="metronome-bpm-wrap">
+            <button type="button" id="metronome-minus" class="bpm-step-btn" aria-label="Diminuir BPM">&minus;</button>
+            <div class="metronome-bpm-main">
+              <div id="metronome-bpm-value" class="metronome-bpm-value">72</div>
+              <div class="metronome-bpm-label">BPM</div>
+            </div>
+            <button type="button" id="metronome-plus" class="bpm-step-btn" aria-label="Aumentar BPM">+</button>
           </div>
 
-          <div class="metronome-panel">
-            <div class="metronome-bpm-wrap">
-              <button type="button" id="metronome-minus" class="bpm-step-btn" aria-label="Diminuir BPM">−</button>
-              <div class="metronome-bpm-main">
-                <div class="metronome-bpm-value" id="metronome-bpm-value">72</div>
-                <div class="metronome-bpm-label">BPM</div>
-              </div>
-              <button type="button" id="metronome-plus" class="bpm-step-btn" aria-label="Aumentar BPM">+</button>
-            </div>
-
-            <div class="metronome-slider-wrap">
-              <input type="range" id="metronome-bpm-slider" min="30" max="240" step="1" value="72" aria-label="BPM" />
-            </div>
-
-            <div class="metronome-controls-grid">
-              <label class="metronome-select-wrap">
-                <span>Compasso</span>
-                <select id="metronome-time-signature">
-                  <option value="2">2/4</option>
-                  <option value="3">3/4</option>
-                  <option value="4" selected>4/4</option>
-                  <option value="5">5/4</option>
-                  <option value="6">6/8</option>
-                  <option value="7">7/8</option>
-                  <option value="9">9/8</option>
-                  <option value="12">12/8</option>
-                </select>
-              </label>
-
-              <button type="button" id="metronome-toggle" class="button-primary tool-toggle-btn is-stopped" aria-pressed="false">Iniciar</button>
-            </div>
-
-            <div class="metronome-beats" id="metronome-beats" aria-label="Pulso visual"></div>
+          <div class="metronome-slider-wrap">
+            <input id="metronome-bpm-slider" type="range" min="30" max="240" value="72" aria-label="BPM" />
           </div>
+
+          <div class="metronome-controls-grid">
+            <label class="metronome-select-wrap">
+              <span>Compasso</span>
+              <select id="metronome-time-signature" aria-label="Compasso">
+                <option value="2">2/4</option>
+                <option value="3">3/4</option>
+                <option value="4" selected>4/4</option>
+                <option value="5">5/4</option>
+                <option value="6">6/8</option>
+                <option value="7">7/8</option>
+                <option value="9">9/8</option>
+                <option value="12">12/8</option>
+              </select>
+            </label>
+            <button type="button" id="metronome-toggle" class="tool-toggle-btn" aria-pressed="false">Iniciar</button>
+          </div>
+
+          <div id="metronome-beats" class="metronome-beats" aria-label="Pulsos do compasso"></div>
         </div>
-      </article>
-    </div>
+      </div>
+    </article>
   </section>
 </main>
 
@@ -238,7 +225,6 @@
 </div>
 
 <script type="module" src="assets/js/app.js"></script>
-<script type="module" src="assets/js/pages/ferramentas.js"></script>
   <script type="module" src="assets/js/v7-redesign.js"></script>
   <script type="module" src="assets/js/v7-fixes.js"></script>
   <script type="module" src="assets/js/v7-4-hotfix.js"></script>
@@ -246,8 +232,26 @@
   <script type="module" src="assets/js/v7-6-admin-panel-fix.js"></script>
   <script type="module" src="assets/js/v7-7-admin-dashboard.js"></script>
   <script type="module" src="assets/js/seven-content-icons.js"></script>
+  <script src="assets/js/seven-logo-menu-compacta-v2.js"></script>
+  <script type="module" src="assets/js/seven-router.js"></script>
+  <script type="module" src="assets/js/pages/ferramentas.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

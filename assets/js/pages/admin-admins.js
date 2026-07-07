@@ -1,4 +1,4 @@
-import {
+﻿import {
   listAdmins,
   saveSecondaryAdmin,
   removeSecondaryAdmin,
@@ -11,7 +11,7 @@ import {
 const MODULE_TITLES = {
   musicas: "Músicas públicas",
   musicasVocal: "Músicas vocal",
-  vocalistas: "Vocalistas",
+  integrantes: "Integrantes",
   cifras: "Cifras",
   programacoes: "Programações",
   fotos: "Fotos",
@@ -25,7 +25,7 @@ const MODULE_TITLES = {
 const LABELS = {
   musicas: { create: "Pode criar", edit: "Pode editar", delete: "Pode excluir" },
   musicasVocal: { create: "Pode criar", edit: "Pode editar", delete: "Pode excluir" },
-  vocalistas: { create: "Pode cadastrar", edit: "Pode editar", delete: "Pode excluir", activate: "Pode ativar/desativar" },
+  integrantes: { create: "Pode cadastrar", edit: "Pode editar", delete: "Pode excluir", activate: "Pode ativar/desativar" },
   cifras: {
     create: "Pode criar",
     edit: "Pode editar",
@@ -208,3 +208,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     await renderList();
   });
 });
+

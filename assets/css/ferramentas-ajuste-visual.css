@@ -1,0 +1,518 @@
+
+/* Ministério Seven V4 — Ajuste visual Afinador/Metrônomo
+   Escopo restrito à página ferramentas.html */
+
+.ferramentas-page{
+  --tools-gold:#edc455;
+  --tools-gold-2:#d6a93f;
+  --tools-ink:#0d1118;
+  --tools-card:linear-gradient(180deg, rgba(20,27,38,.94), rgba(10,14,22,.96));
+  --tools-border:rgba(237,196,85,.24);
+}
+
+.ferramentas-page .ferramentas-grid{
+  display:grid !important;
+  gap:22px !important;
+  margin-top:22px !important;
+}
+
+.ferramentas-page .tool-card{
+  position:relative !important;
+  overflow:hidden !important;
+  border-radius:26px !important;
+  border:1px solid var(--tools-border) !important;
+  background:var(--tools-card) !important;
+  box-shadow:0 20px 80px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+
+.ferramentas-page .tool-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:radial-gradient(circle at 15% 0%, rgba(237,196,85,.10), transparent 26rem), linear-gradient(90deg, rgba(255,255,255,.035), transparent 38%);
+  opacity:.75;
+}
+
+.ferramentas-page .tool-card-head,
+.ferramentas-page .tool-body{
+  position:relative;
+  z-index:1;
+}
+
+.ferramentas-page .tool-card-head{
+  display:flex !important;
+  align-items:flex-start !important;
+  justify-content:space-between !important;
+  gap:18px !important;
+  padding:22px 24px !important;
+}
+
+.ferramentas-page .tool-card-head > div:first-child{
+  min-width:0 !important;
+  display:grid !important;
+  grid-template-columns:54px minmax(0,1fr) !important;
+  grid-template-areas:"chip chip" "icon title" "desc desc" !important;
+  column-gap:14px !important;
+  align-items:center !important;
+}
+
+.ferramentas-page .tool-chip{
+  grid-area:chip !important;
+  justify-self:start !important;
+  display:inline-flex !important;
+  min-height:28px !important;
+  align-items:center !important;
+  padding:0 12px !important;
+  border-radius:999px !important;
+  border:1px solid rgba(237,196,85,.38) !important;
+  background:rgba(237,196,85,.13) !important;
+  color:var(--tools-gold) !important;
+  font-size:.78rem !important;
+  font-weight:900 !important;
+  letter-spacing:.075em !important;
+  text-transform:uppercase !important;
+  margin-bottom:10px !important;
+}
+
+.ferramentas-page .tool-card h2{
+  grid-area:title !important;
+  margin:0 !important;
+  line-height:1.1 !important;
+  font-size:clamp(1.45rem, 2vw, 2rem) !important;
+  color:var(--text, #fff) !important;
+}
+
+/* Remove ícones antigos aplicados em pseudo/HTML e cria um único ícone correto. */
+.ferramentas-page .tool-card h2::before,
+.ferramentas-page .tool-card h2::after,
+.ferramentas-page .tool-card .tool-title-icon,
+.ferramentas-page .tool-card .seven-tool-old-icon{
+  display:none !important;
+  content:none !important;
+}
+
+.ferramentas-page .tool-card-head > div:first-child::before{
+  content:"" !important;
+  grid-area:icon !important;
+  width:46px !important;
+  height:46px !important;
+  border-radius:15px !important;
+  display:block !important;
+  border:1px solid rgba(237,196,85,.45) !important;
+  background-color:var(--tools-gold) !important;
+  background-repeat:no-repeat !important;
+  background-position:center !important;
+  background-size:23px 23px !important;
+  -webkit-mask-repeat:no-repeat !important;
+  mask-repeat:no-repeat !important;
+  -webkit-mask-position:center !important;
+  mask-position:center !important;
+  -webkit-mask-size:24px 24px !important;
+  mask-size:24px 24px !important;
+  box-shadow:0 10px 22px rgba(237,196,85,.08) !important;
+}
+
+.ferramentas-page .tool-card[data-tool="afinador"] .tool-card-head > div:first-child::before{
+  -webkit-mask-image:url('../icons/seven-tools/icon-tuner.svg') !important;
+  mask-image:url('../icons/seven-tools/icon-tuner.svg') !important;
+}
+
+.ferramentas-page .tool-card[data-tool="metronomo"] .tool-card-head > div:first-child::before{
+  -webkit-mask-image:url('../icons/seven-tools/icon-metronome.svg') !important;
+  mask-image:url('../icons/seven-tools/icon-metronome.svg') !important;
+}
+
+.ferramentas-page .tool-card p{
+  grid-area:desc !important;
+  margin:12px 0 0 !important;
+  max-width:860px !important;
+  color:var(--text-soft, rgba(255,255,255,.72)) !important;
+  font-size:1rem !important;
+  line-height:1.55 !important;
+}
+
+.ferramentas-page .tool-head-actions{
+  flex:0 0 auto !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  gap:8px !important;
+  flex-wrap:nowrap !important;
+  padding-top:34px !important;
+}
+
+.ferramentas-page .tool-head-actions button,
+.ferramentas-page .tool-actions-row button,
+.ferramentas-page .metronome-controls-grid button,
+.ferramentas-page .bpm-step-btn{
+  border-radius:14px !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+  background:rgba(255,255,255,.045) !important;
+  color:var(--text, #fff) !important;
+  min-height:42px !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+
+.ferramentas-page .tool-expand-btn{
+  min-width:96px !important;
+  padding:0 16px !important;
+  font-weight:900 !important;
+  background:linear-gradient(180deg, #f3ce63, #d9a83c) !important;
+  border-color:rgba(237,196,85,.55) !important;
+  color:#141007 !important;
+}
+
+.ferramentas-page .tool-icon-btn{
+  width:42px !important;
+  min-width:42px !important;
+  height:42px !important;
+  padding:0 !important;
+  font-size:0 !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+.ferramentas-page .tool-icon-btn::before{
+  content:"";
+  width:19px;
+  height:19px;
+  display:block;
+  background:var(--tools-gold);
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  -webkit-mask-position:center;
+  mask-position:center;
+  -webkit-mask-size:contain;
+  mask-size:contain;
+}
+
+.ferramentas-page .tool-focus-btn::before{
+  -webkit-mask-image:url('../icons/seven-tools/icon-eye.svg');
+  mask-image:url('../icons/seven-tools/icon-eye.svg');
+}
+
+.ferramentas-page .tool-fullscreen-btn::before{
+  -webkit-mask-image:url('../icons/seven-tools/icon-fullscreen.svg');
+  mask-image:url('../icons/seven-tools/icon-fullscreen.svg');
+}
+
+.ferramentas-page .tool-fullscreen-btn.is-active::before,
+.ferramentas-page .tool-fullscreen-btn[aria-pressed="true"]::before{
+  -webkit-mask-image:url('../icons/seven-tools/icon-fullscreen-exit.svg');
+  mask-image:url('../icons/seven-tools/icon-fullscreen-exit.svg');
+}
+
+/* Remove o segundo botão Fechar dentro do corpo. O botão principal já vira Fechar. */
+.ferramentas-page .tool-inline-actions{
+  display:none !important;
+}
+
+.ferramentas-page .tool-body{
+  padding:0 24px 24px !important;
+  border-top:0 !important;
+}
+
+.ferramentas-page .tool-body.hidden{
+  display:none !important;
+}
+
+.ferramentas-page .tuner-panel,
+.ferramentas-page .metronome-panel{
+  margin-top:2px !important;
+  border:1px solid rgba(255,255,255,.09) !important;
+  border-radius:22px !important;
+  padding:18px !important;
+  background:rgba(0,0,0,.18) !important;
+  display:grid !important;
+  gap:18px !important;
+}
+
+.ferramentas-page .tuner-topline{
+  display:flex !important;
+  justify-content:space-between !important;
+  align-items:center !important;
+  gap:12px !important;
+  color:var(--text-soft, rgba(255,255,255,.72)) !important;
+  font-weight:800 !important;
+}
+
+.ferramentas-page .tuner-hz{
+  color:var(--tools-gold) !important;
+}
+
+.ferramentas-page .tuner-note-wrap{
+  display:flex !important;
+  align-items:flex-end !important;
+  justify-content:center !important;
+  gap:12px !important;
+  padding:8px 0 2px !important;
+}
+
+.ferramentas-page .tuner-note{
+  font-size:clamp(3.2rem, 7vw, 5.4rem) !important;
+  line-height:1 !important;
+  font-weight:950 !important;
+  color:var(--tools-gold) !important;
+  letter-spacing:-.04em !important;
+}
+
+.ferramentas-page .tuner-octave{
+  padding-bottom:12px !important;
+  color:var(--text-soft, rgba(255,255,255,.72)) !important;
+}
+
+.ferramentas-page .tuner-meter-wrap{
+  max-width:780px !important;
+  width:100% !important;
+  margin:0 auto !important;
+  display:grid !important;
+  gap:10px !important;
+}
+
+.ferramentas-page .tuner-meter{
+  height:22px !important;
+  border-radius:999px !important;
+  border:1px solid rgba(255,255,255,.13) !important;
+  overflow:hidden !important;
+  background:rgba(255,255,255,.045) !important;
+}
+
+.ferramentas-page .tuner-needle{
+  top:-5px !important;
+  width:5px !important;
+  height:32px !important;
+  background:#fff !important;
+  box-shadow:0 0 0 1px rgba(0,0,0,.25), 0 0 18px rgba(255,255,255,.36) !important;
+}
+
+.ferramentas-page .tuner-reference{
+  max-width:780px !important;
+  width:100% !important;
+  margin:0 auto !important;
+  padding:15px 18px !important;
+  border-radius:18px !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  background:rgba(255,255,255,.035) !important;
+}
+
+.ferramentas-page .tool-actions-row{
+  justify-content:center !important;
+}
+
+.ferramentas-page .tool-toggle-btn,
+.ferramentas-page #metronome-toggle,
+.ferramentas-page #tuner-start-btn{
+  min-height:48px !important;
+  border-radius:16px !important;
+  padding:0 22px !important;
+  font-weight:950 !important;
+  background:linear-gradient(180deg, #f3ce63, #d9a83c) !important;
+  color:#141007 !important;
+  border-color:rgba(237,196,85,.55) !important;
+}
+
+.ferramentas-page .metronome-panel{
+  align-items:center !important;
+}
+
+.ferramentas-page .metronome-bpm-wrap{
+  width:min(100%, 390px) !important;
+  display:grid !important;
+  grid-template-columns:54px 1fr 54px !important;
+  align-items:center !important;
+  gap:12px !important;
+  margin:0 auto !important;
+}
+
+.ferramentas-page .bpm-step-btn{
+  width:54px !important;
+  height:54px !important;
+  min-height:54px !important;
+  border-radius:17px !important;
+  padding:0 !important;
+  font-size:0 !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+.ferramentas-page .bpm-step-btn::before{
+  content:"";
+  width:20px;
+  height:20px;
+  background:var(--tools-gold);
+  display:block;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  -webkit-mask-position:center;
+  mask-position:center;
+  -webkit-mask-size:contain;
+  mask-size:contain;
+}
+
+.ferramentas-page #metronome-minus::before{
+  -webkit-mask-image:url('../icons/seven-tools/icon-minus.svg');
+  mask-image:url('../icons/seven-tools/icon-minus.svg');
+}
+
+.ferramentas-page #metronome-plus::before{
+  -webkit-mask-image:url('../icons/seven-tools/icon-plus.svg');
+  mask-image:url('../icons/seven-tools/icon-plus.svg');
+}
+
+.ferramentas-page .metronome-bpm-main{
+  min-height:118px !important;
+  border-radius:22px !important;
+  border:1px solid rgba(237,196,85,.20) !important;
+  background:rgba(237,196,85,.07) !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+}
+
+.ferramentas-page .metronome-bpm-value{
+  font-size:clamp(3rem, 6vw, 4.7rem) !important;
+  line-height:.9 !important;
+  font-weight:950 !important;
+  color:var(--tools-gold) !important;
+}
+
+.ferramentas-page .metronome-bpm-label{
+  margin-top:8px !important;
+  color:var(--text-soft, rgba(255,255,255,.72)) !important;
+  font-weight:900 !important;
+  letter-spacing:.11em !important;
+}
+
+.ferramentas-page .metronome-slider-wrap{
+  width:min(100%, 720px) !important;
+  margin:0 auto !important;
+}
+
+.ferramentas-page .metronome-slider-wrap input[type="range"]{
+  width:100% !important;
+  accent-color:var(--tools-gold) !important;
+}
+
+.ferramentas-page .metronome-controls-grid{
+  width:min(100%, 720px) !important;
+  margin:0 auto !important;
+  display:grid !important;
+  grid-template-columns:minmax(180px,1fr) auto !important;
+  gap:14px !important;
+  align-items:end !important;
+}
+
+.ferramentas-page .metronome-select-wrap{
+  display:grid !important;
+  gap:8px !important;
+}
+
+.ferramentas-page .metronome-select-wrap span{
+  color:var(--text-soft, rgba(255,255,255,.72)) !important;
+  font-weight:800 !important;
+}
+
+.ferramentas-page .metronome-select-wrap select{
+  min-height:48px !important;
+  border-radius:16px !important;
+  border:1px solid rgba(255,255,255,.13) !important;
+  background:rgba(255,255,255,.045) !important;
+  color:var(--text, #fff) !important;
+  padding:0 14px !important;
+}
+
+.ferramentas-page .metronome-beats{
+  min-height:36px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:12px !important;
+  flex-wrap:wrap !important;
+}
+
+.ferramentas-page .metronome-beat{
+  width:18px !important;
+  height:18px !important;
+  border-radius:50% !important;
+  background:rgba(255,255,255,.17) !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+}
+
+.ferramentas-page .metronome-beat.is-primary{
+  box-shadow:0 0 0 3px rgba(237,196,85,.17) !important;
+}
+
+.ferramentas-page .metronome-beat.is-active{
+  background:var(--tools-gold) !important;
+  border-color:rgba(237,196,85,.75) !important;
+  transform:scale(1.12) !important;
+}
+
+html[data-theme="light"] .ferramentas-page{
+  --tools-card:linear-gradient(180deg, rgba(255,255,255,.94), rgba(247,244,237,.98));
+  --tools-border:rgba(130,96,27,.22);
+}
+html[data-theme="light"] .ferramentas-page .tool-card p,
+html[data-theme="light"] .ferramentas-page .tuner-status,
+html[data-theme="light"] .ferramentas-page .tuner-octave,
+html[data-theme="light"] .ferramentas-page .metronome-select-wrap span,
+html[data-theme="light"] .ferramentas-page .metronome-bpm-label{
+  color:rgba(17,24,39,.72) !important;
+}
+html[data-theme="light"] .ferramentas-page .tool-card h2,
+html[data-theme="light"] .ferramentas-page .tool-head-actions button,
+html[data-theme="light"] .ferramentas-page .metronome-select-wrap select{
+  color:#111827 !important;
+}
+html[data-theme="light"] .ferramentas-page .tuner-panel,
+html[data-theme="light"] .ferramentas-page .metronome-panel{
+  background:rgba(17,24,39,.035) !important;
+}
+html[data-theme="light"] .ferramentas-page .tool-icon-btn::before,
+html[data-theme="light"] .ferramentas-page .bpm-step-btn::before{
+  background:#7c5a12 !important;
+}
+
+@media (max-width:900px){
+  .ferramentas-page .tool-card-head{
+    display:grid !important;
+  }
+  .ferramentas-page .tool-head-actions{
+    justify-content:flex-start !important;
+    padding-top:0 !important;
+  }
+  .ferramentas-page .metronome-controls-grid{
+    grid-template-columns:1fr !important;
+  }
+}
+
+@media (max-width:620px){
+  .ferramentas-page .tool-card-head,
+  .ferramentas-page .tool-body{
+    padding-left:16px !important;
+    padding-right:16px !important;
+  }
+  .ferramentas-page .tool-card-head > div:first-child{
+    grid-template-columns:46px minmax(0,1fr) !important;
+  }
+  .ferramentas-page .tool-card-head > div:first-child::before{
+    width:40px !important;
+    height:40px !important;
+  }
+  .ferramentas-page .tool-head-actions{
+    flex-wrap:wrap !important;
+  }
+  .ferramentas-page .metronome-bpm-wrap{
+    grid-template-columns:46px 1fr 46px !important;
+  }
+  .ferramentas-page .bpm-step-btn{
+    width:46px !important;
+    height:46px !important;
+    min-height:46px !important;
+  }
+}

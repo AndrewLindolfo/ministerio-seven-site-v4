@@ -9,7 +9,7 @@ export const ADMIN_COLLECTION = "admins";
 export const DEFAULT_PERMISSIONS = {
   musicas: { create: false, edit: false, delete: false },
   musicasVocal: { create: false, edit: false, delete: false },
-  vocalistas: { create: false, edit: false, delete: false, activate: false },
+  integrantes: { create: false, edit: false, delete: false, activate: false },
   cifras: {
     create: false,
     edit: false,
@@ -48,7 +48,11 @@ const PERMISSION_ALIASES = {
   musicas_vocais: "musicasVocal",
   vocal: "musicasVocal",
   vocalMusicas: "musicasVocal",
-  vocalistasSeven: "vocalistas",
+  vocalistas: "integrantes",
+  vocalista: "integrantes",
+  vocalistasSeven: "integrantes",
+  integrantes: "integrantes",
+  integrante: "integrantes",
   cifra: "cifras",
   downloads: "downloadsGerais",
   downloadsGeral: "downloadsGerais",
@@ -208,12 +212,15 @@ export function canAccessAdminPage(admin, pageKey = "") {
     case "editor-musica-vocais-edit":
       return hasPermission(admin, "musicasVocal", "edit");
 
+    case "integrantes":
     case "vocalistas":
-      return canAccessModule(admin, "vocalistas");
+      return canAccessModule(admin, "integrantes");
+    case "editor-integrante-create":
     case "editor-vocalista-create":
-      return hasPermission(admin, "vocalistas", "create");
+      return hasPermission(admin, "integrantes", "create");
+    case "editor-integrante-edit":
     case "editor-vocalista-edit":
-      return hasPermission(admin, "vocalistas", "edit");
+      return hasPermission(admin, "integrantes", "edit");
 
     case "cifras":
       return canAccessModule(admin, "cifras");

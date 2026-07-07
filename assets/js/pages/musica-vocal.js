@@ -1,4 +1,4 @@
-import { getMusicaBySlug, listMusicas } from "../services/musicas-service.js";
+﻿import { getMusicaBySlug, listMusicas } from "../services/musicas-service.js";
 import { listCifrasByMusica, getInstrumentLabel, normalizeInstrument } from "../services/cifras-service.js";
 import { getQueryParam } from "../utils.js";
 import { initMusicaControls } from "../modules/musica-controls.js";
@@ -6,7 +6,7 @@ import { createPersonalButtons, refreshPersonalActionButtons } from "../modules/
 import { watchDocument } from "../db.js";
 import { whenPublicAuthReady, openPublicAuthModal } from "../public-auth.js";
 import { getAdminProfileByEmail } from "../auth.js";
-import { isVocalista } from "../services/vocalistas-service.js";
+import { isIntegrante } from "../services/integrantes-service.js";
 
 let currentPublicMusicaLiveUnsubscribe = null;
 let currentPublicMusicaLiveSignature = "";
@@ -271,16 +271,16 @@ async function userCanAccessVocalPage() {
     return false;
   }
 
-  if (profile?.isAdmin || profile?.isVocalista) return true;
+  if (profile?.isAdmin || profile?.isIntegrante || profile?.isVocalista) return true;
 
   try {
-    const [admin, vocalista] = await Promise.all([
+    const [admin, integrante] = await Promise.all([
       getAdminProfileByEmail(firebaseUser.email || ""),
-      isVocalista(firebaseUser.uid)
+      isIntegrante(firebaseUser.uid)
     ]);
-    return !!admin || !!vocalista;
+    return !!admin || !!integrante;
   } catch (error) {
-    console.error("Erro ao verificar acesso vocal:", error);
+    console.error("Erro ao verificar acesso de integrante:", error);
     return false;
   }
 }
@@ -294,7 +294,7 @@ function renderAccessDenied() {
   const cross = document.querySelector(".page-cross-link");
   if (titleEl) titleEl.textContent = "Acesso restrito";
   if (subtitleEl) {
-    subtitleEl.textContent = "Esta área é exclusiva para vocalistas autorizados.";
+    subtitleEl.textContent = "Esta área é exclusiva para integrantes autorizados.";
     subtitleEl.hidden = false;
   }
   if (meta) meta.innerHTML = "";
@@ -371,3 +371,4 @@ window.addEventListener("beforeunload", () => {
     currentPublicMusicaLiveUnsubscribe = null;
   }
 });
+

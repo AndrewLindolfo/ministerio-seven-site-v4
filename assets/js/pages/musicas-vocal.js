@@ -1,8 +1,8 @@
-import { listMusicas } from "../services/musicas-service.js";
+﻿import { listMusicas } from "../services/musicas-service.js";
 import { createPersonalButtons, refreshPersonalActionButtons } from "../modules/personal-actions.js";
 import { whenPublicAuthReady, openPublicAuthModal } from "../public-auth.js";
 import { getAdminProfileByEmail } from "../auth.js";
-import { isVocalista } from "../services/vocalistas-service.js";
+import { isIntegrante } from "../services/integrantes-service.js";
 
 function normalizeInitialLetter(value = "") {
   const raw = String(value || "").trim();
@@ -54,16 +54,16 @@ async function userCanAccessVocalList() {
     return false;
   }
 
-  if (profile?.isAdmin || profile?.isVocalista) return true;
+  if (profile?.isAdmin || profile?.isIntegrante || profile?.isVocalista) return true;
 
   try {
-    const [admin, vocalista] = await Promise.all([
+    const [admin, integrante] = await Promise.all([
       getAdminProfileByEmail(firebaseUser.email || ""),
-      isVocalista(firebaseUser.uid)
+      isIntegrante(firebaseUser.uid)
     ]);
-    return !!admin || !!vocalista;
+    return !!admin || !!integrante;
   } catch (error) {
-    console.error("Erro ao verificar acesso vocal:", error);
+    console.error("Erro ao verificar acesso de integrante:", error);
     return false;
   }
 }
@@ -71,7 +71,7 @@ async function userCanAccessVocalList() {
 document.addEventListener("DOMContentLoaded", async () => {
   const allowed = await userCanAccessVocalList();
   if (!allowed) {
-    renderList("musicas-lista-alfabetica", [], "Área exclusiva para vocalistas autorizados. Faça login com Google ou solicite liberação ao administrador.");
+    renderList("musicas-lista-alfabetica", [], "Área exclusiva para integrantes autorizados. Faça login com Google ou solicite liberação ao administrador.");
     return;
   }
   const input = document.getElementById("musicas-filter-input");
@@ -98,3 +98,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderList(containerId, [], "Não foi possível carregar as músicas.");
   }
 });
+

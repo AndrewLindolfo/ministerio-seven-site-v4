@@ -1,0 +1,113 @@
+/* Ministério Seven — navegação suave pública */
+#seven-router-progress{
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:999999;
+  height:3px;
+  width:100%;
+  pointer-events:none;
+  opacity:0;
+  transform-origin:left center;
+  transform:scaleX(.08);
+  background:linear-gradient(90deg, #edc455, #ff3d3d, #edc455);
+  box-shadow:0 0 18px rgba(237,196,85,.45);
+  transition:opacity .12s ease, transform .35s ease;
+}
+#seven-router-progress.is-active{
+  opacity:1;
+  transform:scaleX(.78);
+  animation:seven-router-progress 1.1s ease-in-out infinite alternate;
+}
+@keyframes seven-router-progress{
+  from{transform:scaleX(.35)}
+  to{transform:scaleX(.92)}
+}
+body.seven-router-loading main{opacity:.985;}
+.seven-router-enabled main{contain:layout paint;}
+
+/* Corrige links ativos presos ao navegar sem recarregar o header */
+.site-header .main-nav a:not([data-seven-current="true"]),
+.site-header .site-nav a:not([data-seven-current="true"]),
+.site-header .header-nav a:not([data-seven-current="true"]),
+.mobile-menu-panel a:not([data-seven-current="true"]){
+  box-shadow:none !important;
+}
+.site-header .main-nav a:not([data-seven-current="true"]):not(:hover),
+.site-header .site-nav a:not([data-seven-current="true"]):not(:hover),
+.site-header .header-nav a:not([data-seven-current="true"]):not(:hover),
+.mobile-menu-panel a:not([data-seven-current="true"]):not(:hover){
+  background:transparent !important;
+  border-color:transparent !important;
+}
+.site-header .main-nav a:not([data-seven-current="true"])::before,
+.site-header .main-nav a:not([data-seven-current="true"])::after,
+.site-header .site-nav a:not([data-seven-current="true"])::before,
+.site-header .site-nav a:not([data-seven-current="true"])::after,
+.site-header .header-nav a:not([data-seven-current="true"])::before,
+.site-header .header-nav a:not([data-seven-current="true"])::after,
+.mobile-menu-panel a:not([data-seven-current="true"])::before,
+.mobile-menu-panel a:not([data-seven-current="true"])::after{
+  opacity:0 !important;
+  transform:scaleX(0) !important;
+  width:0 !important;
+}
+.site-header .main-nav a[data-seven-current="true"],
+.site-header .site-nav a[data-seven-current="true"],
+.site-header .header-nav a[data-seven-current="true"],
+.mobile-menu-panel a[data-seven-current="true"]{
+  color:var(--color-primary, #edc455) !important;
+}
+
+@media (prefers-reduced-motion: reduce){
+  #seven-router-progress{transition:none;animation:none!important;}
+}
+
+/* V3: garante que o submenu Downloads não fique marcado quando outra página está ativa */
+.site-header .downloads-nav-group:not([data-seven-current="true"]) > a,
+.site-header .downloads-nav-group:not([data-seven-current="true"]) > a:not(:hover),
+.site-header .downloads-nav-group > a:not([data-seven-current="true"]):not(:hover){
+  background:transparent !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+  color:inherit !important;
+}
+.site-header .downloads-nav-group:not([data-seven-current="true"]) > a::before,
+.site-header .downloads-nav-group:not([data-seven-current="true"]) > a::after,
+.site-header .downloads-nav-group > a:not([data-seven-current="true"])::before,
+.site-header .downloads-nav-group > a:not([data-seven-current="true"])::after{
+  opacity:0 !important;
+  transform:scaleX(0) !important;
+  width:0 !important;
+}
+.site-header .downloads-nav-group[data-seven-current="true"] > a{
+  color:var(--color-primary, #edc455) !important;
+}
+
+
+/* V4: ativo individual do submenu Downloads */
+.site-header .downloads-submenu a:not([data-seven-current="true"]),
+.site-header [data-downloads-submenu] a:not([data-seven-current="true"]),
+.mobile-downloads-submenu a:not([data-seven-current="true"]){
+  background:transparent !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+  color:inherit !important;
+}
+.site-header .downloads-submenu a:not([data-seven-current="true"])::before,
+.site-header .downloads-submenu a:not([data-seven-current="true"])::after,
+.site-header [data-downloads-submenu] a:not([data-seven-current="true"])::before,
+.site-header [data-downloads-submenu] a:not([data-seven-current="true"])::after,
+.mobile-downloads-submenu a:not([data-seven-current="true"])::before,
+.mobile-downloads-submenu a:not([data-seven-current="true"])::after{
+  opacity:0 !important;
+  transform:scaleX(0) !important;
+  width:0 !important;
+}
+.site-header .downloads-submenu a[data-seven-current="true"],
+.site-header [data-downloads-submenu] a[data-seven-current="true"],
+.mobile-downloads-submenu a[data-seven-current="true"]{
+  color:var(--color-primary, #edc455) !important;
+  background:rgba(237,196,85,.14) !important;
+  border-color:rgba(237,196,85,.24) !important;
+}

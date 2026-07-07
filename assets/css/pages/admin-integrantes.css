@@ -1,0 +1,56 @@
+.vocalista-user-card{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:16px;
+  margin:12px 0;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:rgba(255,255,255,.035);
+}
+.vocalista-user-info{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+.vocalista-user-avatar{
+  width:44px;
+  height:44px;
+  border-radius:999px;
+  object-fit:cover;
+  border:1px solid var(--border);
+}
+.vocalista-user-info strong,
+.vocalista-user-info small{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.vocalista-switch{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  cursor:pointer;
+  user-select:none;
+}
+.vocalista-switch input{
+  width:44px;
+  height:24px;
+  accent-color:#ef1b1b;
+}
+@media (max-width: 640px){
+  .vocalista-user-card{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+}
+
+
+/* Compatibilidade: novo nome do módulo */
+.integrante-user-card { }
+.integrante-user-info { }
+.integrante-user-avatar { }
+.integrante-switch { }

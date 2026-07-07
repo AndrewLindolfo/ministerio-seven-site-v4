@@ -1,0 +1,48 @@
+/* Ministério Seven — correção dos ícones dos cards da página inicial
+   Aplica ícones por CSS para não depender do recarregamento da página/SPA. */
+:root{
+  --seven-home-card-icon:#f0c84b;
+  --seven-home-card-icon-light:#8a631e;
+}
+html[data-theme="light"]{
+  --seven-home-card-icon:#8a631e;
+}
+
+/* Esconde o span antigo para evitar duplicidade; o ícone oficial vem no ::before. */
+.v7-home-quick-card > .icon{
+  display:none !important;
+}
+
+.v7-home-quick-card::before{
+  content:"";
+  display:block;
+  width:1.48rem;
+  height:1.48rem;
+  margin:0 0 .72rem 0;
+  background:var(--seven-home-card-icon);
+  -webkit-mask:center/contain no-repeat;
+  mask:center/contain no-repeat;
+  flex:0 0 auto;
+}
+
+.v7-home-quick-card[href*="musicas"]::before,
+.v7-home-quick-card[href*="musica"]::before{
+  -webkit-mask-image:url("../icons/seven-content/icon-music.svg");
+  mask-image:url("../icons/seven-content/icon-music.svg");
+}
+
+.v7-home-quick-card[href*="cifras"]::before,
+.v7-home-quick-card[href*="cifra"]::before{
+  -webkit-mask-image:url("../icons/seven-content/icon-chord.svg");
+  mask-image:url("../icons/seven-content/icon-chord.svg");
+}
+
+.v7-home-quick-card[href*="agenda"]::before{
+  -webkit-mask-image:url("../icons/seven-content/icon-calendar.svg");
+  mask-image:url("../icons/seven-content/icon-calendar.svg");
+}
+
+.v7-home-quick-card[href*="ferramentas"]::before{
+  -webkit-mask-image:url("../icons/seven-content/icon-tools.svg");
+  mask-image:url("../icons/seven-content/icon-tools.svg");
+}

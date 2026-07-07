@@ -1,4 +1,4 @@
-import { auth, provider } from "./firebase.js";
+﻿import { auth, provider } from "./firebase.js";
 import { getAdminProfileByEmail } from "./auth.js";
 import {
   signInWithPopup,
@@ -6,7 +6,7 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getPublicUserProfile, savePublicUserProfile } from "./services/public-user-service.js";
-import { isVocalista } from "./services/vocalistas-service.js";
+import { isIntegrante } from "./services/integrantes-service.js";
 
 let currentUser = null;
 let currentMenu = null;
@@ -68,9 +68,9 @@ function cacheVocalNavPermission(profile = null) {
     localStorage.setItem(VOCAL_NAV_CACHE_KEY, JSON.stringify({
       uid: String(profile.uid || "").trim(),
       email: normalize(profile.email || ""),
-      canSeeVocal: !!(profile.isAdmin || profile.isVocalista),
+      canSeeVocal: !!(profile.isAdmin || profile.isIntegrante || profile.isVocalista),
       isAdmin: !!profile.isAdmin,
-      isVocalista: !!profile.isVocalista,
+      isIntegrante: !!(profile.isIntegrante || profile.isVocalista),`r`n      isVocalista: !!(profile.isIntegrante || profile.isVocalista),
       updatedAt: Date.now(),
       expiresAt: Date.now() + VOCAL_NAV_CACHE_TTL
     }));
@@ -119,7 +119,7 @@ function cachePublicHeaderProfile(profile = null) {
       displayName: profile.displayName || profile.email || "Minha conta",
       phone: profile.phone || "",
       isAdmin: !!profile.isAdmin,
-      isVocalista: !!profile.isVocalista,
+      isIntegrante: !!(profile.isIntegrante || profile.isVocalista),`r`n      isVocalista: !!(profile.isIntegrante || profile.isVocalista),
       updatedAt: Date.now(),
       expiresAt: Date.now() + PUBLIC_HEADER_CACHE_TTL
     }));
@@ -329,7 +329,7 @@ async function buildProfileData(user) {
     displayName: profile?.displayName || user?.displayName || [firstName, lastName].filter(Boolean).join(" "),
     phone: profile?.phone || "",
     isAdmin: await safeIsAdminByEmail(email),
-    isVocalista: !!(await isVocalista(user?.uid || ""))
+    isIntegrante: !!(await isIntegrante(user?.uid || "")),`r`n    isVocalista: !!(await isIntegrante(user?.uid || ""))
   };
 }
 
@@ -342,7 +342,7 @@ function buildHeaderStateKey(profile = null) {
     normalize(profile.email || ""),
     String(profile.photoURL || ""),
     profile.isAdmin ? "admin" : "user",
-    profile.isVocalista ? "vocal" : "novocal"
+    (profile.isIntegrante || profile.isVocalista) ? "integrante" : "nao-integrante"
   ].join("|");
 }
 
@@ -436,7 +436,7 @@ async function renderHeaderAuth(user) {
   currentUser = { ...profile, firebaseUser: user };
   cachePublicHeaderProfile(profile);
   cacheVocalNavPermission(profile);
-  syncVocalNavLink(profile.isAdmin || profile.isVocalista);
+  syncVocalNavLink(profile.isAdmin || profile.isIntegrante || profile.isVocalista);
   await savePublicUserProfile(profile.uid, {
     firstName: profile.firstName,
     lastName: profile.lastName,
@@ -520,3 +520,4 @@ export function initPublicAuth() {
     }
   });
 }
+

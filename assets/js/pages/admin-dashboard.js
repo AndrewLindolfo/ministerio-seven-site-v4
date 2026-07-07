@@ -1,4 +1,4 @@
-import { watchAuth, getAdminProfileByEmail } from "../auth.js";
+﻿import { watchAuth, getAdminProfileByEmail } from "../auth.js";
 import { canAccessAdminPage, isPrimaryAdmin } from "../services/admin-permissions-service.js";
 
 function normalize(email = "") {
@@ -16,7 +16,7 @@ const MODULE_CARD_PAGE_MAP = {
   "musicas-vocais": "musicas-vocal",
   vocal: "musicas-vocal",
 
-  vocalistas: "vocalistas",
+  integrantes: "integrantes",`r`n  vocalistas: "integrantes",
   cifras: "cifras",
   programacoes: "programacoes",
   fotos: "fotos",
@@ -84,3 +84,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+

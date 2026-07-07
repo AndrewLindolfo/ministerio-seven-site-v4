@@ -1,4 +1,4 @@
-
+﻿
 import { watchAuth, logout, getAdminProfileByEmail } from "./auth.js";
 import { canAccessAdminPage, isPrimaryAdmin } from "./services/admin-permissions-service.js";
 import { getCollection } from "./db.js";
@@ -10,7 +10,7 @@ const MODULE_TO_PAGE = {
   musicasPublicas: "musicas-publicas",
   musicas: "musicas-publicas",
   musicasVocal: "musicas-vocal",
-  vocalistas: "vocalistas",
+  integrantes: "integrantes",`r`n  vocalistas: "integrantes",
   cifras: "cifras",
   programacoes: "programacoes",
   fotos: "fotos",
@@ -33,7 +33,7 @@ function activeKey(){
   if(f === 'index.html' || f === '') return 'dashboard';
   if(f.includes('musicas-publicas') || f.includes('editor-musica-publica')) return 'musicasPublicas';
   if(f.includes('musicas-vocal') || f === 'musicas.html' || f.includes('editor-musica.html')) return 'musicasVocal';
-  if(f.includes('vocalistas')) return 'vocalistas';
+  if(f.includes('integrantes') || f.includes('vocalistas')) return 'integrantes';
   if(f.includes('cifras') || f.includes('editor-cifra')) return 'cifras';
   if(f.includes('programacoes')) return 'programacoes';
   if(f.includes('fotos')) return 'fotos';
@@ -131,3 +131,4 @@ watchAuth(async (user) => {
 
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setupFallbackActions);
 else setupFallbackActions();
+

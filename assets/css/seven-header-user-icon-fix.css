@@ -1,0 +1,79 @@
+/* Ministério Seven V4 — Correção do ícone de usuário deslogado no cabeçalho
+   Escopo: apenas o botão/login público do header. */
+
+.site-header #public-user-slot,
+.site-header .public-user-slot{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex:0 0 auto !important;
+}
+
+.site-header #public-login-button,
+.site-header .public-login-button,
+.site-header .public-login-button--image-only{
+  width:44px !important;
+  height:44px !important;
+  min-width:44px !important;
+  min-height:44px !important;
+  max-width:44px !important;
+  max-height:44px !important;
+  padding:0 !important;
+  border-radius:14px !important;
+  overflow:hidden !important;
+  display:inline-grid !important;
+  place-items:center !important;
+  line-height:0 !important;
+}
+
+.site-header #public-login-button img,
+.site-header .public-login-button img,
+.site-header .public-login-button__image{
+  width:24px !important;
+  height:24px !important;
+  max-width:24px !important;
+  max-height:24px !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  object-fit:contain !important;
+  object-position:center !important;
+  border-radius:0 !important;
+  display:block !important;
+}
+
+html[data-theme="dark"] .site-header .public-login-button__image--light{
+  display:none !important;
+}
+html[data-theme="dark"] .site-header .public-login-button__image--dark{
+  display:block !important;
+}
+html[data-theme="light"] .site-header .public-login-button__image--dark{
+  display:none !important;
+}
+html[data-theme="light"] .site-header .public-login-button__image--light{
+  display:block !important;
+}
+
+/* usuário logado continua seguindo o card, sem ficar circular */
+.site-header #public-user-toggle,
+.site-header .public-user-toggle{
+  width:44px !important;
+  height:44px !important;
+  min-width:44px !important;
+  min-height:44px !important;
+  padding:3px !important;
+  border-radius:14px !important;
+  overflow:hidden !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+.site-header #public-user-toggle img,
+.site-header .public-user-toggle img,
+.site-header .public-user-avatar{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  border-radius:11px !important;
+  display:block !important;
+}

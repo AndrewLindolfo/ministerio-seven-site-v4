@@ -1,0 +1,113 @@
+/* Ministério Seven V4 — Usuário deslogado do header V2
+   Corrige o ícone duplicado/estourado: esconde as imagens antigas e desenha um único ícone centralizado. */
+
+.site-header #public-user-slot,
+.site-header .public-user-slot{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex:0 0 auto !important;
+}
+
+.site-header #public-login-button,
+.site-header .public-login-button,
+.site-header .public-login-button--image-only,
+.site-header a[href*="login"].header-icon-button,
+.site-header button[aria-label*="login" i],
+.site-header button[aria-label*="entrar" i]{
+  width:44px !important;
+  height:44px !important;
+  min-width:44px !important;
+  min-height:44px !important;
+  max-width:44px !important;
+  max-height:44px !important;
+  padding:0 !important;
+  border-radius:14px !important;
+  overflow:hidden !important;
+  display:inline-grid !important;
+  place-items:center !important;
+  line-height:0 !important;
+  position:relative !important;
+}
+
+/* Esconde as duas imagens antigas de login claro/escuro que estavam aparecendo juntas. */
+.site-header #public-login-button img,
+.site-header .public-login-button img,
+.site-header .public-login-button__image,
+.site-header .public-login-button__image--light,
+.site-header .public-login-button__image--dark,
+.site-header a[href*="login"].header-icon-button img,
+.site-header button[aria-label*="login" i] img,
+.site-header button[aria-label*="entrar" i] img{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  width:0 !important;
+  height:0 !important;
+  max-width:0 !important;
+  max-height:0 !important;
+}
+
+/* Ícone único, proporcional ao card. */
+.site-header #public-login-button::before,
+.site-header .public-login-button::before,
+.site-header .public-login-button--image-only::before,
+.site-header a[href*="login"].header-icon-button::before,
+.site-header button[aria-label*="login" i]::before,
+.site-header button[aria-label*="entrar" i]::before{
+  content:"" !important;
+  width:24px !important;
+  height:24px !important;
+  display:block !important;
+  background-color:#f7f4ec !important;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 12.25a4.75 4.75 0 1 0 0-9.5 4.75 4.75 0 0 0 0 9.5Zm0 2.1c-4.35 0-8 2.18-8 4.95 0 1.08.88 1.95 1.96 1.95h12.08c1.08 0 1.96-.87 1.96-1.95 0-2.77-3.65-4.95-8-4.95Z'/%3E%3C/svg%3E") !important;
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 12.25a4.75 4.75 0 1 0 0-9.5 4.75 4.75 0 0 0 0 9.5Zm0 2.1c-4.35 0-8 2.18-8 4.95 0 1.08.88 1.95 1.96 1.95h12.08c1.08 0 1.96-.87 1.96-1.95 0-2.77-3.65-4.95-8-4.95Z'/%3E%3C/svg%3E") !important;
+  -webkit-mask-repeat:no-repeat !important;
+  mask-repeat:no-repeat !important;
+  -webkit-mask-position:center !important;
+  mask-position:center !important;
+  -webkit-mask-size:contain !important;
+  mask-size:contain !important;
+}
+
+html[data-theme="light"] .site-header #public-login-button::before,
+html[data-theme="light"] .site-header .public-login-button::before,
+html[data-theme="light"] .site-header .public-login-button--image-only::before,
+html[data-theme="light"] .site-header a[href*="login"].header-icon-button::before,
+html[data-theme="light"] .site-header button[aria-label*="login" i]::before,
+html[data-theme="light"] .site-header button[aria-label*="entrar" i]::before{
+  background-color:#17140d !important;
+}
+
+html[data-theme="dark"] .site-header #public-login-button::before,
+html[data-theme="dark"] .site-header .public-login-button::before,
+html[data-theme="dark"] .site-header .public-login-button--image-only::before,
+html[data-theme="dark"] .site-header a[href*="login"].header-icon-button::before,
+html[data-theme="dark"] .site-header button[aria-label*="login" i]::before,
+html[data-theme="dark"] .site-header button[aria-label*="entrar" i]::before{
+  background-color:#f7f4ec !important;
+}
+
+/* Usuário logado: foto continua quadrada com cantos arredondados. */
+.site-header #public-user-toggle,
+.site-header .public-user-toggle{
+  width:44px !important;
+  height:44px !important;
+  min-width:44px !important;
+  min-height:44px !important;
+  padding:3px !important;
+  border-radius:14px !important;
+  overflow:hidden !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+.site-header #public-user-toggle img,
+.site-header .public-user-toggle img,
+.site-header .public-user-avatar{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  border-radius:11px !important;
+  display:block !important;
+}
