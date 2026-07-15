@@ -1,4 +1,4 @@
-import { auth, provider } from "./firebase.js";
+﻿import { auth, provider } from "./firebase.js";
 import { getAdminProfileByEmail } from "./auth.js";
 import {
   signInWithPopup,
@@ -6,6 +6,7 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getPublicUserProfile, savePublicUserProfile } from "./services/public-user-service.js";
+import { isIntegrante } from "./services/integrantes-service.js";
 
 let currentUser = null;
 let currentMenu = null;
@@ -67,10 +68,9 @@ function cacheVocalNavPermission(profile = null) {
     localStorage.setItem(VOCAL_NAV_CACHE_KEY, JSON.stringify({
       uid: String(profile.uid || "").trim(),
       email: normalize(profile.email || ""),
-      canSeeVocal: !!(profile.isAdmin || profile.isVocalista),
+      canSeeVocal: !!(profile.isAdmin || profile.isIntegrante || profile.isVocalista),
       isAdmin: !!profile.isAdmin,
-      isIntegrante: !!(profile.isIntegrante || profile.isVocalista),
-      isVocalista: !!(profile.isIntegrante || profile.isVocalista),
+      isIntegrante: !!(profile.isIntegrante || profile.isVocalista),`r`n      isVocalista: !!(profile.isIntegrante || profile.isVocalista),
       updatedAt: Date.now(),
       expiresAt: Date.now() + VOCAL_NAV_CACHE_TTL
     }));
@@ -119,8 +119,7 @@ function cachePublicHeaderProfile(profile = null) {
       displayName: profile.displayName || profile.email || "Minha conta",
       phone: profile.phone || "",
       isAdmin: !!profile.isAdmin,
-      isIntegrante: !!(profile.isIntegrante || profile.isVocalista),
-      isVocalista: !!(profile.isIntegrante || profile.isVocalista),
+      isIntegrante: !!(profile.isIntegrante || profile.isVocalista),`r`n      isVocalista: !!(profile.isIntegrante || profile.isVocalista),
       updatedAt: Date.now(),
       expiresAt: Date.now() + PUBLIC_HEADER_CACHE_TTL
     }));
@@ -177,26 +176,6 @@ function emitPublicAuthUpdated(profile = null) {
 }
 
 
-async function safeIsIntegrante(user = null) {
-  const uid = String(user?.uid || "").trim();
-  if (!uid) return false;
-
-  try {
-    const service = await import("./services/integrantes-service.js");
-    if (typeof service.isIntegrante === "function") return !!(await service.isIntegrante(uid));
-    if (typeof service.isVocalista === "function") return !!(await service.isVocalista(uid));
-  } catch (error) {
-    try {
-      const legacy = await import("./services/vocalistas-service.js");
-      if (typeof legacy.isVocalista === "function") return !!(await legacy.isVocalista(uid));
-    } catch (legacyError) {
-      console.warn("Não foi possível verificar integrante/vocalista:", legacyError || error);
-    }
-  }
-
-  return false;
-}
-
 function ensureAuthModal() {
   if ($("#public-auth-modal")) return;
 
@@ -247,19 +226,23 @@ export function closePublicAuthModal() {
 }
 
 function ensureHeaderSlot() {
-  const actions = $(".site-header .header-actions") || $(".header-actions");
+  const actions = $(".header-actions");
   if (!actions) return null;
 
   let slot = $("#public-user-slot");
-  if (slot) {
-    if (slot.parentElement !== actions) actions.appendChild(slot);
-    return slot;
-  }
+  if (slot) return slot;
 
   slot = document.createElement("div");
   slot.id = "public-user-slot";
   slot.className = "public-user-slot";
-  actions.appendChild(slot);
+
+  const mobileToggle = $("#mobile-menu-toggle");
+  if (mobileToggle && mobileToggle.parentElement === actions) {
+    actions.insertBefore(slot, mobileToggle);
+  } else {
+    actions.appendChild(slot);
+  }
+
   return slot;
 }
 
@@ -343,8 +326,6 @@ async function buildProfileData(user) {
   const firstName = profile?.firstName || user?.displayName?.split(" ")?.[0] || "";
   const lastName = profile?.lastName || user?.displayName?.split(" ").slice(1).join(" ") || "";
 
-  const isIntegrante = !!(await safeIsIntegrante(user));
-
   return {
     uid: user?.uid || "",
     email,
@@ -354,9 +335,7 @@ async function buildProfileData(user) {
     displayName: profile?.displayName || user?.displayName || [firstName, lastName].filter(Boolean).join(" "),
     phone: profile?.phone || "",
     isAdmin: await safeIsAdminByEmail(email),
-    isIntegrante,
-    // Compatibilidade com arquivos antigos que ainda usam o nome vocalista.
-    isVocalista: isIntegrante
+    isIntegrante: !!(await isIntegrante(user?.uid || "")),`r`n    isVocalista: !!(await isIntegrante(user?.uid || ""))
   };
 }
 
@@ -369,7 +348,7 @@ function buildHeaderStateKey(profile = null) {
     normalize(profile.email || ""),
     String(profile.photoURL || ""),
     profile.isAdmin ? "admin" : "user",
-    (profile.isIntegrante || profile.isVocalista) ? "integrante" : "nointegrante"
+    (profile.isIntegrante || profile.isVocalista) ? "integrante" : "nao-integrante"
   ].join("|");
 }
 
@@ -547,3 +526,5 @@ export function initPublicAuth() {
     }
   });
 }
+
+
