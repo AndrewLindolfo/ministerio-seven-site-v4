@@ -1,4 +1,5 @@
-﻿import { listMusicas } from "../services/musicas-service.js";
+﻿import { getIntegranteAccess } from "../modules/integrante-access.js";
+import { listMusicas } from "../services/musicas-service.js";
 import { createPersonalButtons, refreshPersonalActionButtons } from "../modules/personal-actions.js";
 import { whenPublicAuthReady, openPublicAuthModal } from "../public-auth.js";
 import { getAdminProfileByEmail } from "../auth.js";
@@ -47,25 +48,8 @@ function renderList(containerId, items = [], emptyMessage = "Nenhuma música enc
 
 
 async function userCanAccessVocalList() {
-  const profile = await whenPublicAuthReady();
-  const firebaseUser = profile?.firebaseUser;
-  if (!firebaseUser?.uid) {
-    openPublicAuthModal();
-    return false;
-  }
-
-  if (profile?.isAdmin || profile?.isIntegrante || profile?.isVocalista) return true;
-
-  try {
-    const [admin, integrante] = await Promise.all([
-      getAdminProfileByEmail(firebaseUser.email || ""),
-      isIntegrante(firebaseUser.uid)
-    ]);
-    return !!admin || !!integrante;
-  } catch (error) {
-    console.error("Erro ao verificar acesso de integrante:", error);
-    return false;
-  }
+  const access = await getIntegranteAccess({ openLogin: true });
+  return access.allowed === true;
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -98,4 +82,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderList(containerId, [], "Não foi possível carregar as músicas.");
   }
 });
+
 

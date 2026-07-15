@@ -6,158 +6,27 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getPublicUserProfile, savePublicUserProfile } from "./services/public-user-service.js";
+import { isIntegrante } from "./services/integrantes-service.js";
 
 let currentUser = null;
 let currentMenu = null;
+let authReady = false;
+let authWatchStarted = false;
 let authReadyResolver = null;
-const authReadyPromise = new Promise((resolve) => {
-  authReadyResolver = resolve;
-});
-
-const VOCAL_NAV_CACHE_KEY = "seven_vocal_nav_permission_v3";
-const VOCAL_NAV_LEGACY_CACHE_KEYS = ["seven_vocal_nav_permission", "seven_vocal_nav_permission_v2"];
-const VOCAL_NAV_CACHE_TTL = 1000 * 60 * 60 * 24 * 7;
-const PUBLIC_HEADER_CACHE_KEY = "seven_public_header_profile_v3";
-const PUBLIC_HEADER_LEGACY_CACHE_KEYS = ["seven_public_header_profile", "seven_public_header_profile_v2"];
-const PUBLIC_HEADER_CACHE_TTL = 1000 * 60 * 60 * 24 * 7;
-const MASTER_EMAILS = new Set(["lindolfoandrew0@gmail.com"]);
+let authReadyPromise = new Promise((resolve) => { authReadyResolver = resolve; });
 let lastVocalNavState = null;
 let lastHeaderStateKey = "";
 
-function readCachedJson(keys = []) {
-  for (const key of keys) {
-    try {
-      const raw = localStorage.getItem(key);
-      if (!raw) continue;
-      const data = JSON.parse(raw);
-      const expiresAt = Number(data.expiresAt || 0);
-      if (!expiresAt || expiresAt < Date.now()) {
-        localStorage.removeItem(key);
-        continue;
-      }
-      return { ...data, __cacheKey: key };
-    } catch {
-      try { localStorage.removeItem(key); } catch {}
-    }
-  }
-  return null;
-}
+const PUBLIC_HEADER_CACHE_KEY = "seven_public_header_profile_v4";
+const PUBLIC_HEADER_LEGACY_CACHE_KEYS = ["seven_public_header_profile", "seven_public_header_profile_v2", "seven_public_header_profile_v3"];
+const VOCAL_NAV_CACHE_KEY = "seven_integrante_nav_permission_v1";
+const VOCAL_NAV_LEGACY_CACHE_KEYS = ["seven_vocal_nav_permission", "seven_vocal_nav_permission_v2", "seven_vocal_nav_permission_v3"];
+const HEADER_CACHE_TTL = 1000 * 60 * 60 * 24;
+const PERMISSION_CACHE_TTL = 1000 * 60 * 2;
+const MASTER_EMAILS = new Set(["lindolfoandrew0@gmail.com"]);
 
-function getCachedVocalNavPermission() {
-  try {
-    const data = readCachedJson([VOCAL_NAV_CACHE_KEY, ...VOCAL_NAV_LEGACY_CACHE_KEYS]);
-    if (!data) return null;
-    if (data.__cacheKey !== VOCAL_NAV_CACHE_KEY) {
-      localStorage.setItem(VOCAL_NAV_CACHE_KEY, JSON.stringify({ ...data, __cacheKey: undefined }));
-    }
-    delete data.__cacheKey;
-    return data;
-  } catch (error) {
-    console.warn("Não foi possível ler o cache de permissão vocal:", error);
-    return null;
-  }
-}
-
-function cacheVocalNavPermission(profile = null) {
-  try {
-    if (!profile?.uid) {
-      localStorage.removeItem(VOCAL_NAV_CACHE_KEY);
-      return;
-    }
-    localStorage.setItem(VOCAL_NAV_CACHE_KEY, JSON.stringify({
-      uid: String(profile.uid || "").trim(),
-      email: normalize(profile.email || ""),
-      canSeeVocal: !!(profile.isAdmin || profile.isVocalista),
-      isAdmin: !!profile.isAdmin,
-      isIntegrante: !!(profile.isIntegrante || profile.isVocalista),
-      isVocalista: !!(profile.isIntegrante || profile.isVocalista),
-      updatedAt: Date.now(),
-      expiresAt: Date.now() + VOCAL_NAV_CACHE_TTL
-    }));
-  } catch (error) {
-    console.warn("Não foi possível salvar o cache de permissão vocal:", error);
-  }
-}
-
-function clearVocalNavPermissionCache() {
-  try {
-    localStorage.removeItem(VOCAL_NAV_CACHE_KEY);
-    VOCAL_NAV_LEGACY_CACHE_KEYS.forEach((key) => localStorage.removeItem(key));
-  } catch (error) {
-    console.warn("Não foi possível limpar o cache de permissão vocal:", error);
-  }
-}
-
-function getCachedPublicHeaderProfile() {
-  try {
-    const data = readCachedJson([PUBLIC_HEADER_CACHE_KEY, ...PUBLIC_HEADER_LEGACY_CACHE_KEYS]);
-    if (!data) return null;
-    if (data.__cacheKey !== PUBLIC_HEADER_CACHE_KEY) {
-      localStorage.setItem(PUBLIC_HEADER_CACHE_KEY, JSON.stringify({ ...data, __cacheKey: undefined }));
-    }
-    delete data.__cacheKey;
-    return data;
-  } catch (error) {
-    console.warn("Não foi possível ler o cache do usuário do cabeçalho:", error);
-    return null;
-  }
-}
-
-function cachePublicHeaderProfile(profile = null) {
-  try {
-    if (!profile?.uid) {
-      localStorage.removeItem(PUBLIC_HEADER_CACHE_KEY);
-      return;
-    }
-
-    localStorage.setItem(PUBLIC_HEADER_CACHE_KEY, JSON.stringify({
-      uid: String(profile.uid || "").trim(),
-      email: normalize(profile.email || ""),
-      photoURL: profile.photoURL || "assets/img/v7/icon_120.png",
-      firstName: profile.firstName || "",
-      lastName: profile.lastName || "",
-      displayName: profile.displayName || profile.email || "Minha conta",
-      phone: profile.phone || "",
-      isAdmin: !!profile.isAdmin,
-      isIntegrante: !!(profile.isIntegrante || profile.isVocalista),
-      isVocalista: !!(profile.isIntegrante || profile.isVocalista),
-      updatedAt: Date.now(),
-      expiresAt: Date.now() + PUBLIC_HEADER_CACHE_TTL
-    }));
-  } catch (error) {
-    console.warn("Não foi possível salvar o cache do usuário do cabeçalho:", error);
-  }
-}
-
-function clearPublicHeaderProfileCache() {
-  try {
-    localStorage.removeItem(PUBLIC_HEADER_CACHE_KEY);
-    PUBLIC_HEADER_LEGACY_CACHE_KEYS.forEach((key) => localStorage.removeItem(key));
-  } catch (error) {
-    console.warn("Não foi possível limpar o cache do usuário do cabeçalho:", error);
-  }
-}
-
-function getCachedPublicHeaderForUser(user = null) {
-  const cached = getCachedPublicHeaderProfile();
-  if (!cached || !user) return null;
-  const sameUid = String(cached.uid || "").trim() === String(user.uid || "").trim();
-  const sameEmail = normalize(cached.email || "") === normalize(user.email || "");
-  return sameUid || sameEmail ? cached : null;
-}
-
-function getCachedVocalPermissionForUser(user = null) {
-  const cached = getCachedVocalNavPermission();
-  if (!cached || !user) return null;
-  const sameUid = String(cached.uid || "").trim() === String(user.uid || "").trim();
-  const sameEmail = normalize(cached.email || "") === normalize(user.email || "");
-  if (sameUid || sameEmail) return cached;
-  clearVocalNavPermissionCache();
-  return null;
-}
-
-function normalize(email = "") {
-  return String(email || "").trim().toLowerCase();
+function normalize(value = "") {
+  return String(value || "").trim().toLowerCase();
 }
 
 function isMasterEmail(email = "") {
@@ -168,33 +37,99 @@ function $(selector) {
   return document.querySelector(selector);
 }
 
-function emitPublicAuthUpdated(profile = null) {
-  try {
-    window.dispatchEvent(new CustomEvent("seven:public-auth-updated", {
-      detail: { profile }
-    }));
-  } catch {}
-}
-
-
-async function safeIsIntegrante(user = null) {
-  const uid = String(user?.uid || "").trim();
-  if (!uid) return false;
-
-  try {
-    const service = await import("./services/integrantes-service.js");
-    if (typeof service.isIntegrante === "function") return !!(await service.isIntegrante(uid));
-    if (typeof service.isVocalista === "function") return !!(await service.isVocalista(uid));
-  } catch (error) {
+function readCachedJson(keys = []) {
+  for (const key of keys) {
     try {
-      const legacy = await import("./services/vocalistas-service.js");
-      if (typeof legacy.isVocalista === "function") return !!(await legacy.isVocalista(uid));
-    } catch (legacyError) {
-      console.warn("Não foi possível verificar integrante/vocalista:", legacyError || error);
+      const raw = localStorage.getItem(key);
+      if (!raw) continue;
+      const data = JSON.parse(raw);
+      const expiresAt = Number(data.expiresAt || 0);
+      if (expiresAt && expiresAt < Date.now()) {
+        localStorage.removeItem(key);
+        continue;
+      }
+      return data;
+    } catch {
+      try { localStorage.removeItem(key); } catch {}
     }
   }
+  return null;
+}
 
-  return false;
+function clearCache(keys = []) {
+  try { keys.forEach((key) => localStorage.removeItem(key)); } catch {}
+}
+
+function getCachedHeaderProfile() {
+  return readCachedJson([PUBLIC_HEADER_CACHE_KEY, ...PUBLIC_HEADER_LEGACY_CACHE_KEYS]);
+}
+
+function cacheHeaderProfile(profile = null) {
+  try {
+    if (!profile?.uid) {
+      localStorage.removeItem(PUBLIC_HEADER_CACHE_KEY);
+      return;
+    }
+    localStorage.setItem(PUBLIC_HEADER_CACHE_KEY, JSON.stringify({
+      uid: String(profile.uid || "").trim(),
+      email: normalize(profile.email || ""),
+      photoURL: profile.photoURL || "assets/img/v7/icon_120.png",
+      firstName: profile.firstName || "",
+      lastName: profile.lastName || "",
+      displayName: profile.displayName || profile.email || "Minha conta",
+      phone: profile.phone || "",
+      isAdmin: !!profile.isAdmin,
+      isIntegrante: !!profile.isIntegrante,
+      isVocalista: !!profile.isIntegrante,
+      updatedAt: Date.now(),
+      expiresAt: Date.now() + HEADER_CACHE_TTL
+    }));
+  } catch (error) {
+    console.warn("Não foi possível salvar cache do cabeçalho público:", error);
+  }
+}
+
+function clearHeaderProfileCache() {
+  clearCache([PUBLIC_HEADER_CACHE_KEY, ...PUBLIC_HEADER_LEGACY_CACHE_KEYS]);
+}
+
+function getCachedVocalPermissionForUser(user = null) {
+  const cached = readCachedJson([VOCAL_NAV_CACHE_KEY, ...VOCAL_NAV_LEGACY_CACHE_KEYS]);
+  if (!cached || !user) return null;
+  const sameUid = String(cached.uid || "").trim() === String(user.uid || "").trim();
+  const sameEmail = normalize(cached.email || "") === normalize(user.email || "");
+  return sameUid || sameEmail ? cached : null;
+}
+
+function cacheVocalPermission(profile = null) {
+  try {
+    if (!profile?.uid) {
+      localStorage.removeItem(VOCAL_NAV_CACHE_KEY);
+      return;
+    }
+    localStorage.setItem(VOCAL_NAV_CACHE_KEY, JSON.stringify({
+      uid: String(profile.uid || "").trim(),
+      email: normalize(profile.email || ""),
+      canSeeVocal: !!(profile.isAdmin || profile.isIntegrante || profile.isVocalista),
+      isAdmin: !!profile.isAdmin,
+      isIntegrante: !!(profile.isIntegrante || profile.isVocalista),
+      isVocalista: !!(profile.isIntegrante || profile.isVocalista),
+      updatedAt: Date.now(),
+      expiresAt: Date.now() + PERMISSION_CACHE_TTL
+    }));
+  } catch (error) {
+    console.warn("Não foi possível salvar cache de permissão de integrante:", error);
+  }
+}
+
+function clearVocalPermissionCache() {
+  clearCache([VOCAL_NAV_CACHE_KEY, ...VOCAL_NAV_LEGACY_CACHE_KEYS]);
+}
+
+function emitPublicAuthUpdated(profile = null) {
+  try {
+    window.dispatchEvent(new CustomEvent("seven:public-auth-updated", { detail: { profile } }));
+  } catch {}
 }
 
 function ensureAuthModal() {
@@ -209,12 +144,12 @@ function ensureAuthModal() {
       <button type="button" class="public-auth-modal__close" data-close-public-auth="1" aria-label="Fechar">✕</button>
       <div class="public-auth-modal__eyebrow">Ministério Seven</div>
       <h2>Entrar</h2>
-      <p class="public-auth-modal__text">Faça login para acessar favoritos, playlists e recursos pessoais do site.</p>
+      <p class="public-auth-modal__text">Faça login para acessar favoritos, playlists e áreas liberadas para integrantes.</p>
       <button type="button" id="public-google-login-button" class="public-auth-modal__google-btn">
         <span class="public-auth-modal__google-icon" aria-hidden="true"><img src="./assets/img/ui/logo-g-login.png" alt="" class="public-auth-modal__google-image" /></span>
         <span>Continuar com Google</span>
       </button>
-      <p class="public-auth-modal__footnote">O login não é obrigatório para navegar no site. Ele é usado apenas para recursos pessoais.</p>
+      <p class="public-auth-modal__footnote">O login público não redireciona para o painel administrativo. Contas ADM recebem um atalho para o Admin no menu da conta.</p>
     </div>
   `;
 
@@ -247,19 +182,20 @@ export function closePublicAuthModal() {
 }
 
 function ensureHeaderSlot() {
-  const actions = $(".site-header .header-actions") || $(".header-actions");
+  const actions = $(".header-actions");
   if (!actions) return null;
 
   let slot = $("#public-user-slot");
-  if (slot) {
-    if (slot.parentElement !== actions) actions.appendChild(slot);
-    return slot;
-  }
+  if (slot) return slot;
 
   slot = document.createElement("div");
   slot.id = "public-user-slot";
   slot.className = "public-user-slot";
-  actions.appendChild(slot);
+
+  const mobileToggle = $("#mobile-menu-toggle");
+  if (mobileToggle?.parentElement === actions) actions.insertBefore(slot, mobileToggle);
+  else actions.appendChild(slot);
+
   return slot;
 }
 
@@ -273,11 +209,8 @@ function removeVocalNavLinks() {
 
 function syncVocalNavLink(canSeeVocal = false) {
   const desired = !!canSeeVocal;
-  if (lastVocalNavState === desired) {
-    const hasAnyLink = !!document.querySelector('[data-vocal-link="1"]');
-    if ((desired && hasAnyLink) || (!desired && !hasAnyLink)) return;
-  }
-
+  const hasAnyLink = !!document.querySelector('[data-vocal-link="1"]');
+  if (lastVocalNavState === desired && ((desired && hasAnyLink) || (!desired && !hasAnyLink))) return;
   lastVocalNavState = desired;
 
   if (!desired) {
@@ -294,72 +227,65 @@ function syncVocalNavLink(canSeeVocal = false) {
       link.href = "./musicas-vocal.html";
       link.textContent = "Músicas Vocal";
       link.setAttribute("data-vocal-link", "1");
-      if (nav.classList.contains("mobile-menu-panel")) {
-        link.className = "mobile-nav-link";
-      }
+      if (nav.classList.contains("mobile-menu-panel")) link.className = "mobile-nav-link";
     }
 
-    const musicasLink = Array.from(nav.querySelectorAll("a")).find((item) => String(item.textContent || "").trim().toLowerCase() === "músicas");
-    if (musicasLink && musicasLink.nextElementSibling !== link) {
-      musicasLink.insertAdjacentElement("afterend", link);
-    } else if (!musicasLink && link.parentElement !== nav) {
-      nav.appendChild(link);
-    }
+    const musicasLink = Array.from(nav.querySelectorAll("a")).find((item) => normalize(item.textContent) === "músicas");
+    if (musicasLink && musicasLink.nextElementSibling !== link) musicasLink.insertAdjacentElement("afterend", link);
+    else if (!musicasLink && link.parentElement !== nav) nav.appendChild(link);
   });
+
+  try { window.dispatchEvent(new CustomEvent("seven:menu-updated")); } catch {}
 }
 
-function restoreCachedVocalNavLink() {
-  const cachedHeader = getCachedPublicHeaderProfile();
-  const cachedPermission = getCachedVocalNavPermission();
-  if (!cachedHeader?.uid || !cachedPermission?.canSeeVocal) return;
-
-  const sameUid = String(cachedHeader.uid || "").trim() === String(cachedPermission.uid || "").trim();
-  const sameEmail = normalize(cachedHeader.email || "") === normalize(cachedPermission.email || "");
-  if (sameUid || sameEmail) {
-    syncVocalNavLink(true);
+async function safeIsAdminByEmail(email = "") {
+  const normalized = normalize(email);
+  if (!normalized) return false;
+  if (isMasterEmail(normalized)) return true;
+  try {
+    return !!(await getAdminProfileByEmail(normalized));
+  } catch (error) {
+    if (!String(error?.code || "").includes("permission-denied")) {
+      console.warn("Não foi possível confirmar ADM no cabeçalho público:", error);
+    }
+    return false;
   }
 }
 
-
-async function safeIsAdminByEmail(email = "") {
-  const normalizedEmail = normalize(email);
-  if (!normalizedEmail) return false;
-  if (isMasterEmail(normalizedEmail)) return true;
-
+async function safeIsIntegrante(uid = "", email = "") {
   try {
-    return !!(await getAdminProfileByEmail(normalizedEmail));
+    return !!(await isIntegrante(uid, email));
   } catch (error) {
-    if (String(error?.code || "").includes("permission-denied")) {
-      return false;
-    }
-    console.warn("Não foi possível confirmar permissão de administrador no cabeçalho público:", error);
+    console.warn("Não foi possível confirmar integrante no cabeçalho público:", error);
     return false;
   }
 }
 
 async function buildProfileData(user) {
+  const uid = String(user?.uid || "").trim();
   const email = normalize(user?.email || "");
-  const profile = await getPublicUserProfile(user?.uid || "");
-  const firstName = profile?.firstName || user?.displayName?.split(" ")?.[0] || "";
-  const lastName = profile?.lastName || user?.displayName?.split(" ").slice(1).join(" ") || "";
-
-  const isIntegrante = !!(await safeIsIntegrante(user));
+  const savedProfile = await getPublicUserProfile(uid).catch(() => null);
+  const firstName = savedProfile?.firstName || user?.displayName?.split(" ")?.[0] || "";
+  const lastName = savedProfile?.lastName || user?.displayName?.split(" ").slice(1).join(" ") || "";
+  const [isAdmin, integrante] = await Promise.all([
+    safeIsAdminByEmail(email),
+    safeIsIntegrante(uid, email)
+  ]);
 
   return {
-    uid: user?.uid || "",
+    uid,
     email,
-    photoURL: profile?.photoURL || user?.photoURL || "assets/img/v7/icon_120.png",
+    photoURL: savedProfile?.photoURL || user?.photoURL || "assets/img/v7/icon_120.png",
     firstName,
     lastName,
-    displayName: profile?.displayName || user?.displayName || [firstName, lastName].filter(Boolean).join(" "),
-    phone: profile?.phone || "",
-    isAdmin: await safeIsAdminByEmail(email),
-    isIntegrante,
-    // Compatibilidade com arquivos antigos que ainda usam o nome vocalista.
-    isVocalista: isIntegrante
+    displayName: savedProfile?.displayName || user?.displayName || [firstName, lastName].filter(Boolean).join(" ") || email,
+    phone: savedProfile?.phone || "",
+    isAdmin,
+    isIntegrante: !!integrante,
+    isVocalista: !!integrante,
+    firebaseUser: user
   };
 }
-
 
 function buildHeaderStateKey(profile = null) {
   if (!profile?.uid) return "logged-out";
@@ -369,37 +295,26 @@ function buildHeaderStateKey(profile = null) {
     normalize(profile.email || ""),
     String(profile.photoURL || ""),
     profile.isAdmin ? "admin" : "user",
-    (profile.isIntegrante || profile.isVocalista) ? "integrante" : "nointegrante"
+    (profile.isIntegrante || profile.isVocalista) ? "integrante" : "nao-integrante"
   ].join("|");
 }
 
-function renderLoggedInIfNeeded(slot, profile) {
-  const stateKey = buildHeaderStateKey(profile);
-  const alreadyLoggedIn = slot?.querySelector(".public-user-menu");
-  if (alreadyLoggedIn && lastHeaderStateKey === stateKey) return;
-  lastHeaderStateKey = stateKey;
-  renderLoggedIn(slot, profile);
-}
-
-function renderLoggedOutIfNeeded(slot) {
-  const stateKey = "logged-out";
-  const alreadyLoggedOut = slot?.querySelector("#public-login-button");
-  if (alreadyLoggedOut && lastHeaderStateKey === stateKey) return;
-  lastHeaderStateKey = stateKey;
-  renderLoggedOut(slot);
-}
-
-async function renderLoggedOut(slot) {
+function renderLoggedOut(slot) {
+  lastHeaderStateKey = "logged-out";
   syncVocalNavLink(false);
   slot.innerHTML = `
-    <button type="button" id="public-login-button" class="public-login-button public-login-button--image-only" aria-label="Entrar">
+    <button type="button" id="public-login-button" class="public-login-button public-login-button--image-only" aria-label="Entrar com Google">
       <img src="./assets/img/ui/login-user-preto.png" alt="Entrar" class="public-login-button__image public-login-button__image--light" />
       <img src="./assets/img/ui/login-user-branco.png" alt="Entrar" class="public-login-button__image public-login-button__image--dark" />
     </button>`;
   $("#public-login-button")?.addEventListener("click", openPublicAuthModal);
 }
 
-async function renderLoggedIn(slot, profile) {
+function renderLoggedIn(slot, profile) {
+  const stateKey = buildHeaderStateKey(profile);
+  if (lastHeaderStateKey === stateKey && slot.querySelector(".public-user-menu")) return;
+  lastHeaderStateKey = stateKey;
+
   slot.innerHTML = `
     <div class="public-user-menu">
       <button type="button" id="public-user-toggle" class="public-user-toggle" aria-label="Minha conta">
@@ -415,65 +330,81 @@ async function renderLoggedIn(slot, profile) {
     </div>
   `;
 
-  const toggle = $("#public-user-toggle");
   const dropdown = $("#public-user-dropdown");
   currentMenu = dropdown;
 
-  toggle?.addEventListener("click", (event) => {
+  $("#public-user-toggle")?.addEventListener("click", (event) => {
     event.preventDefault();
     event.stopPropagation();
     dropdown?.classList.toggle("hidden");
   });
 
   $("#public-logout-button")?.addEventListener("click", async () => {
-    clearVocalNavPermissionCache();
-    clearPublicHeaderProfileCache();
-    syncVocalNavLink(false);
-    await signOut(auth);
+    await logoutPublicUser();
     closeUserMenu();
-    if (window.location.pathname.includes("/conta.html")) {
-      window.location.href = "./index.html";
-    }
+    if (location.pathname.includes("/conta.html")) location.href = "./index.html";
   });
+}
+
+function restoreCachedHeaderAuthUi() {
+  const slot = ensureHeaderSlot();
+  if (!slot) return;
+  const cached = getCachedHeaderProfile();
+  if (cached?.uid) {
+    currentUser = { ...cached, firebaseUser: null };
+    renderLoggedIn(slot, cached);
+    syncVocalNavLink(!!(cached.isAdmin || cached.isIntegrante || cached.isVocalista));
+    return;
+  }
+  renderLoggedOut(slot);
 }
 
 async function renderHeaderAuth(user) {
   const slot = ensureHeaderSlot();
   if (!slot) return;
 
-  if (!user) {
+  if (!user?.uid) {
     currentUser = null;
-    clearVocalNavPermissionCache();
-    clearPublicHeaderProfileCache();
-    renderLoggedOutIfNeeded(slot);
+    clearHeaderProfileCache();
+    clearVocalPermissionCache();
+    renderLoggedOut(slot);
     emitPublicAuthUpdated(null);
     return;
   }
 
-  const cachedHeader = getCachedPublicHeaderForUser(user);
-  if (cachedHeader?.uid) {
-    currentUser = { ...cachedHeader, firebaseUser: user };
-    renderLoggedInIfNeeded(slot, cachedHeader);
+  const cached = readCachedJson([PUBLIC_HEADER_CACHE_KEY]);
+  if (cached?.uid === user.uid) {
+    currentUser = { ...cached, firebaseUser: user };
+    renderLoggedIn(slot, currentUser);
+    const cachedPerm = getCachedVocalPermissionForUser(user);
+    syncVocalNavLink(!!(cachedPerm?.canSeeVocal || cached.isAdmin || cached.isIntegrante || cached.isVocalista));
   }
 
-  const cachedPermission = getCachedVocalPermissionForUser(user);
-  syncVocalNavLink(!!cachedPermission?.canSeeVocal);
-
   const profile = await buildProfileData(user);
-  currentUser = { ...profile, firebaseUser: user };
-  cachePublicHeaderProfile(profile);
-  cacheVocalNavPermission(profile);
+  currentUser = profile;
+  cacheHeaderProfile(profile);
+  cacheVocalPermission(profile);
   syncVocalNavLink(profile.isAdmin || profile.isIntegrante || profile.isVocalista);
-  await savePublicUserProfile(profile.uid, {
+
+  savePublicUserProfile(profile.uid, {
     firstName: profile.firstName,
     lastName: profile.lastName,
     displayName: profile.displayName,
     email: profile.email,
     phone: profile.phone,
     photoURL: profile.photoURL
-  });
-  renderLoggedInIfNeeded(slot, profile);
+  }).catch((error) => console.warn("Não foi possível salvar perfil público:", error));
+
+  renderLoggedIn(slot, profile);
   emitPublicAuthUpdated(profile);
+}
+
+function resolveAuthReady(profile) {
+  authReady = true;
+  if (authReadyResolver) {
+    authReadyResolver(profile);
+    authReadyResolver = null;
+  }
 }
 
 export async function loginPublicUser() {
@@ -482,8 +413,8 @@ export async function loginPublicUser() {
 }
 
 export async function logoutPublicUser() {
-  clearVocalNavPermissionCache();
-  clearPublicHeaderProfileCache();
+  clearHeaderProfileCache();
+  clearVocalPermissionCache();
   syncVocalNavLink(false);
   await signOut(auth);
 }
@@ -495,15 +426,13 @@ export function getCurrentPublicUser() {
 export function watchPublicAuth(callback) {
   return onAuthStateChanged(auth, async (user) => {
     await renderHeaderAuth(user);
-    if (authReadyResolver) {
-      authReadyResolver(currentUser);
-      authReadyResolver = null;
-    }
-    if (typeof callback === "function") callback(user);
+    resolveAuthReady(currentUser);
+    if (typeof callback === "function") callback(user, currentUser);
   });
 }
 
 export function whenPublicAuthReady() {
+  if (authReady) return Promise.resolve(currentUser);
   return authReadyPromise;
 }
 
@@ -516,34 +445,34 @@ export function requirePublicLogin(onReady) {
   return false;
 }
 
-function restoreCachedHeaderAuthUi() {
-  const slot = ensureHeaderSlot();
-  if (!slot) return;
-
-  const cachedHeader = getCachedPublicHeaderProfile();
-  if (cachedHeader?.uid) {
-    currentUser = { ...cachedHeader, firebaseUser: null };
-    renderLoggedInIfNeeded(slot, cachedHeader);
-    restoreCachedVocalNavLink();
-    return;
-  }
-
-  renderLoggedOutIfNeeded(slot);
-}
-
 export function initPublicAuth() {
   ensureAuthModal();
   restoreCachedHeaderAuthUi();
-  watchPublicAuth();
 
-  document.addEventListener("click", (event) => {
-    if (!event.target.closest(".public-user-menu")) closeUserMenu();
-  });
+  if (!authWatchStarted) {
+    authWatchStarted = true;
+    watchPublicAuth();
+  } else if (authReady) {
+    renderHeaderAuth(auth.currentUser);
+  }
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeUserMenu();
-      closePublicAuthModal();
-    }
-  });
+  if (!document.documentElement.dataset.publicAuthEventsBound) {
+    document.documentElement.dataset.publicAuthEventsBound = "1";
+
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".public-user-menu")) closeUserMenu();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeUserMenu();
+        closePublicAuthModal();
+      }
+    });
+
+    document.addEventListener("seven:page-ready", () => {
+      ensureHeaderSlot();
+      if (currentUser?.uid) renderLoggedIn(ensureHeaderSlot(), currentUser);
+    });
+  }
 }

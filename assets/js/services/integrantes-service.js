@@ -1,4 +1,4 @@
-import { getDocument, setDocument, deleteDocument, getCollection, serverTimestamp } from "../db.js";
+import { getDocument, getOneByField, setDocument, deleteDocument, getCollection, serverTimestamp } from "../db.js";
 
 const COLLECTION = "integrantes";
 const LEGACY_COLLECTION = "vocalistas";
@@ -21,10 +21,39 @@ function normalizeIntegranteDoc(item = {}, source = COLLECTION) {
     ...item,
     id: uid || item.id,
     uid,
+    email: normalizeEmail(item.email || ""),
     tipo: item.tipo || item.type || "integrante",
     moduloOrigem: source,
     active: item.active !== false && item.ativo !== false
   };
+}
+
+async function safeGetDocument(collectionName, id = "") {
+  if (!id) return null;
+  try { return await getDocument(collectionName, id); }
+  catch (error) {
+    if (!String(error?.code || "").includes("permission-denied")) {
+      console.warn(`Não foi possível ler ${collectionName}/${id}:`, error);
+    }
+    return null;
+  }
+}
+
+async function safeGetByEmail(collectionName, email = "") {
+  const normalized = normalizeEmail(email);
+  if (!normalized) return null;
+  try { return await getOneByField(collectionName, "email", normalized); }
+  catch (error) {
+    if (!String(error?.code || "").includes("permission-denied")) {
+      console.warn(`Não foi possível consultar ${collectionName} por e-mail:`, error);
+    }
+    return null;
+  }
+}
+
+async function safeCollection(collectionName) {
+  try { return await getCollection(collectionName); }
+  catch { return []; }
 }
 
 async function tryMigrateLegacy(uid = "", legacyDoc = null) {
@@ -39,52 +68,59 @@ async function tryMigrateLegacy(uid = "", legacyDoc = null) {
       updatedAt: serverTimestamp(),
       active: legacyDoc.active !== false && legacyDoc.ativo !== false
     }, { merge: true });
-  } catch (error) {
-    // Se as regras ainda não foram publicadas para a coleção nova, o legado continua funcionando.
-    console.warn("Não foi possível migrar integrante legado automaticamente:", error);
+  } catch {
+    // Se as regras da coleção nova ainda não estiverem publicadas, o legado continua funcionando.
   }
 }
 
-export async function getIntegrante(uid = "") {
+export async function getIntegrante(uid = "", email = "") {
   const normalizedUid = normalizeUid(uid);
-  if (!normalizedUid) return null;
+  const normalizedEmail = normalizeEmail(email);
 
-  const current = await getDocument(COLLECTION, normalizedUid).catch(() => null);
-  if (isActive(current)) return normalizeIntegranteDoc(current, COLLECTION);
+  const sources = [COLLECTION, LEGACY_COLLECTION];
 
-  const legacy = await getDocument(LEGACY_COLLECTION, normalizedUid).catch(() => null);
-  if (!isActive(legacy)) return null;
+  for (const source of sources) {
+    const byUid = await safeGetDocument(source, normalizedUid);
+    if (isActive(byUid)) {
+      if (source === LEGACY_COLLECTION) await tryMigrateLegacy(normalizedUid, byUid);
+      return normalizeIntegranteDoc(byUid, source);
+    }
+  }
 
-  await tryMigrateLegacy(normalizedUid, legacy);
-  return normalizeIntegranteDoc(legacy, LEGACY_COLLECTION);
+  for (const source of sources) {
+    const byEmail = await safeGetByEmail(source, normalizedEmail);
+    if (isActive(byEmail)) {
+      const doc = normalizeIntegranteDoc(byEmail, source);
+      if (source === LEGACY_COLLECTION && doc.uid) await tryMigrateLegacy(doc.uid, byEmail);
+      return doc;
+    }
+  }
+
+  return null;
 }
 
-export async function isIntegrante(uid = "") {
-  return !!(await getIntegrante(uid));
+export async function isIntegrante(uid = "", email = "") {
+  return !!(await getIntegrante(uid, email));
 }
 
 export async function listIntegrantes() {
   const [current, legacy] = await Promise.all([
-    getCollection(COLLECTION).catch(() => []),
-    getCollection(LEGACY_COLLECTION).catch(() => [])
+    safeCollection(COLLECTION),
+    safeCollection(LEGACY_COLLECTION)
   ]);
 
-  const byUid = new Map();
-
-  legacy.forEach((item) => {
+  const byKey = new Map();
+  [...legacy, ...current].forEach((item) => {
     if (!isActive(item)) return;
-    const doc = normalizeIntegranteDoc(item, LEGACY_COLLECTION);
-    if (doc.uid) byUid.set(doc.uid, doc);
+    const source = current.includes(item) ? COLLECTION : LEGACY_COLLECTION;
+    const doc = normalizeIntegranteDoc(item, source);
+    const key = doc.uid || doc.email || doc.id;
+    if (key) byKey.set(key, doc);
   });
 
-  current.forEach((item) => {
-    if (!isActive(item)) return;
-    const doc = normalizeIntegranteDoc(item, COLLECTION);
-    if (doc.uid) byUid.set(doc.uid, doc);
-  });
-
-  return Array.from(byUid.values())
-    .sort((a, b) => String(a.name || a.displayName || a.email || "").localeCompare(String(b.name || b.displayName || b.email || ""), "pt-BR"));
+  return Array.from(byKey.values()).sort((a, b) =>
+    String(a.name || a.displayName || a.email || "").localeCompare(String(b.name || b.displayName || b.email || ""), "pt-BR")
+  );
 }
 
 export async function setIntegrante(uid = "", payload = {}) {
@@ -109,14 +145,13 @@ export async function setIntegrante(uid = "", payload = {}) {
 export async function removeIntegrante(uid = "") {
   const normalizedUid = normalizeUid(uid || "");
   if (!normalizedUid) return;
-
   await Promise.allSettled([
     deleteDocument(COLLECTION, normalizedUid),
     deleteDocument(LEGACY_COLLECTION, normalizedUid)
   ]);
 }
 
-// Compatibilidade com arquivos antigos que ainda importem Vocalista.
+// Compatibilidade com arquivos antigos.
 export const getVocalista = getIntegrante;
 export const isVocalista = isIntegrante;
 export const listVocalistas = listIntegrantes;

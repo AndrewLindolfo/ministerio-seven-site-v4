@@ -1,4 +1,5 @@
-﻿import { getMusicaBySlug, listMusicas } from "../services/musicas-service.js";
+﻿import { getIntegranteAccess } from "../modules/integrante-access.js";
+import { getMusicaBySlug, listMusicas } from "../services/musicas-service.js";
 import { listCifrasByMusica, getInstrumentLabel, normalizeInstrument } from "../services/cifras-service.js";
 import { getQueryParam } from "../utils.js";
 import { initMusicaControls } from "../modules/musica-controls.js";
@@ -264,25 +265,8 @@ function renderVerCifraLink(musica, cifras = []) {
 
 
 async function userCanAccessVocalPage() {
-  const profile = await whenPublicAuthReady();
-  const firebaseUser = profile?.firebaseUser;
-  if (!firebaseUser?.uid) {
-    openPublicAuthModal();
-    return false;
-  }
-
-  if (profile?.isAdmin || profile?.isIntegrante || profile?.isVocalista) return true;
-
-  try {
-    const [admin, integrante] = await Promise.all([
-      getAdminProfileByEmail(firebaseUser.email || ""),
-      isIntegrante(firebaseUser.uid)
-    ]);
-    return !!admin || !!integrante;
-  } catch (error) {
-    console.error("Erro ao verificar acesso de integrante:", error);
-    return false;
-  }
+  const access = await getIntegranteAccess({ openLogin: true });
+  return access.allowed === true;
 }
 
 function renderAccessDenied() {
@@ -371,4 +355,5 @@ window.addEventListener("beforeunload", () => {
     currentPublicMusicaLiveUnsubscribe = null;
   }
 });
+
 

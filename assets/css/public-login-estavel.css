@@ -1,0 +1,39 @@
+/* Correção estável do login público — Ministério Seven */
+.header-actions #public-user-slot{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:42px !important;
+  min-width:42px !important;
+  height:42px !important;
+  min-height:42px !important;
+  flex:0 0 42px !important;
+}
+#public-login-button.public-login-button,
+.public-login-button.public-login-button--image-only,
+.public-user-toggle{
+  width:42px !important;
+  height:42px !important;
+  min-width:42px !important;
+  min-height:42px !important;
+  padding:0 !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  border-radius:13px !important;
+  overflow:hidden !important;
+}
+.public-login-button__image{
+  width:22px !important;
+  height:22px !important;
+  object-fit:contain !important;
+}
+.public-user-avatar{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  border-radius:11px !important;
+}
+.public-user-dropdown{
+  z-index:9999 !important;
+}
