@@ -1,0 +1,109 @@
+/* Ministério Seven V4 — ajuste de espaçamento entre linhas
+   Aplica em Música Pública, Música Vocal e Cifras sem alterar a estrutura. */
+
+/* LETRAS — Música Pública e Música Vocal */
+body .musica-letra,
+body #musica-letra{
+  line-height:1.38 !important;
+}
+
+body #musica-letra p,
+body .musica-letra p,
+body #musica-letra div,
+body .musica-letra div{
+  margin-top:0 !important;
+  margin-bottom:.42em !important;
+  line-height:inherit !important;
+}
+
+body #musica-letra p:last-child,
+body .musica-letra p:last-child,
+body #musica-letra div:last-child,
+body .musica-letra div:last-child{
+  margin-bottom:0 !important;
+}
+
+body #musica-letra br,
+body .musica-letra br{
+  line-height:1.05 !important;
+}
+
+body #musica-letra [style*="line-height"],
+body .musica-letra [style*="line-height"]{
+  line-height:inherit !important;
+}
+
+body #musica-letra [style*="margin"],
+body .musica-letra [style*="margin"]{
+  margin-top:0 !important;
+  margin-bottom:.42em !important;
+}
+
+/* CIFRAS — mantém alinhamento monoespaçado, mas diminui altura das linhas */
+body .cifra-content,
+body #cifra-content{
+  line-height:1.24 !important;
+  background-size:100% 2.28em, auto !important;
+}
+
+body #cifra-content p,
+body .cifra-content p,
+body #cifra-content div,
+body .cifra-content div,
+body #cifra-content pre,
+body .cifra-content pre{
+  margin-top:0 !important;
+  margin-bottom:0 !important;
+  line-height:inherit !important;
+}
+
+body #cifra-content span,
+body .cifra-content span,
+body #cifra-content strong,
+body .cifra-content strong,
+body #cifra-content b,
+body .cifra-content b{
+  line-height:inherit !important;
+}
+
+body #cifra-content [style*="line-height"],
+body .cifra-content [style*="line-height"]{
+  line-height:inherit !important;
+}
+
+body #cifra-content [style*="margin"],
+body .cifra-content [style*="margin"]{
+  margin-top:0 !important;
+  margin-bottom:0 !important;
+}
+
+@media (max-width:980px){
+  body .musica-letra,
+  body #musica-letra{
+    line-height:1.32 !important;
+  }
+
+  body #musica-letra p,
+  body .musica-letra p,
+  body #musica-letra div,
+  body .musica-letra div{
+    margin-bottom:.34em !important;
+  }
+
+  body .cifra-content,
+  body #cifra-content{
+    line-height:1.18 !important;
+    background-size:100% 2.04em, auto !important;
+  }
+}
+
+@media print{
+  body .musica-letra,
+  body #musica-letra{
+    line-height:1.25 !important;
+  }
+  body .cifra-content,
+  body #cifra-content{
+    line-height:1.15 !important;
+  }
+}
