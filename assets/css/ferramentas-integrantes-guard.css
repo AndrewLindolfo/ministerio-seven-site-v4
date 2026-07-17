@@ -1,0 +1,111 @@
+/* Ministério Seven V4 — Ferramentas restritas a Integrantes
+   Oculta links/cards de Ferramentas para visitantes/usuários não liberados.
+   A classe é controlada por assets/js/ferramentas-integrantes-guard.js
+*/
+
+html:not(.seven-integrante-allowed) a[href$="ferramentas.html"],
+html:not(.seven-integrante-allowed) a[href="./ferramentas.html"],
+html:not(.seven-integrante-allowed) a[href="ferramentas.html"]{
+  display:none !important;
+}
+
+.seven-integrante-block{
+  width:min(980px, calc(100vw - 32px));
+  margin:48px auto 80px;
+  padding:36px;
+  border:1px solid rgba(237,196,85,.28);
+  border-radius:28px;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(237,196,85,.10), transparent 22rem),
+    linear-gradient(180deg, rgba(18,24,35,.96), rgba(9,13,21,.98));
+  color:var(--text-primary, #f6efe1);
+  box-shadow:0 18px 60px rgba(0,0,0,.22);
+}
+
+.seven-integrante-block__tag{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:30px;
+  padding:0 14px;
+  border-radius:999px;
+  border:1px solid rgba(237,196,85,.38);
+  background:rgba(237,196,85,.12);
+  color:#edc455;
+  font-weight:900;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-size:.74rem;
+  margin-bottom:18px;
+}
+
+.seven-integrante-block h1{
+  margin:0 0 12px;
+  font-size:clamp(2.2rem, 7vw, 4.8rem);
+  line-height:.95;
+  text-transform:uppercase;
+}
+
+.seven-integrante-block h1::first-letter{
+  color:#edc455;
+}
+
+.seven-integrante-block p{
+  max-width:720px;
+  margin:0 0 22px;
+  color:rgba(246,239,225,.76);
+  font-size:1.02rem;
+  line-height:1.6;
+}
+
+.seven-integrante-block__actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  align-items:center;
+}
+
+.seven-integrante-block__btn{
+  min-height:48px;
+  padding:0 20px;
+  border-radius:16px;
+  border:1px solid rgba(237,196,85,.65);
+  background:linear-gradient(180deg,#f4ce60,#d8a73a);
+  color:#160f05;
+  font-weight:900;
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.seven-integrante-block__link{
+  min-height:48px;
+  padding:0 18px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.035);
+  color:var(--text-primary, #f6efe1);
+  font-weight:800;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+[data-theme="light"] .seven-integrante-block{
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(246,242,232,.98));
+  color:#151515;
+  border-color:rgba(201,153,46,.26);
+}
+
+[data-theme="light"] .seven-integrante-block p{
+  color:rgba(20,20,20,.72);
+}
+
+[data-theme="light"] .seven-integrante-block__link{
+  color:#151515;
+  background:rgba(0,0,0,.035);
+  border-color:rgba(0,0,0,.12);
+}

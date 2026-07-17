@@ -1,4 +1,3 @@
-﻿import { initIntegranteRestrictions } from "./modules/integrante-restrictions.js";
 import { initTheme } from "./theme.js";
 import { setFooterYear } from "./ui.js";
 import { initSearch } from "./search.js";
@@ -8,7 +7,6 @@ import { initThemeBranding } from "./modules/theme-branding.js";
 import { initNotificacoesPopup } from "./modules/notificacoes-popup.js";
 import { initDownloadsSplitMenu } from "./modules/downloads-menu.js";
 import { initPublicAuth } from "./public-auth.js";
-import { initRestrictedPublicAccess } from "./modules/restricted-public-access.js";
 import { initPersonalActions } from "./modules/personal-actions.js";
 import { getAdminProfileByEmail } from "./auth.js";
 import { isPrimaryAdmin } from "./services/admin-permissions-service.js";
@@ -78,8 +76,6 @@ async function bootApp() {
 
   // Cabeçalho/login primeiro para evitar atraso visual no avatar e no link Músicas Vocal.
   initPublicAuth();
-  initIntegranteRestrictions();
-  initRestrictedPublicAccess();
 
   initSearch();
   initMobileMenu();
@@ -96,5 +92,3 @@ if (document.readyState === "loading") {
 } else {
   bootApp();
 }
-
-

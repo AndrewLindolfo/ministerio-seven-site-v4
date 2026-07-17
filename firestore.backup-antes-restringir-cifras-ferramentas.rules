@@ -1,0 +1,184 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isActiveDoc(data) {
+      return data.active != false && data.ativo != false;
+    }
+
+    // Recuperação segura do admin principal.
+    // Mantém o master funcionando mesmo se o UID/documento ainda não puder ser lido pelo app.
+    function isMasterEmail() {
+      return signedIn()
+        && request.auth.token.email == "lindolfoandrew0@gmail.com";
+    }
+
+    function masterAdminPath() {
+      return /databases/$(database)/documents/admins/master;
+    }
+
+    function uidAdminPath() {
+      return /databases/$(database)/documents/admins/$(request.auth.uid);
+    }
+
+    function isMasterAdmin() {
+      return isMasterEmail()
+        || (
+          signedIn()
+          && exists(masterAdminPath())
+          && get(masterAdminPath()).data.uid == request.auth.uid
+          && isActiveDoc(get(masterAdminPath()).data)
+        );
+    }
+
+    function isUidAdmin() {
+      return signedIn()
+        && exists(uidAdminPath())
+        && get(uidAdminPath()).data.uid == request.auth.uid
+        && isActiveDoc(get(uidAdminPath()).data);
+    }
+
+    function isAdmin() {
+      return isMasterAdmin() || isUidAdmin();
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function isVocalista() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/vocalistas/$(request.auth.uid))
+        && isActiveDoc(get(/databases/$(database)/documents/vocalistas/$(request.auth.uid)).data);
+    }
+
+    function canReadVocalArea() {
+      return isAdmin() || isVocalista();
+    }
+
+    function validContactCreate() {
+      return request.resource.data.keys().hasOnly([
+          "nome", "email", "assunto", "mensagem", "createdAt", "lido"
+        ])
+        && request.resource.data.nome is string
+        && request.resource.data.email is string
+        && request.resource.data.assunto is string
+        && request.resource.data.mensagem is string
+        && request.resource.data.nome.size() <= 120
+        && request.resource.data.email.size() <= 180
+        && request.resource.data.assunto.size() <= 180
+        && request.resource.data.mensagem.size() <= 3000
+        && request.resource.data.lido == false
+        && request.resource.data.createdAt == request.time;
+    }
+
+    // Administradores
+    // Leitura liberada para usuário logado para o app conseguir confirmar
+    // se o e-mail atual é administrador. Escrita continua somente para admin.
+    match /admins/{adminId} {
+      allow get, list: if signedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Usuários públicos: cada usuário gerencia o próprio perfil; admin pode listar para marcar vocalistas.
+    match /usuariosPublicos/{uid} {
+      allow get: if isOwner(uid) || isAdmin();
+      allow list: if isAdmin();
+      allow create, update: if isOwner(uid) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Vocalistas: usuário só consulta o próprio status; admin gerencia tudo.
+    match /vocalistas/{uid} {
+      allow get: if isOwner(uid) || isAdmin();
+      allow list: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Músicas públicas
+    match /musicasPublicas/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Músicas Vocal
+    match /musicas/{document} {
+      allow read: if canReadVocalArea();
+      allow write: if isAdmin();
+    }
+
+    // Cifras públicas
+    match /cifras/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Programações públicas
+    match /programacoes/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Ensaios / conteúdo interno do vocal
+    match /ensaios/{document} {
+      allow read: if canReadVocalArea();
+      allow write: if isAdmin();
+    }
+
+    // Conteúdos públicos administráveis
+    match /albuns/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /downloads/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /downloadsPorMusica/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /notificacoes/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /links/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /config/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Contato público: qualquer visitante pode enviar mensagem; admin também pode importar/restaurar mensagens.
+    match /contatos/{document} {
+      allow create: if isAdmin() || validContactCreate();
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Logs administrativos
+    match /activity_logs/{document} {
+      allow read, write: if isAdmin();
+    }
+
+    // Biblioteca pessoal do usuário: favoritos e playlists.
+    match /bibliotecasUsuarios/{uid} {
+      allow read, write: if isOwner(uid) || isAdmin();
+    }
+
+    // Qualquer coleção não mapeada fica bloqueada.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,78 @@
+/* Ministério Seven V4 — Cifras/Ferramentas somente para Integrantes */
+html.seven-integrante-restrictions-ready:not(.seven-integrante-allowed) a[href*="cifras.html"],
+html.seven-integrante-restrictions-ready:not(.seven-integrante-allowed) a[href*="cifra.html"],
+html.seven-integrante-restrictions-ready:not(.seven-integrante-allowed) a[href*="ferramentas.html"],
+html.seven-integrante-restrictions-ready:not(.seven-integrante-allowed) .seven-integrante-only-link {
+  display: none !important;
+}
+
+.restricted-integrante-screen {
+  width: min(1120px, calc(100% - 32px));
+  min-height: 56vh;
+  margin: 56px auto;
+  display: grid;
+  place-items: center;
+}
+
+.restricted-integrante-card {
+  width: min(760px, 100%);
+  border: 1px solid rgba(237, 196, 85, .35);
+  border-radius: 28px;
+  padding: clamp(32px, 5vw, 64px);
+  background: linear-gradient(135deg, rgba(18,24,34,.96), rgba(5,8,13,.98));
+  box-shadow: 0 24px 70px rgba(0,0,0,.32);
+  text-align: center;
+}
+
+.restricted-integrante-kicker {
+  display: inline-flex;
+  border: 1px solid rgba(237,196,85,.45);
+  border-radius: 999px;
+  padding: 7px 14px;
+  color: #edc455;
+  font-weight: 900;
+  font-size: .75rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  background: rgba(237,196,85,.09);
+}
+
+.restricted-integrante-card h1 {
+  margin: 18px 0 10px;
+  color: var(--text, #fff);
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  text-transform: uppercase;
+}
+
+.restricted-integrante-card p {
+  margin: 0 auto 24px;
+  color: var(--muted, rgba(255,255,255,.76));
+  max-width: 620px;
+  line-height: 1.6;
+}
+
+.restricted-integrante-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.restricted-integrante-btn {
+  border: 0;
+  border-radius: 16px;
+  padding: 14px 22px;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #f4d267, #d9a934);
+  color: #150f04;
+  font-weight: 900;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+html[data-theme="light"] .restricted-integrante-card {
+  background: linear-gradient(135deg, #fff, #f4f0e6);
+  box-shadow: 0 20px 50px rgba(0,0,0,.12);
+}

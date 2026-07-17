@@ -1,0 +1,592 @@
+/* Ministério Seven V4 — Correções mobile/tablet
+   Escopo: somente telas até 1024px. Desktop permanece intocado. */
+
+@media (max-width: 1024px){
+
+  /* Base mobile/tablet */
+  html, body{
+    max-width:100%;
+    overflow-x:hidden;
+  }
+
+  main,
+  .container{
+    max-width:100% !important;
+  }
+
+  /* =========================================================
+     1) Listas: Músicas Públicas, Músicas Vocal e Cifras
+     ========================================================= */
+  .listing-page .alphabet-list{
+    width:100% !important;
+    max-width:100% !important;
+  }
+
+  .listing-page .alphabet-group{
+    width:100% !important;
+    margin:0 0 16px !important;
+    padding:14px !important;
+    border-radius:22px !important;
+  }
+
+  .listing-page .alphabet-letter{
+    font-size:1.18rem !important;
+    line-height:1 !important;
+    margin:0 0 10px !important;
+  }
+
+  .listing-page .music-list-item{
+    display:grid !important;
+    grid-template-columns:34px minmax(0, 1fr) auto !important;
+    align-items:center !important;
+    gap:9px !important;
+    min-height:0 !important;
+    padding:10px 10px !important;
+    margin:0 0 8px !important;
+    border-radius:17px !important;
+  }
+
+  .listing-page .music-list-item > .seven-list-leading-icon{
+    width:32px !important;
+    height:32px !important;
+    min-width:32px !important;
+    flex-basis:32px !important;
+    border-radius:10px !important;
+  }
+
+  .listing-page .music-list-item > .seven-list-leading-icon .seven-svg-icon{
+    --seven-icon-size:16px !important;
+  }
+
+  .listing-page .music-list-link{
+    min-width:0 !important;
+    font-size:.96rem !important;
+    line-height:1.18 !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    white-space:nowrap !important;
+  }
+
+  .listing-page .personal-action-group{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:flex-end !important;
+    gap:6px !important;
+    flex-wrap:nowrap !important;
+    min-width:0 !important;
+  }
+
+  .listing-page .personal-action-group button,
+  .listing-page .personal-action-group a,
+  .listing-page .favorite-button,
+  .listing-page .playlist-button,
+  .listing-page [data-favorite],
+  .listing-page [data-playlist]{
+    width:34px !important;
+    min-width:34px !important;
+    max-width:34px !important;
+    height:34px !important;
+    min-height:34px !important;
+    max-height:34px !important;
+    padding:0 !important;
+    border-radius:999px !important;
+  }
+
+  .listing-page .personal-action-group .seven-svg-icon,
+  .listing-page .favorite-button .seven-svg-icon,
+  .listing-page .playlist-button .seven-svg-icon{
+    --seven-icon-size:15px !important;
+  }
+
+  /* =========================================================
+     2) Barras de ferramentas: Música Pública, Música Vocal e Cifra
+     ========================================================= */
+  .cifra-top-controls,
+  .musica-top-controls,
+  .letra-top-controls,
+  .vocal-top-controls,
+  .lyrics-top-controls,
+  .public-music-toolbar,
+  .public-cifra-toolbar{
+    max-width:calc(100vw - 18px) !important;
+    width:max-content !important;
+    padding:7px 8px !important;
+    gap:5px !important;
+    border-radius:18px !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    -webkit-overflow-scrolling:touch !important;
+    scrollbar-width:thin;
+  }
+
+  .cifra-top-controls button,
+  .musica-top-controls button,
+  .letra-top-controls button,
+  .vocal-top-controls button,
+  .lyrics-top-controls button,
+  .public-music-toolbar button,
+  .public-cifra-toolbar button,
+  #transpose-down,
+  #transpose-up,
+  #font-down,
+  #font-up,
+  #focus-toggle,
+  #fullscreen-toggle,
+  #scroll-panel-toggle,
+  #pdf-toggle,
+  #mini-metronome-floating-toggle,
+  #cifra-mini-metronome-toggle,
+  #musica-font-down,
+  #musica-font-up,
+  #musica-focus-toggle,
+  #musica-fullscreen-toggle,
+  #musica-scroll-panel-toggle,
+  #musica-pdf-toggle{
+    width:38px !important;
+    min-width:38px !important;
+    max-width:38px !important;
+    height:38px !important;
+    min-height:38px !important;
+    max-height:38px !important;
+    padding:0 !important;
+    border-radius:13px !important;
+  }
+
+  .cifra-top-controls .ms-tool-icon,
+  .musica-top-controls .ms-tool-icon,
+  .letra-top-controls .ms-tool-icon,
+  .vocal-top-controls .ms-tool-icon,
+  .lyrics-top-controls .ms-tool-icon,
+  .public-music-toolbar .ms-tool-icon,
+  .public-cifra-toolbar .ms-tool-icon{
+    width:17px !important;
+    height:17px !important;
+    min-width:17px !important;
+    flex-basis:17px !important;
+  }
+
+  .pdf-btn-label,
+  .ms-tool-label{
+    display:none !important;
+  }
+
+  /* =========================================================
+     3) Mini metrônomo dentro da Cifra
+     Mantém o padrão: 120 BPM • 3/4 | bolinhas | play | Edit
+     ========================================================= */
+  .cifra-mini-metronome{
+    display:inline-flex !important;
+    flex-direction:row !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:7px !important;
+    width:auto !important;
+    max-width:calc(100vw - 28px) !important;
+    min-height:42px !important;
+    padding:7px 8px !important;
+    margin:8px 0 12px !important;
+    border-radius:17px !important;
+    overflow:hidden !important;
+  }
+
+  .cifra-mini-metronome.hidden{
+    display:none !important;
+  }
+
+  .cifra-mini-metronome-meta{
+    width:auto !important;
+    flex:0 0 auto !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:5px !important;
+    white-space:nowrap !important;
+    font-size:.84rem !important;
+    line-height:1 !important;
+  }
+
+  .cifra-mini-metronome-bpm,
+  .cifra-mini-metronome-compasso{
+    font-size:.84rem !important;
+    line-height:1 !important;
+  }
+
+  .cifra-mini-metronome-pulses{
+    flex:0 1 auto !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:4px !important;
+    min-width:0 !important;
+  }
+
+  .cifra-mini-metronome-pulse{
+    width:7px !important;
+    height:7px !important;
+    min-width:7px !important;
+  }
+
+  .cifra-mini-metronome-pulse.is-accent{
+    width:8px !important;
+    height:8px !important;
+    min-width:8px !important;
+  }
+
+  .cifra-mini-metronome-toggle{
+    width:36px !important;
+    min-width:36px !important;
+    height:36px !important;
+    min-height:36px !important;
+    padding:0 !important;
+    border-radius:13px !important;
+    font-size:.88rem !important;
+    flex:0 0 auto !important;
+  }
+
+  #cifra-mini-metronome-edit{
+    width:auto !important;
+    min-width:42px !important;
+    height:36px !important;
+    min-height:36px !important;
+    padding:0 10px !important;
+    border-radius:13px !important;
+    font-size:.78rem !important;
+    flex:0 0 auto !important;
+  }
+
+  /* =========================================================
+     4) Vídeos do YouTube sempre centralizados no mobile/tablet
+     ========================================================= */
+  .musica-content-layout{
+    display:block !important;
+  }
+
+  .musica-video-wrapper{
+    position:relative !important;
+    top:auto !important;
+    left:auto !important;
+    right:auto !important;
+    width:min(100%, 430px) !important;
+    max-width:min(100%, 430px) !important;
+    margin:18px auto 0 !important;
+    aspect-ratio:16 / 9 !important;
+    display:block !important;
+  }
+
+  .musica-video-wrapper iframe,
+  .musica-video-wrapper .youtube-embed,
+  .musica-video-wrapper > *{
+    width:100% !important;
+    max-width:100% !important;
+    height:100% !important;
+    display:block !important;
+    margin:0 auto !important;
+  }
+
+  /* =========================================================
+     5) Cifra no celular: sem quebra de linha, com rolagem horizontal própria
+     ========================================================= */
+  .cifra-page .container{
+    overflow:visible !important;
+  }
+
+  .cifra-content,
+  #cifra-content{
+    width:100% !important;
+    max-width:100% !important;
+    overflow-x:auto !important;
+    overflow-y:visible !important;
+    -webkit-overflow-scrolling:touch !important;
+    white-space:pre !important;
+    word-break:normal !important;
+    overflow-wrap:normal !important;
+    padding-bottom:12px !important;
+    scrollbar-width:thin;
+  }
+
+  .cifra-content *,
+  #cifra-content *{
+    white-space:inherit !important;
+    word-break:normal !important;
+    overflow-wrap:normal !important;
+  }
+
+  .cifra-content .chord-token,
+  #cifra-content .chord-token{
+    display:inline !important;
+    white-space:pre !important;
+  }
+
+  /* =========================================================
+     6) Agenda maior no celular/tablet
+     ========================================================= */
+  .agenda-page .container{
+    width:min(100% - 18px, 900px) !important;
+  }
+
+  .agenda-embed-card{
+    width:100% !important;
+    min-height:72dvh !important;
+    border-radius:20px !important;
+  }
+
+  .agenda-embed-card iframe,
+  #agenda-iframe{
+    width:100% !important;
+    min-width:100% !important;
+    height:72dvh !important;
+    min-height:560px !important;
+    display:block !important;
+  }
+
+  /* =========================================================
+     7) Home: hero mais quadrado e cards 2x2 centralizados
+     ========================================================= */
+  body.v7-page-index .hero-banner,
+  .home-page .hero-banner,
+  #hero-banner{
+    width:min(92vw, 620px) !important;
+    height:auto !important;
+    min-height:0 !important;
+    aspect-ratio:1 / 1 !important;
+    margin:16px auto 24px !important;
+    border-radius:28px !important;
+    overflow:hidden !important;
+    display:flex !important;
+    align-items:center !important;
+  }
+
+  body.v7-page-index .v7-hero-content,
+  .home-page .v7-hero-content,
+  #hero-banner .v7-hero-content{
+    min-height:100% !important;
+    height:100% !important;
+    width:100% !important;
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:center !important;
+    padding:clamp(22px, 6vw, 48px) !important;
+    overflow:visible !important;
+  }
+
+  .home-page .v7-hero-kicker,
+  #hero-banner .v7-hero-kicker{
+    font-size:clamp(.68rem, 2.4vw, .9rem) !important;
+    letter-spacing:.18em !important;
+    margin-bottom:clamp(10px, 2.5vw, 18px) !important;
+  }
+
+  .home-page .v7-hero-title,
+  #hero-banner .v7-hero-title{
+    font-size:clamp(2.1rem, 9.5vw, 4.35rem) !important;
+    line-height:.95 !important;
+    max-width:100% !important;
+  }
+
+  .home-page .v7-hero-text,
+  #hero-banner .v7-hero-text{
+    font-size:clamp(.9rem, 2.9vw, 1rem) !important;
+    line-height:1.45 !important;
+    max-width:100% !important;
+    margin-top:clamp(12px, 3vw, 20px) !important;
+  }
+
+  body.v7-page-index .v7-hero-actions,
+  .home-page .v7-hero-actions,
+  #hero-banner .v7-hero-actions{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    gap:10px !important;
+    margin-top:clamp(18px, 4vw, 30px) !important;
+  }
+
+  .home-page .v7-hero-actions a,
+  #hero-banner .v7-hero-actions a{
+    min-height:44px !important;
+    padding:0 16px !important;
+    font-size:.9rem !important;
+  }
+
+  body.v7-page-index .v7-home-quick-grid,
+  .home-page .v7-home-quick-grid,
+  .v7-home-quick-grid{
+    width:min(92vw, 560px) !important;
+    max-width:560px !important;
+    margin:18px auto 26px !important;
+    display:grid !important;
+    grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+    gap:10px !important;
+    justify-items:stretch !important;
+    align-items:stretch !important;
+  }
+
+  .v7-home-quick-card{
+    min-height:116px !important;
+    height:auto !important;
+    padding:14px 10px !important;
+    border-radius:20px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:center !important;
+    text-align:center !important;
+    gap:7px !important;
+  }
+
+  .v7-home-quick-card::before{
+    width:1.35rem !important;
+    height:1.35rem !important;
+    margin:0 0 2px !important;
+  }
+
+  .v7-home-quick-card strong{
+    font-size:.92rem !important;
+    line-height:1.12 !important;
+  }
+
+  .v7-home-quick-card small{
+    font-size:.72rem !important;
+    line-height:1.25 !important;
+  }
+}
+
+@media (max-width: 520px){
+
+  .listing-page .music-list-item{
+    grid-template-columns:32px minmax(0, 1fr) auto !important;
+    gap:8px !important;
+    padding:9px !important;
+    border-radius:16px !important;
+  }
+
+  .listing-page .music-list-link{
+    font-size:.9rem !important;
+  }
+
+  .listing-page .personal-action-group button,
+  .listing-page .personal-action-group a,
+  .listing-page .favorite-button,
+  .listing-page .playlist-button,
+  .listing-page [data-favorite],
+  .listing-page [data-playlist]{
+    width:31px !important;
+    min-width:31px !important;
+    height:31px !important;
+    min-height:31px !important;
+  }
+
+  .cifra-top-controls,
+  .musica-top-controls,
+  .letra-top-controls,
+  .vocal-top-controls,
+  .lyrics-top-controls,
+  .public-music-toolbar,
+  .public-cifra-toolbar{
+    padding:6px 7px !important;
+    gap:4px !important;
+    border-radius:16px !important;
+  }
+
+  .cifra-top-controls button,
+  .musica-top-controls button,
+  .letra-top-controls button,
+  .vocal-top-controls button,
+  .lyrics-top-controls button,
+  .public-music-toolbar button,
+  .public-cifra-toolbar button,
+  #transpose-down,
+  #transpose-up,
+  #font-down,
+  #font-up,
+  #focus-toggle,
+  #fullscreen-toggle,
+  #scroll-panel-toggle,
+  #pdf-toggle,
+  #mini-metronome-floating-toggle,
+  #cifra-mini-metronome-toggle,
+  #musica-font-down,
+  #musica-font-up,
+  #musica-focus-toggle,
+  #musica-fullscreen-toggle,
+  #musica-scroll-panel-toggle,
+  #musica-pdf-toggle{
+    width:35px !important;
+    min-width:35px !important;
+    max-width:35px !important;
+    height:35px !important;
+    min-height:35px !important;
+    max-height:35px !important;
+    border-radius:12px !important;
+  }
+
+  .cifra-mini-metronome{
+    gap:5px !important;
+    padding:6px 7px !important;
+    min-height:38px !important;
+  }
+
+  .cifra-mini-metronome-meta,
+  .cifra-mini-metronome-bpm,
+  .cifra-mini-metronome-compasso{
+    font-size:.78rem !important;
+  }
+
+  .cifra-mini-metronome-pulse{
+    width:6px !important;
+    height:6px !important;
+    min-width:6px !important;
+  }
+
+  .cifra-mini-metronome-toggle{
+    width:32px !important;
+    min-width:32px !important;
+    height:32px !important;
+    min-height:32px !important;
+  }
+
+  #cifra-mini-metronome-edit{
+    min-width:38px !important;
+    height:32px !important;
+    min-height:32px !important;
+    padding:0 8px !important;
+    font-size:.72rem !important;
+  }
+
+  .agenda-embed-card{
+    min-height:68dvh !important;
+  }
+
+  .agenda-embed-card iframe,
+  #agenda-iframe{
+    height:68dvh !important;
+    min-height:520px !important;
+  }
+
+  body.v7-page-index .hero-banner,
+  .home-page .hero-banner,
+  #hero-banner{
+    width:min(88vw, 410px) !important;
+    margin-top:12px !important;
+    margin-bottom:20px !important;
+    border-radius:24px !important;
+  }
+
+  body.v7-page-index .v7-home-quick-grid,
+  .home-page .v7-home-quick-grid,
+  .v7-home-quick-grid{
+    width:min(88vw, 410px) !important;
+    gap:9px !important;
+  }
+
+  .v7-home-quick-card{
+    min-height:104px !important;
+    padding:12px 8px !important;
+    border-radius:18px !important;
+  }
+
+  .v7-home-quick-card small{
+    display:block !important;
+    font-size:.68rem !important;
+  }
+}
